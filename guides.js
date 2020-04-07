@@ -2,16 +2,13 @@
 
 const express = require("express");
 const router = express.Router();
-const discordBotkit = require("botkit-discord");
+
 const discordBot = require("./bot");
 
-router.get("/guide", function(request, response) {
+router.get("/", function(request, response) {
   response.sendFile(__dirname + "/views/index.html");
 });
 
-router.get("/install", function(request, response) {
-  response.sendFile(__dirname + "/views/install.html");
-});
 
 router.get("/domainname", function(request, response) {
   let domain = process.env.PROJECT_DOMAIN;
