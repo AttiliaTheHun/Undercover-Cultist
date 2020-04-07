@@ -4,16 +4,16 @@
   "engines": {
     "node": "12.x"
   },
-  "description": "",
+  "description": "An Underhand bot which likes gooses and has friends on high posts.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "author": "",
+  "author": "Black Dragon",
   "license": "ISC",
   "dependencies": {
-    "botkit-discord": "^0.1.3",
+    "discord.js": "^12.1.1",
     "express": "^4.17.1",
     "uptime-robot": "^1.3.0"
   },
