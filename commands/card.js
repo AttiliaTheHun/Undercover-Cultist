@@ -1,4 +1,7 @@
-module.exports = { 	name: 'card', 	description: 'Sends event card image.', 	execute(message, args) { 		
+module.exports = { 	
+  name: 'card', 	
+  description: 'Sends event card image.', 	
+  execute(message, args) { 		
 if(!isNaN(args[0]) && 0 < args[0] && args[0] < 119){
 	
 	message.channel.send("Card " + args[0],{
