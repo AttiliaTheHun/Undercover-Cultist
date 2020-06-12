@@ -4,7 +4,7 @@ name: 'server',
 description: 'shows server info',
 execute(message, args){
   
-  const embed = new Discord.messageEmbed()
+  const embed = new Discord.MessageEmbed()
 .setColor(' #366A1B') 	
   .setTitle(`${message.guild.owner.tag}`) 	
   .setURL('https://discord.js.org/') 
@@ -12,13 +12,13 @@ execute(message, args){
   .setDescription('Some description here') 
   .setThumbnail('https://i.imgur.com/wSTFkRM.png') 
   .addField('Regular field title', 'Some value here') 	
-  .addBlankField() 
   .addField('Inline field title', 'Some value here', true) 	
   .addField('Inline field title', 'Some value here', true) 	
   .addField('Inline field title', 'Some value here', true) 
-  .setImage('https://i.imgur.com/wSTFkRM.png') 	.setTimestamp() 	
+  .setImage('https://i.imgur.com/wSTFkRM.png') 
+  .setTimestamp() 	
   .setFooter('Some footer text here', 'https://i.imgur.com/wSTFkRM.png');
-  message.hannel.send(embed);
+  message.channel.send(embed);
   
 },
-}
+};
