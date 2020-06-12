@@ -35,11 +35,13 @@ return;
 	const args = message.content.slice(prefix.length).split(/ +/); 
 	const command = args.shift().toLowerCase(); /*
 		if (command === 'ping') { 		client.commands.get('ping').execute(message, args); 	}
-		else */if (command === 'card'){	client.commands.get('card').execute(message, args);
-		}else if(command === 'help'){	client.commands.get('help').execute(message, args);
-		}/*else if(command === 'yeehe'){
-			client.commands.get('yeehe').execute(message, args);
-		} */;
+		else */if (command === 'card'){	
+      client.commands.get('card').execute(message, args);
+		}else if(command === 'help'){	
+      client.commands.get('help').execute(message, args);
+		}else if(command === 'server'){
+			client.commands.get('server').execute(message, args);
+		} ;
 });
  client.login(token);
  
