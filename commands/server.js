@@ -18,7 +18,10 @@ execute(message, args, client){
   .addField('Members', message.guild.memberCount) 	
   .addField('Bots', message.guild.members.cache.filter(member => member.user.bot).size)
   .addField('Roles', message.guild.roles.cache.size)
-  .addField('Channels', message.guild.channels.cache.size)
+  .addField('Channel Categories', message.guild.categories.cache.size)
+  .addField('Text Channels', message.guild.channels.cache.filter(channel => channel.type.text).size)
+  .addField('Voice Channels',message.guild.channels.cache.filter(channel => channel.type.voice).size)
+  
   .setTimestamp() 	
   .setFooter('We could benefit from having someone on the inside', client.user.avatarURL());
   message.channel.send(embed);
