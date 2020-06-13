@@ -9,14 +9,14 @@ module.exports = {
     const prefix = config.prefix;
     
     
-    const embed = new Discord.messageEmbed()
+    const embed = new Discord.MessageEmbed()
       .setColor('#005E1F')
-    .setAuthor('Underciver Cultist')
+    .setAuthor('Undercover Cultist')
     .setTitle('List of commands')
     .setDescription(`Before every command use \'${prefix}\' prefix.`)
     .addField(`card (number) => \'${prefix} card 90\'`,'Sends event card specified by it\'s number')
-    .addTimestamp()
-    .addFooter('We could benefit from having someone on the inside', client.user.avatarURL());
+    .setTimestamp()
+    .setFooter('We could benefit from having someone on the inside', client.user.avatarURL());
     message.channel.send({ embed: embed });
   }
 };

@@ -38,7 +38,7 @@ return;
 		else */if (command === 'card'){	
       client.commands.get('card').execute(message, args);
 		}else if(command === 'help'){	
-      client.commands.get('help').execute(message, args);
+      client.commands.get('help').execute(message, args, client);
 		}else if(command === 'server'){
 			client.commands.get('server').execute(message, args, client);
 		} ;
