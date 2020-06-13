@@ -6,18 +6,17 @@ execute(message, args){
   
   const embed = new Discord.MessageEmbed()
 .setColor(' #366A1B') 	
-  .setTitle(`${message.guild.owner.tag}`) 	
+  .setTitle(`${message.guild.name}`) 	
   .setURL('https://discord.js.org/') 
-  .setAuthor('Some name', 'https://i.imgur.com/wSTFkRM.png', 'https://discord.js.org') 	
+  .setAuthor('Here is the latest report', 'https://discord.js.org') 	
   .setDescription('Some description here') 
-  .setThumbnail('https://i.imgur.com/wSTFkRM.png') 
+  .setThumbnail(message.guild.iconURL()) 
   .addField('Regular field title', 'Some value here') 	
   .addField('Inline field title', 'Some value here', true) 	
   .addField('Inline field title', 'Some value here', true) 	
   .addField('Inline field title', 'Some value here', true) 
-  .setImage('https://i.imgur.com/wSTFkRM.png') 
   .setTimestamp() 	
-  .setFooter('Some footer text here', 'https://i.imgur.com/wSTFkRM.png');
+  .setFooter('We could benefit from having someone on the inside', client.user.avatar);
   message.channel.send(embed);
   
 },
