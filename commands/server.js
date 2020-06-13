@@ -4,6 +4,15 @@ name: 'server',
 description: 'shows server info',
 execute(message, args, client){
   
+  let count = 0;
+  message.guild.fetchMembers().then(g => {
+       count = g.members.length; 
+       /* g.members.forEach((member) => {
+            count++;
+        });*/
+    });
+
+  
   const embed = new Discord.MessageEmbed()
 .setColor(' #366A1B') 	
   .setTitle(`${message.guild.name}`) 	
@@ -12,7 +21,7 @@ execute(message, args, client){
   .setThumbnail(message.guild.iconURL()) 
   .addField('Owner', message.guild.owner, true) 	
   .addField('Created', message.guild.createdAt, true) 	
-  .addField('Members', 'Some value here', true) 	
+  .addField('Members', count, true) 	
   .addField('Inline field title', 'Some value here', true) 
   .setTimestamp() 	
   .setFooter('We could benefit from having someone on the inside', client.avatarURL());
