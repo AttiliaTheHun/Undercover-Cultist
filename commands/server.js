@@ -14,7 +14,7 @@ execute(message, args, client){
   .setThumbnail(message.guild.iconURL()) 
   .addField('Owner', message.guild.owner.user.tag) 	
   .addField('Region', message.guild.region)
-  .addField('Created', message.guild.createdAt.substring(0, 31))	
+  .addField('Created', message.guild.createdAt.toString().substring(0, 31))	
   .addField('Members', message.guild.memberCount, true) 	
   .addField('Bots', message.guild.members.cache.filter(member => member.user.bot).size, true)
   .addField('Roles', message.guild.roles.cache.size, true)
