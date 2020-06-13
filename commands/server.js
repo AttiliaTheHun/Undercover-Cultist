@@ -18,9 +18,10 @@ execute(message, args, client){
   .addField('Members', message.guild.memberCount, true) 	
   .addField('Bots', message.guild.members.cache.filter(member => member.user.bot).size, true)
   .addField('Roles', message.guild.roles.cache.size, true)
-  .addField('Channel Categories', message.guild.channels.cache.filter(channel => channel.type.category).size)
-  .addField('Text Channels', message.guild.channels.cache.filter(channel => channel.type == 0).size)
-  .addField('Voice Channels',message.guild.channels.cache.filter(channel => channel.type.voice).size)
+  .addField('Admins', message.guild.members.cache.filter(member => member
+  .addField('Channel Categories', message.guild.channels.cache.filter(channel => channel.type === "category").size)
+  .addField('Text Channels', message.guild.channels.cache.filter(channel => channel.type === "text").size)
+  .addField('Voice Channels',message.guild.channels.cache.filter(channel => channel.type === "voice").size)
   .addField('ID', message.guild.id)
   .setTimestamp() 	
   .setFooter('We could benefit from having someone on the inside', client.user.avatarURL());
