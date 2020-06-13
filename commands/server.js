@@ -7,7 +7,7 @@ execute(message, args, client){
 
   
   const embed = new Discord.MessageEmbed()
-.setColor('#366A1B') 	
+.setColor('#005E1F')
   .setTitle(`${message.guild.name}`) 	
   .setAuthor('', '') 	
   .setDescription('Here is the last report') 
