@@ -41,10 +41,9 @@ return;
       client.commands.get('help').execute(message, args, client);
 		}else if(command === 'server'){
 			client.commands.get('server').execute(message, args, client);
-		}else if(command === 'event').execute(message, args);
-  
-  
-  ;
+		}else if(command === 'event'){
+      client.commands.get('event').execute(message, args);
+} ;
 });
  client.login(token);
  
