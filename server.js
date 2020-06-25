@@ -43,6 +43,12 @@ return;
 			client.commands.get('server').execute(message, args, client);
 		}else if(command === 'event'){
       client.commands.get('event').execute(message, args);
+}else if(command === 'cardback'){
+      client.commands.get('cardback').execute(message, args);
+}else if(command === 'winscreen'){
+      client.commands.get('winscreen').execute(message, args);
+}else if(command === 'losescreen'){
+      client.commands.get('losescreen').execute(message, args);
 } ;
 });
  client.login(token);
