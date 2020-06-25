@@ -13,8 +13,10 @@ module.exports = {
       .setColor('#005E1F')
     .setAuthor('Undercover Cultist')
     .setTitle('List of commands')
-    .setDescription(`Before every command use \'${prefix}\' prefix.`)
+    .setDescription(`Before every command use \'${prefix}\' prefix. You can look on the bot's page for further infomations: http://underhand.clanweb.eu/undercover_cultist`)
     .addField(`card (number) => \'${prefix} card 90\'`,'Sends event card specified by it\'s number')
+    
+    
     .setTimestamp()
     .setFooter('We could benefit from having someone on the inside', client.user.avatarURL());
     message.channel.send({ embed: embed });
