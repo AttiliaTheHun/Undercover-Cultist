@@ -49,6 +49,8 @@ return;
       client.commands.get('winscreen').execute(message, args);
 }else if(command === 'losescreen'){
       client.commands.get('losescreen').execute(message, args);
+}else if(command === 'option'){
+  client.commands.get('option').execute(message, args);
 } ;
 });
  client.login(token);
