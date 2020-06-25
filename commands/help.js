@@ -15,8 +15,8 @@ module.exports = {
     .setTitle('List of commands')
     .setDescription(`Before every command use \'${prefix}\' prefix. You can look on the bot's page for further infomations: http://underhand.clanweb.eu/undercover_cultist`)
     .addField(`card (number) => \'${prefix} card 90\'`,'Sends event card specified by it\'s number')
-    
-    
+     .addField(`cardback => \'${prefix} card 90\'`,'Sends carback texture')
+     .addField(`option (active/dormant/ready/back/down) => \'${prefix} option ready\'`,'Sends option card specified by it\'s state')
     .setTimestamp()
     .setFooter('We could benefit from having someone on the inside', client.user.avatarURL());
     message.channel.send({ embed: embed });
