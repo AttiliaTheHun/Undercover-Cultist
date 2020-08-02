@@ -19,9 +19,16 @@ const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('
 for (const file of commandFiles) { 	const command = require(`./commands/${file}`); 		client.commands.set(command.name, command); }
 
 client.once('ready', () => { 	console.log(`Bot running: ${client.user.tag}`);
-client.user.setActivity(`${prefix} help | Someone on the inside`);
+//client.user.setActivity(`${prefix} help | Someone on the inside`);
   });
-  
+   client.user.setActivity({
+     status: 'online'/*`${prefix} help | Someone on the inside`*/,
+        activity: {
+            name: 'Underhand',
+            type: "PLAYING",
+            url: "http://underhand.clanweb.eu"
+        }
+    });
   
   
 client.on('message', message => { 	
