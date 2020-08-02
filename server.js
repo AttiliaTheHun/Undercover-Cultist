@@ -18,18 +18,18 @@ client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) { 	const command = require(`./commands/${file}`); 		client.commands.set(command.name, command); }
 
-client.once('ready', () => { 	console.log(`Bot running: ${client.user.tag}`);
-//client.user.setActivity(`${prefix} help | Someone on the inside`);
-  });
+client.once('ready', () => { 	
+  console.log(`Bot running: ${client.user.tag}`);
+client.user.setActivity(`${prefix} help | Someone on the inside`);  
    client.user.setActivity({
-     status: 'online'/*`${prefix} help | Someone on the inside`*/,
+     status: `${prefix} help | Someone on the inside`,
         activity: {
             name: 'Underhand',
             type: "PLAYING",
             url: "http://underhand.clanweb.eu"
         }
     });
-  
+  });
   
 client.on('message', message => { 	
 if(message.content.toLowerCase().includes(`goose`)){
