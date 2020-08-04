@@ -2,17 +2,17 @@
 // where your node app starts
 
 // init project
-const express = require("express");
+//const express = require("express");
 const fs = require("fs");
 
-var Client = require("uptime-robot");
+//var Client = require("uptime-robot");
 
-const app = express();
+//const app = express();
 
 
 const Discord = require('discord.js'); 
  const prefix = require('./config.json').prefix;
-const token = process.env.TOKEN;
+const token = require('./.env').TOKEN;
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -20,7 +20,7 @@ for (const file of commandFiles) { 	const command = require(`./commands/${file}`
 
 client.once('ready', () => { 	
   console.log(`Bot running: ${client.user.tag}`);
-client.user.setActivity(`${prefix} help | Someone on the inside`);  
+//client.user.setActivity(`${prefix} help | Someone on the inside`);  
    client.user.setActivity({
      status: `${prefix} help | Someone on the inside`,
         activity: {
@@ -69,11 +69,11 @@ return;
 
 
 // this is the code for the guides
-app.use(require('./guides'));
+//app.use(require('./guides'));
 
 // http://expressjs.com/en/starter/static-files.html
-app.use(express.static("public"));
+//app.use(express.static("public"));
 // listen for requests :)
-const listener = app.listen(process.env.PORT, function() {
-  console.log("Your app is listening on port " + listener.address().port);
+//const listener = app.listen(process.env.PORT, function() {
+ // console.log("Your app is listening on port " + listener.address().port);
 });
