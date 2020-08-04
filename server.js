@@ -12,7 +12,7 @@ const fs = require("fs");
 
 const Discord = require('discord.js'); 
  const prefix = require('./config.json').prefix;
-const token = require('./.env').TOKEN;
+const token = process.env.TOKEN;
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
