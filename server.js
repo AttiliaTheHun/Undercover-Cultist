@@ -1,13 +1,11 @@
-// server.js
-// where your node app starts
 
 // init project
-//const express = require("express");
+const express = require("express");
 const fs = require("fs");
 
 //var Client = require("uptime-robot");
 
-//const app = express();
+const app = express();
 
 
 const Discord = require('discord.js'); 
@@ -70,11 +68,13 @@ return;
 
 
 // this is the code for the guides
-//app.use(require('./guides'));
+//app.use(require('./index'));
 
 // http://expressjs.com/en/starter/static-files.html
-//app.use(express.static("public"));
+app.set('views', path.join(__dirname, 'views'));
+app.all('/', 'views/index.html');
+
 // listen for requests :)
-//const listener = app.listen(process.env.PORT, function() {
- // console.log("Your app is listening on port " + listener.address().port);
-//});
+const listener = app.listen(process.env.PORT, function() {
+  console.log("Listening on port " + listener.address().port);
+});
