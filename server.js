@@ -16,6 +16,12 @@ client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) { 	const command = require(`./commands/${file}`); 		
 				  client.commands.set(command.name, command); }
+
+client
+  .on("error", console.error)
+  .on("warn", console.warn)
+  .on("debug", console.log);
+
 client.once('ready', () => { 	
   console.log(`Bot running: ${client.user.tag}`);
 //client.user.setActivity(`${prefix} help | Someone on the inside`);  
