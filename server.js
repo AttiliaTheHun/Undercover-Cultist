@@ -29,7 +29,7 @@ client.once('ready', () => {
             url: "http://underhand.clanweb.eu"
         }
     });
-  });
+  }).catch();
   
 client.on('message', message => { 	
 if(message.content.toLowerCase().includes(`goose`)){
@@ -59,8 +59,8 @@ return;
       client.commands.get('losescreen').execute(message, args);
 }else if(command === 'option'){
   client.commands.get('option').execute(message, args);
-} ;
-});
+};
+}).catch();
  client.login(token);
  
 
