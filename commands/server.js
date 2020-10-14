@@ -18,7 +18,7 @@ execute(message, args, client){
   .addField('Created', message.guild.createdAt.toString().substring(0, 31), false)	
   .addField('Members', message.guild.memberCount, true) 	
   .addField('Bots', message.guild.members.cache.filter(member => member.user.bot).size, true)
-  .addField('Roles', message.guild.roles.cache.size, true)
+  .addField(`Roles(${message.guild.roles.cache.size})`,  message.guild.roles.cache.map(r => `${r}`).join(' | '), false)
   .addField('Channel Categories', message.guild.channels.cache.filter(channel => channel.type === "category").size, true)
   .addField('Text Channels', message.guild.channels.cache.filter(channel => channel.type === "text").size, true)
   .addField('Voice Channels',message.guild.channels.cache.filter(channel => channel.type === "voice").size, true)

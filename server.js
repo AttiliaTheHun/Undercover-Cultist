@@ -1,9 +1,10 @@
+// server.js
+// where your node app starts
 
 // init project
 const express = require("express");
 const fs = require("fs");
 
-//var Client = require("uptime-robot");
 
 const app = express();
 
@@ -14,39 +15,33 @@ const token = process.env.TOKEN;
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-for (const file of commandFiles) { 	const command = require(`./commands/${file}`); 		
-				  client.commands.set(command.name, command); }
-
-client
-  .on("error", console.error)
-  .on("warn", console.warn)
-  .on("debug", console.log);
+for (const file of commandFiles) { 	const command = require(`./commands/${file}`); 		client.commands.set(command.name, command); }
 
 client.once('ready', () => { 	
   console.log(`Bot running: ${client.user.tag}`);
-//client.user.setActivity(`${prefix} help | Someone on the inside`);  
-   client.user.setActivity({
+client.user.setActivity(`${prefix} help | Someone on the inside`);  
+ /*  client.user.setActivity({
      status: `${prefix} help | Someone on the inside`,
         activity: {
             name: 'Underhand',
             type: "PLAYING",
             url: "http://underhand.clanweb.eu"
         }
-    });
-  }).catch();
+    }); */
+  });
   
 client.on('message', message => { 	
 if(message.content.toLowerCase().includes(`goose`)){
 	message.channel.send(`Honk!`);
-} if(message.content.toLowerCase().includes(`undercover cultist`)){
+} if(message.content.toLowerCase().includes(`undercover cultist`) || message.mentions.members.first() == client.user.id){
 	message.channel.send(`Shhh, ${message.author.username}, I do not want to be exposed!`);
 } 
 if (!message.content.startsWith(prefix) || message.author.bot) 
 return; 
 	const args = message.content.slice(prefix.length).split(/ +/); 
+  try{
 	const command = args.shift().toLowerCase(); /*
-		if (command === 'ping') { 		
-		client.commands.get('ping').execute(message, args); 	}
+		if (command === 'ping') { 		client.commands.get('ping').execute(message, args); 	}
 		else */if (command === 'card'){	
       client.commands.get('card').execute(message, args);
 		}else if(command === 'help'){	
@@ -63,8 +58,22 @@ return;
       client.commands.get('losescreen').execute(message, args);
 }else if(command === 'option'){
   client.commands.get('option').execute(message, args);
-};
-}).catch();
+}else if(command === 'invite'){
+  client.commands.get('invite').execute(message, args);
+}else if(command === 'god'){
+  client.commands.get('god').execute(message, args);
+}else if(command === 'godlist'){
+  client.commands.get('godlist').execute(message, args);
+}else if(command === 'user'){
+  client.commands.get('user').execute(message, args, client);
+} ;
+   }catch(err1) {
+     console.log(err1);
+   }
+});
+  
+  
+  
  client.login(token);
  
 
@@ -74,13 +83,11 @@ return;
 
 
 // this is the code for the guides
-//app.use(require('./index'));
+app.use(require('./guides'));
 
 // http://expressjs.com/en/starter/static-files.html
-app.set('views', path.join(__dirname, 'views'));
-app.all('/', 'views/index.html');
-
+app.use(express.static("public"));
 // listen for requests :)
 const listener = app.listen(process.env.PORT, function() {
-  console.log("Listening on port " + listener.address().port);
+  console.log("Your app is listening on port " + listener.address().port);
 });
