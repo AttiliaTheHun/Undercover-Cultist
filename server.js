@@ -66,6 +66,8 @@ return;
   client.commands.get('godlist').execute(message, args);
 }else if(command === 'user'){
   client.commands.get('user').execute(message, args, client);
+}else if(command === 'underhand'){
+  client.commands.get('underhand').execute(message, args, client);
 } ;
    }catch(err1) {
      console.log(err1);
