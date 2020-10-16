@@ -75,16 +75,13 @@ module.exports = {
     
    
     /*TODO
-    windigoo food checking
-    police raid suspicion checking
-    greed card checking
-    fix cards where no specificids but insertation must be performed
-    make foresight
-    make foresight with discard
-    make the deck shuffle
-    check other options before allowing to lose
-    add save option: generate json {base:[base_deck], discard[discard_deck], resources[resources]}
-    add load function on argument args[0] "load" || "l" to load game from save output json string
+    P: windigoo food checking
+    P: police raid suspicion checking
+    P: greed card checking
+    P: fix cards where no specificids but insertation must be performed
+    M: make foresight
+    M: make foresight with discard
+    L:check other options before allowing to lose
     */
     
 
@@ -94,26 +91,30 @@ module.exports = {
     const ancestors = [52, 53, 54, 55]; //ancestor events
     const catches = [86, 87, 88, 89]; //catch of the day events
     const teatimes = [115, 116, 117, 118]; //teatime events
-   
+   //emotes to show on dicord
   const name = ["<:exchange_relic:644177849606995978>", "<:exchange_money:644177896575074323>", "<:exchange_cultist:644175421755097098>", "<:exchange_food:644178025809707157>","<:exchange_prisoner:644177784876433408>", "<:exchange_suspicion:644177968536748032>"];
-  const ecp = "<:exchange_cultist_prisoner:766628698963050566>";
+ //exchange cultist prisoner emote
+    const ecp = "<:exchange_cultist_prisoner:766628698963050566>";
     
     
-    
+    //game controlling boolean
  let run = true;
-    let yes = false;
+  
 
     
     
     let event;
-    
+    //shuffle the deck before game starts
+    base_deck = module.exports.shuffle(base_deck);
+    //the game loop
     game:
     while(run){
+      //get current event from data file
       event = cardwip[base_deck[0]];
      
        
       message.channel.send("[" +base_deck.map(r => `${r}`).join(' ') + "]\n[" + discard_deck.map(r => `${r}`).join(' ') + "]");
-                 
+                //void the values 
         let consumes = [];
          let provides = [];
           let optiontext = [];
@@ -125,30 +126,31 @@ module.exports = {
         for(let i = 0; i < 3; i++){ //indicates option number
           consumes[i] = "";
           provides[i] = "";
-          
+          //initialize requirements and rewards
            consarr = [event[`option${(i + 1)}`].requirements.relic, event[`option${(i + 1)}`].requirements.money, event[`option${(i + 1)}`].requirements.cultist, event[`option${(i + 1)}`].requirements.food, event[`option${(i + 1)}`].requirements.prisoner, event[`option${(i + 1)}`].requirements.suspicion];
            provarr = [event[`option${(i + 1)}`].rewards.relic, event[`option${(i + 1)}`].rewards.money, event[`option${(i + 1)}`].rewards.cultist, event[`option${(i + 1)}`].rewards.food, event[`option${(i + 1)}`].rewards.prisoner, event[`option${(i + 1)}`].rewards.suspicion];
        
-       //   console.log(resources + " p2 " + provarr)
-         // console.log(resources + " c2 " + consarr)
-          
+          //check for variable consume value
           if(consarr.findIndex((num) =>{
-        
+        //420 in the data file means bigger half of curent number of resources
          if(num == 420){
            return true;
          }
          return false;
        }) != -1){
+            //get reource tyoe to halve
          let index = consarr.findIndex((num) =>{
          if(num == 420){
            return true;
          }
          return false;
        });
+            //do the halving
          consarr[index] = (resources[index] / 2) + (resources[index] % 2);         
        }      
          
   for(let i2 = 0; i2 < 6; i2++){  //indicates type of resource
+     //create consume emote set if cultist equals prisoner
    if(event[`option${(i + 1)}`].cultistequalsprisoner == 1 && i2 == 2){
     for(let i3 = 0; i3 < consarr[i2]; i3++){ //indicates count of resource
       
@@ -158,23 +160,26 @@ module.exports = {
      // console.log("i:"+ i + "c[i]:" + consumes[i] + "i2:" + i2 + "i3:" + i3);
     }
      }else{
+       //create consume emote set
        for(let i3 = 0; i3 < consarr[i2]; i3++){
       consumes[i] = consumes[i] + " " + name[i2];
       }
      }
   }
+           //create provide emote set
 for(let i2 = 0; i2 < 6; i2++){  
     for(let i3 = 0; i3 < provarr[i2]; i3++){
       provides[i] += " " + name[i2];
     }
   }
-          
+          //provide text to prevent emote size change
           if(consumes[i] == ""){
             consumes[i] = "-";
           }
           if(provides[i] == ""){
             provides[i] = "-";
           }
+          //get option text
           if(event[`option${(i + 1)}`].optiontext != null){
             optiontext[i] = event[`option${(i + 1)}`].optiontext;
           o[i] = true;
@@ -182,13 +187,15 @@ for(let i2 = 0; i2 < 6; i2++){
             optiontext[i] = "";
             o[i] = false;
           }
+          //get output text
           if(event[`option${(i + 1)}`].outputtext != null){
             outputtext[i] = event[`option${(i + 1)}`].outputtext;
           }else{
+            //get rid of undefined
             outputtext[i] = "";
           }
       }
-       
+       //create the options embed
          const embed = new Discord.MessageEmbed()
 .setAuthor(optiontext[0])
 .setDescription(":x: "+ consumes[0] + "\n" + ":white_check_mark: " + provides[0] + "\n" + outputtext[0] )
@@ -199,20 +206,21 @@ for(let i2 = 0; i2 < 6; i2++){
          embed.addField( optiontext[2] , ":x: "+ consumes[2] + "\n" + ":white_check_mark: " + provides[2] + "\n" + outputtext[2] , false)
          }
         
-        // message.channel.send(cardwip.substring(0, 250));
-    //    message.channel.send(event.title);
+//sent event texture
         await message.channel.send("",{
 files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`]
 });
+      //send embed with options
       await  message.channel.send(embed);
-
+//send emebd with player resources
          await message.channel.send(module.exports.print_deck(message, resources))
       
   const filter = m => message.author.id === m.author.id;
-
+//wait for response
 	await message.channel.awaitMessages(filter, { time: 180000, max: 1, errors: ['time'] })
 		.then(messages => {
     let optsel;
+    //get selected otpion
     if(messages.first().content.toLowerCase().trim() == "a" || messages.first().content.toLowerCase().trim() == "1"){
 
       optsel = 1;
@@ -221,7 +229,7 @@ files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`]
       
     }else if((messages.first().content.toLowerCase().trim() == "c" || messages.first().content.toLowerCase().trim() == "3") && o[2] == true){
       optsel = 3;
-      
+      //check if save call happened
     }else if(messages.first().content.toLowerCase().trim() == "save" || messages.first().content.toLowerCase().trim() == "s"){
       message.channel.send(`Here is your data string, you can load it using the *load* argument\n\`\`\`{"base":[${base_deck}],"discard":[${discard_deck}],"resources":[${resources}]}\`\`\``);
       return run = false;
@@ -229,54 +237,68 @@ files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`]
       message.channel.send('Game Interrupted');
     return run = false;
     }
+    //check if player won
     if(event[`option${(optsel)}`].iswin != ""){
       let god = event[`option${(optsel)}`].iswin;
       message.channel.send("**You Won**",{
 files:[`http://underhand.clanweb.eu/res/${god}.png`]
 })
     return run = false;  
+      //check if player lost
     }else if (event[`option${(optsel)}`].islose == 1){
       message.channel.send("You Lose");
+      //break the game cycle
       return run = false;
     }
+    //refresh consumed resources
      consarr = [event[`option${(optsel)}`].requirements.relic, event[`option${(optsel)}`].requirements.money, event[`option${(optsel)}`].requirements.cultist, event[`option${(optsel)}`].requirements.food, event[`option${(optsel)}`].requirements.prisoner, event[`option${(optsel)}`].requirements.suspicion];
            
    // console.log(resources + " c " + consarr)
          for(let i = 0; i < 6; i++){ 
-           if(i == 0){
-             
+           if(i == 0){ //you don't wanna double up player's relics
+             if(consarr[i] > resources[i]){ //check if enough of relics
+           message.channel.send("No enough resources");
+        return
+        }else{
+          resources[i] = resources[i] - consarr[i]; 
+        }
            }else{
-      if(consarr[i] > resources[i] + resources[0]){ //fix this for relics pls
+      if(consarr[i] > resources[i] + resources[0]){ //check if enough resources 
       message.channel.send("No enough resources");
         return
       }else{
-        if(consarr[i] > resources[i]){
-          let overflow = consarr[i] - resources[i]; 
-          resources[i] = 0;
-          resources[0] = resources[0] - overflow;
+        if(consarr[i] > resources[i]){ //check if relics needed
+          let overflow = consarr[i] - resources[i]; //get how many relics needed
+          resources[i] = 0; //reset the resource
+          resources[0] = resources[0] - overflow; //remove the relics
         }else{
           resources[i] = resources[i] - consarr[i]; 
         }
       }
            }
      }
+    //refresh provided resources
     provarr = [event[`option${(optsel)}`].rewards.relic, event[`option${(optsel)}`].rewards.money, event[`option${(optsel)}`].rewards.cultist, event[`option${(optsel)}`].rewards.food, event[`option${(optsel)}`].rewards.prisoner, event[`option${(optsel)}`].rewards.suspicion];
        
    // console.log(resources + " p " + provarr)
-    for(let i = 0; i < 6; i++){
-    resources[i] = resources[i] + provarr[i];
+    //add rewards
+    for(let i = 0; i < 6; i++){ //for every resource
+    resources[i] = resources[i] + provarr[i]; 
     
     }
 			//message.channel.send(`You've entered: ${messages.first().content}`);
-	//	console.log("N");
+
     
-      if(event.isrecurring == 1){ 
+    //reinsert if event is recurring
+      if(event.isrecurring == 1){    
         
-    discard_deck.push(base_deck[0]);
-        
+    discard_deck.push(base_deck[0]);        
       }
+    //remove current event from the base deck
     base_deck.shift();
+    //get target specificids
     let specificids = event[`option${(optsel)}`].shuffle.specificids;
+    //insert target specificids into discard deck
     for(let i = 0; i < specificids.length; i++){
       discard_deck.push(specificids[i]);
     }
@@ -284,10 +306,12 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
    // discard_deck.concat(specificids);
    // console.log(specificids)
     
+    //reshuffle if deck is empty
     if(base_deck.length == 0){ 
  base_deck = discard_deck;
       discard_deck = [];
       message.channel.send("Reshuffling deck from discard...")
+     base_deck = module.exports.shuffle(base_deck);
   }
     
     
@@ -309,8 +333,8 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
 print_deck(message, resources, client){ 
   let name = ["<:exchange_relic:644177849606995978>", "<:exchange_money:644177896575074323>", "<:exchange_cultist:644175421755097098>", "<:exchange_food:644178025809707157>","<:exchange_prisoner:644177784876433408>", "<:exchange_suspicion:644177968536748032>"];
   let string = "";
-  for(let i = 0; i < resources.length + 1; i++){  
-    for(let i2 = 0; i2 < resources[i]; i2++){
+  for(let i = 0; i < 6; i++){  //type of resource
+    for(let i2 = 0; i2 < resources[i]; i2++){ //number of resources
 ;
       
       string += " " + name[i];
@@ -320,4 +344,24 @@ print_deck(message, resources, client){
 
 .setDescription(string);
   return embed;
-},};
+},
+ shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+};
