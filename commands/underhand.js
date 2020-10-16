@@ -58,8 +58,9 @@ module.exports = {
         message.channel.send("Missing the data string, don\'t forget to provide it.")
         return;
       }else{
+        //get data from data string
         let game_data = JSON.parse(args[1]);
-        
+        //load data
          base_deck = game_data.base;
      discard_deck = game_data.discard;
         resources = game_data.resources;
@@ -75,9 +76,7 @@ module.exports = {
     
    
     /*TODO
-    P: windigoo food checking
-    P: police raid suspicion checking
-    P: greed card checking
+   
     P: fix cards where no specificids but insertation must be performed
     M: make foresight
     M: make foresight with discard
@@ -109,6 +108,11 @@ module.exports = {
     //the game loop
     game:
     while(run){
+      //prevent app from fall
+      if(base_deck.length == 0 || base_deck[0] == null){
+        message.channel.send("Game Terminated: *Ran out of cards in deck*");
+        return run = false;
+      }
       //get current event from data file
       event = cardwip[base_deck[0]];
      
@@ -146,7 +150,7 @@ module.exports = {
          return false;
        });
             //do the halving
-         consarr[index] = (resources[index] / 2) + (resources[index] % 2);         
+         consarr[index] = Math.ceil(resources[index] / 2);         
        }      
          
   for(let i2 = 0; i2 < 6; i2++){  //indicates type of resource
@@ -180,7 +184,7 @@ for(let i2 = 0; i2 < 6; i2++){
             provides[i] = "-";
           }
           //get option text
-          if(event[`option${(i + 1)}`].optiontext != null){
+          if((event[`option${(i + 1)}`].optiontext).length != 0){
             optiontext[i] = event[`option${(i + 1)}`].optiontext;
           o[i] = true;
           }else{
@@ -190,19 +194,21 @@ for(let i2 = 0; i2 < 6; i2++){
           //get output text
           if(event[`option${(i + 1)}`].outputtext != null){
             outputtext[i] = event[`option${(i + 1)}`].outputtext;
+            
           }else{
             //get rid of undefined
             outputtext[i] = "";
+           
           }
       }
        //create the options embed
          const embed = new Discord.MessageEmbed()
 .setAuthor(optiontext[0])
 .setDescription(":x: "+ consumes[0] + "\n" + ":white_check_mark: " + provides[0] + "\n" + outputtext[0] )
-      if(optiontext[1] != ""){
+      if(o[1]){
          embed.addField(optiontext[1] , ":x: "+ consumes[1] + "\n" + ":white_check_mark: " + provides[1] + "\n" + outputtext[1] , false)
       }
-      if(optiontext[2] != ""){
+      if(o[2]){
          embed.addField( optiontext[2] , ":x: "+ consumes[2] + "\n" + ":white_check_mark: " + provides[2] + "\n" + outputtext[2] , false)
          }
         
@@ -214,6 +220,9 @@ files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`]
       await  message.channel.send(embed);
 //send emebd with player resources
          await message.channel.send(module.exports.print_deck(message, resources))
+      
+      
+      
       
   const filter = m => message.author.id === m.author.id;
 //wait for response
@@ -231,12 +240,14 @@ files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`]
       optsel = 3;
       //check if save call happened
     }else if(messages.first().content.toLowerCase().trim() == "save" || messages.first().content.toLowerCase().trim() == "s"){
-      message.channel.send(`Here is your data string, you can load it using the *load* argument\n\`\`\`{"base":[${base_deck}],"discard":[${discard_deck}],"resources":[${resources}]}\`\`\``);
+      message.channel.send(`Here is your data string, you can load it using the *load* argument\n\`\`\`{"base":[${base_deck}],"discard":[${discard_deck}],"resources":[${resources}]}\`\`\`Game Terminated`);
       return run = false;
     }else{
-      message.channel.send('Game Interrupted');
+      message.channel.send('Game Terminated');
     return run = false;
     }
+    
+ 
     //check if player won
     if(event[`option${(optsel)}`].iswin != ""){
       let god = event[`option${(optsel)}`].iswin;
@@ -253,10 +264,29 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
     //refresh consumed resources
      consarr = [event[`option${(optsel)}`].requirements.relic, event[`option${(optsel)}`].requirements.money, event[`option${(optsel)}`].requirements.cultist, event[`option${(optsel)}`].requirements.food, event[`option${(optsel)}`].requirements.prisoner, event[`option${(optsel)}`].requirements.suspicion];
            
+    //check for variable consume value
+          if(consarr.findIndex((num) =>{
+        //420 in the data file means bigger half of curent number of resources
+         if(num == 420){
+           return true;
+         }
+         return false;
+       }) != -1){
+            //get reource tyoe to halve
+         let index = consarr.findIndex((num) =>{
+         if(num == 420){
+           return true;
+         }
+         return false;
+       });
+            //do the halving
+         consarr[index] = Math.ceil(resources[index] / 2);         
+       }      
    // console.log(resources + " c " + consarr)
          for(let i = 0; i < 6; i++){ 
            if(i == 0){ //you don't wanna double up player's relics
              if(consarr[i] > resources[i]){ //check if enough of relics
+               console.log(1)
            message.channel.send("No enough resources");
         return
         }else{
@@ -264,6 +294,7 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
         }
            }else{
       if(consarr[i] > resources[i] + resources[0]){ //check if enough resources 
+        console.log(2)
       message.channel.send("No enough resources");
         return
       }else{
@@ -302,10 +333,68 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
     for(let i = 0; i < specificids.length; i++){
       discard_deck.push(specificids[i]);
     }
-   // for(let i = 0; i < event[`option${(optsel)}`].shuffle.specificids.length; i+)
-   // discard_deck.concat(specificids);
-   // console.log(specificids)
+    if(specificids[0] == null && event[`option${(optsel)}`].outputtext.includes("Insert")){
+      
+      let type = event[`option${(optsel)}`].outputtext.substring(event[`option${(optsel)}`].outputtext.indexOf("\'") + 1, event[`option${(optsel)}`].outputtext.lastIndexOf("\'")).toLowerCase();
+      let count = event[`option${(optsel)}`].shuffle.numcards;
     
+      let random;
+      
+      switch(type){
+          
+        case "harvest":       
+          for(let i = 0;i < count; i++){
+            random = Math.floor(Math.random() * harvests.length -1) + 1;
+            discard_deck.push(harvests[random]);
+          }
+          break;
+        case "reading the necronimocon":
+            for(let i = 0;i < count; i++){
+            random = Math.floor(Math.random() * necronomicons.length -1) + 1;
+            discard_deck.push(necronomicons[random]);
+          }
+          break;
+          case "ancestor":
+            for(let i = 0;i < count; i++){
+            random = Math.floor(Math.random() * ancestors.length -1) + 1;
+            discard_deck.push(ancestors[random]);
+          }
+          break;
+          case "spoils of war":
+            for(let i = 0;i < count; i++){
+            random = Math.floor(Math.random() * spoils.length -1) + 1;
+            discard_deck.push(spoils[random]);
+          }
+          break;
+          case "tea time":
+            for(let i = 0;i < count; i++){
+            random = Math.floor(Math.random() * teatimes.length -1) + 1;
+            discard_deck.push(teatimes[random]);
+          }
+          break;
+          case "catch of the day":
+            for(let i = 0;i < count; i++){
+            random = Math.floor(Math.random() * catches.length -1) + 1;
+            discard_deck.push(catches[random]);
+          }
+          break;
+      }
+      
+    }
+    //work off random requirements
+  let ranreq = event[`option${(optsel)}`].randomrequirements;
+    for(let i = 0;i < ranreq; i++){
+      var indexes = [], i2 = -1;
+    while ((i2 = resources.indexOf(!0, i2+1)) != -1){
+        indexes.push(i2);
+    }
+    if(indexes.length == 0){
+      break;
+    }
+      let random = Math.floor(Math.random() * indexes.length -1) + 1;
+   resources[random] = resources[random] - 1;
+    }
+
     //reshuffle if deck is empty
     if(base_deck.length == 0){ 
  base_deck = discard_deck;
@@ -313,10 +402,34 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
       message.channel.send("Reshuffling deck from discard...")
      base_deck = module.exports.shuffle(base_deck);
   }
-    
-    
+    //we want to add only one punishment at the time
+    let punishment = false;
+    //check food for Windigoo
+    if(resources[3] == 0 && punishment == false){
+      let random = Math.floor(Math.random() * 2);
+      if(random == 0){
+        base_deck.unshift(27);
+        punishment = true;
+      }
+    }
+    //check suspicion for police raid    
+    if(resources[5] > 4 && punishment == false){
+      let random = Math.floor(Math.random() * 2);
+      if(random == 0){
+        base_deck.unshift(2);
+        punishment = true;
+      }
+    }
+    //check card count for greed
+    if(resources[0] + resources[1] +resources[2] + resources[3] + resources[4] + resources[5]> 15 && punishment == false){
+      let random = Math.floor(Math.random() * 2);
+      if(random == 0){
+        base_deck.unshift(56);
+        punishment = true;
+      }
+    }
   }).catch(() => {
-			message.channel.send('Game Interrupted');
+			message.channel.send('Game Terminated');
     return run = false;
 }); 
           
@@ -340,6 +453,7 @@ print_deck(message, resources, client){
       string += " " + name[i];
     }
   }
+  string += ` (${resources[0] + resources[1] +resources[2] + resources[3] + resources[4] + resources[5]})`
   const embed = new Discord.MessageEmbed()
 
 .setDescription(string);
