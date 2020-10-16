@@ -8,9 +8,18 @@ module.exports = {
   async execute(msg, args, client) { 	
     let message = msg;
 	if(args[0] == "play" || args[0] == "p"){
+    
+    
+    }else if(args[0] == "load" || args[0] == "l"){
+      
+    }else{
+    message.channel.send(`Do you want to play a game? Type **${prefix}underhand play** to start a new game. You can also apply blessings by adding argument with capital letters of the respective god. Example: **${prefix}underhand play kyg** goes for *Kekujira*, *Yacare*, *God of Beginnings*.`);
+ return;
+  }
     let base_deck = [];
     let discard_deck = [];
- //   base_deck.push(6);
+    
+   // base_deck.push(110);
         base_deck.push(29); //Rhybaax
     base_deck.push(106); //Jhai'ti
     base_deck.push(85); //Kekujira
@@ -24,7 +33,9 @@ module.exports = {
     make foresight
     make foresight with discard
     make the deck shuffle
-    add win/lose actions
+    check other options before allowing to lose
+    add save option: generate json {base:[base_deck], discard[discard_deck], resources[resources]}
+    add load function on argument args[0] "load" || "l" to load game from save output json string
     */
     if(args[1] != null){
       if(args[1].indexOf("g") != -1){
@@ -50,13 +61,13 @@ module.exports = {
       }
     }
 
-    let randoms = [1, 3, 4,6, 7, 8, 9, 10, 13, 14, 24, 26, 28, 37, 45, 51, 67, 68, 69];
-    const harvests = [39, 40, 41, 42, 43, 44];
-    const necronomicons = [15, 16, 17, 18, 19, 20];
-    const spoils = [46, 47, 48, 49, 50];
-    const ancestors = [52, 53, 54, 55];
-    const catches = [86, 87, 88, 89];
-    const teatimes = [115, 116, 117, 118];
+    let randoms = [1, 3, 4,6, 7, 8, 9, 10, 13, 14, 24, 26, 28, 37, 45, 51, 67, 68, 69]; //random events to be iinserted into the deck
+    const harvests = [39, 40, 41, 42, 43, 44]; //harvest events
+    const necronomicons = [15, 16, 17, 18, 19, 20]; //reading the necronomicon events
+    const spoils = [46, 47, 48, 49, 50]; //spoild of war events
+    const ancestors = [52, 53, 54, 55]; //ancestor events
+    const catches = [86, 87, 88, 89]; //catch of the day events
+    const teatimes = [115, 116, 117, 118]; //teatime events
     for(let i = 0; i < 9; i++){
       let random = Math.floor(Math.random() * randoms.length);
       base_deck.push(randoms[random]);
@@ -189,9 +200,22 @@ files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`]
     }else if((messages.first().content.toLowerCase().trim() == "c" || messages.first().content.toLowerCase().trim() == "3") && o[2] == true){
       optsel = 3;
       
+    }else if(messages.first().content.toLowerCase().trim() == "save" || messages.first().content.toLowerCase().trim() == "s"){
+      message.channel.send(`Here is your data string, you can load it using the *load* argument\n\`\`\`{"base":[${base_deck}],"discard":[${discard_deck}],"resources":[${resources}]}\`\`\``);
+      return run = false;
     }else{
       message.channel.send('Game Interrupted');
     return run = false;
+    }
+    if(event[`option${(optsel)}`].iswin != ""){
+      let god = event[`option${(optsel)}`].iswin;
+      message.channel.send("**You Won**",{
+files:[`http://underhand.clanweb.eu/res/${god}.png`]
+})
+    return run = false;  
+    }else if (event[`option${(optsel)}`].islose == 1){
+      message.channel.send("You Lose");
+      return run = false;
     }
      consarr = [event[`option${(optsel)}`].requirements.relic, event[`option${(optsel)}`].requirements.money, event[`option${(optsel)}`].requirements.cultist, event[`option${(optsel)}`].requirements.food, event[`option${(optsel)}`].requirements.prisoner, event[`option${(optsel)}`].requirements.suspicion];
            
@@ -257,9 +281,7 @@ files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`]
             
     //}
     
-  }else{
-    message.channel.send(`Do you want to play a game? Type **${prefix}underhand play** to start a new game. You can also apply blessings by adding argument with capital letters of the respective god. Example: **${prefix}underhand play kyg** goes for *Kekujira*, *Yacare*, *God of Beginnings*.`);
-  }
+ 
 
 	},
 print_deck(message, resources, client){ 
