@@ -21,6 +21,21 @@ module.exports = {
        .setTimestamp()
     .setFooter('We could benefit from having someone on the inside', client.user.avatarURL());
   
+    }else if(args[0] == "play"){
+       embed = new Discord.MessageEmbed()
+      .setColor('#005E1F')
+    .setAuthor('Undercover Cultist')
+    .setTitle('Play')
+    .setDescription(`Type **${prefix} play** to play Underhand`)
+   .addField(`argument1`,'*play* or *load*: play to start a new game, load to load a game from data string', true)
+      .addField(`argument2`,'*play* => blessings(g/r/w/j/k/y/u), *load* => data string')
+      .addField(`How to play`,'Respond with *1*/*a*, *2*/*b*, *3*/*c* to select options 1, 2, 3')
+    .addField(`How to save the game`,'Respond with *save* and then copy the data string. You can then load it with the *load* argument to continue playing')      
+       .setTimestamp()
+    .setFooter('We could benefit from having someone on the inside', client.user.avatarURL());
+ 
+      
+      
     }else{ 
      embed = new Discord.MessageEmbed()
       .setColor('#005E1F')
@@ -30,7 +45,8 @@ module.exports = {
    .addField(`invite => \'${prefix} invite\'`,'Sends bot invite link')
       .addField(`server => \'${prefix} server\'`,'Sends latest server report')
       .addField(`user (usertag)=> \'${prefix} user Null#0000\'`,'Sends latest report about the user')
-    .setTimestamp()
+    .addField(`play (play/load) (blessings)=> \'${prefix} play p ky\'`,'Iniciates The game')      
+       .setTimestamp()
     .setFooter('We could benefit from having someone on the inside', client.user.avatarURL());
   }
     message.channel.send({ embed: embed });

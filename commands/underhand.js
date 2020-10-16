@@ -6,37 +6,19 @@ module.exports = {
   name: 'underhand', 	
   description: 'Who wants to play Underhand?', 	
   async execute(msg, args, client) { 	
-    let message = msg;
-	if(args[0] == "play" || args[0] == "p"){
-    
-    
-    }else if(args[0] == "load" || args[0] == "l"){
-      
-    }else{
-    message.channel.send(`Do you want to play a game? Type **${prefix}underhand play** to start a new game. You can also apply blessings by adding argument with capital letters of the respective god. Example: **${prefix}underhand play kyg** goes for *Kekujira*, *Yacare*, *God of Beginnings*.`);
- return;
-  }
     let base_deck = [];
     let discard_deck = [];
-    
-   // base_deck.push(110);
+    let message = msg;
+    let resources = [];
+	if(args[0] == "play" || args[0] == "p"){
+    resources = [0, 2, 2, 2, 2, 0];
+    // base_deck.push(110);
         base_deck.push(29); //Rhybaax
     base_deck.push(106); //Jhai'ti
     base_deck.push(85); //Kekujira
     base_deck.push(79); //Yacare
     base_deck.push(57); //Uhl'Uht'C
-    /*TODO
-    windigoo food checking
-    police raid suspicion checking
-    greed card checking
-    fix cards where no specificids but insertation must be performed
-    make foresight
-    make foresight with discard
-    make the deck shuffle
-    check other options before allowing to lose
-    add save option: generate json {base:[base_deck], discard[discard_deck], resources[resources]}
-    add load function on argument args[0] "load" || "l" to load game from save output json string
-    */
+    
     if(args[1] != null){
       if(args[1].indexOf("g") != -1){
         base_deck.push(96, 98);
@@ -60,24 +42,64 @@ module.exports = {
        base_deck.push(22, 25);
       }
     }
+    
+     let randoms = [1, 3, 4,6, 7, 8, 9, 10, 13, 14, 24, 26, 28, 37, 45, 51, 67, 68, 69]; //random events to be iinserted into the deck
+   
+     for(let i = 0; i < 9; i++){
+      let random = Math.floor(Math.random() * randoms.length);
+      base_deck.push(randoms[random]);
+      randoms = randoms.filter(function(value, index, arr){ return value != randoms[random];});
+    }
+    
+    
+    
+    }else if(args[0] == "load" || args[0] == "l"){
+      if(args[1] == null /*|| !args[1].includes("{\"base\"}:[")*/){
+        message.channel.send("Missing the data string, don\'t forget to provide it.")
+        return;
+      }else{
+        let game_data = JSON.parse(args[1]);
+        
+         base_deck = game_data.base;
+     discard_deck = game_data.discard;
+        resources = game_data.resources;
+        
+        
+        
+      }
+    }else{
+    message.channel.send(`Do you want to play a game? Type **${prefix}underhand play** to start a new game. You can also apply blessings by adding argument with capital letters of the respective god. Example: **${prefix}underhand play kyg** goes for *Kekujira*, *Yacare*, *God of Beginnings*.`);
+ return;
+  }
+    
+    
+   
+    /*TODO
+    windigoo food checking
+    police raid suspicion checking
+    greed card checking
+    fix cards where no specificids but insertation must be performed
+    make foresight
+    make foresight with discard
+    make the deck shuffle
+    check other options before allowing to lose
+    add save option: generate json {base:[base_deck], discard[discard_deck], resources[resources]}
+    add load function on argument args[0] "load" || "l" to load game from save output json string
+    */
+    
 
-    let randoms = [1, 3, 4,6, 7, 8, 9, 10, 13, 14, 24, 26, 28, 37, 45, 51, 67, 68, 69]; //random events to be iinserted into the deck
     const harvests = [39, 40, 41, 42, 43, 44]; //harvest events
     const necronomicons = [15, 16, 17, 18, 19, 20]; //reading the necronomicon events
     const spoils = [46, 47, 48, 49, 50]; //spoild of war events
     const ancestors = [52, 53, 54, 55]; //ancestor events
     const catches = [86, 87, 88, 89]; //catch of the day events
     const teatimes = [115, 116, 117, 118]; //teatime events
-    for(let i = 0; i < 9; i++){
-      let random = Math.floor(Math.random() * randoms.length);
-      base_deck.push(randoms[random]);
-      randoms = randoms.filter(function(value, index, arr){ return value != randoms[random];});
-    }
+   
   const name = ["<:exchange_relic:644177849606995978>", "<:exchange_money:644177896575074323>", "<:exchange_cultist:644175421755097098>", "<:exchange_food:644178025809707157>","<:exchange_prisoner:644177784876433408>", "<:exchange_suspicion:644177968536748032>"];
   const ecp = "<:exchange_cultist_prisoner:766628698963050566>";
     
     
-    let resources = [0, 2, 2, 2, 2, 0];
+    
  let run = true;
     let yes = false;
 
