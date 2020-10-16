@@ -13,34 +13,55 @@ module.exports = {
  //   base_deck.push(6);
         base_deck.push(29); //Rhybaax
     base_deck.push(106); //Jhai'ti
-  /*  base_deck.push(85); //Kekujira
+    base_deck.push(85); //Kekujira
     base_deck.push(79); //Yacare
     base_deck.push(57); //Uhl'Uht'C
+    /*TODO
+    windigoo food checking
+    police raid suspicion checking
+    greed card checking
+    fix cards where no specificids but insertation must be performed
+    make foresight
+    make foresight with discard
+    make the deck shuffle
+    add win/lose actions
     */
     if(args[1] != null){
       if(args[1].indexOf("g") != -1){
         base_deck.push(96, 98);
-      }else if(args[1].indexOf("r") != -1){
+      }
+      if(args[1].indexOf("r") != -1){
         base_deck.push(21, 70);
-      }else if(args[1].indexOf("w") != -1){
+      }
+      if(args[1].indexOf("w") != -1){
         base_deck.push(23, 97);
-      }else if(args[1].indexOf("j") != -1){
+      }
+      if(args[1].indexOf("j") != -1){
         base_deck.push(112, 114);
-      }else if(args[1].indexOf("k") != -1){
+      }
+      if(args[1].indexOf("k") != -1){
         base_deck.push(72, 113);
-      }else if(args[1].indexOf("y") != -1){
+      }
+      if(args[1].indexOf("y") != -1){
        base_deck.push(38, 111);
-      }else if(args[1].indexOf("u") != -1){
+      }
+      if(args[1].indexOf("u") != -1){
        base_deck.push(22, 25);
       }
     }
 
     let randoms = [1, 3, 4,6, 7, 8, 9, 10, 13, 14, 24, 26, 28, 37, 45, 51, 67, 68, 69];
-  /*  for(let i = 0; i < 9; i++){
+    const harvests = [39, 40, 41, 42, 43, 44];
+    const necronomicons = [15, 16, 17, 18, 19, 20];
+    const spoils = [46, 47, 48, 49, 50];
+    const ancestors = [52, 53, 54, 55];
+    const catches = [86, 87, 88, 89];
+    const teatimes = [115, 116, 117, 118];
+    for(let i = 0; i < 9; i++){
       let random = Math.floor(Math.random() * randoms.length);
       base_deck.push(randoms[random]);
       randoms = randoms.filter(function(value, index, arr){ return value != randoms[random];});
-    }*/
+    }
   const name = ["<:exchange_relic:644177849606995978>", "<:exchange_money:644177896575074323>", "<:exchange_cultist:644175421755097098>", "<:exchange_food:644178025809707157>","<:exchange_prisoner:644177784876433408>", "<:exchange_suspicion:644177968536748032>"];
   const ecp = "<:exchange_cultist_prisoner:766628698963050566>";
     
@@ -57,7 +78,7 @@ module.exports = {
     while(run){
       event = cardwip[base_deck[0]];
      
-     //  console.log(yes + "\n" + base_deck.length);
+       
       message.channel.send("[" +base_deck.map(r => `${r}`).join(' ') + "]\n[" + discard_deck.map(r => `${r}`).join(' ') + "]");
                  
         let consumes = [];
@@ -74,7 +95,11 @@ module.exports = {
           
            consarr = [event[`option${(i + 1)}`].requirements.relic, event[`option${(i + 1)}`].requirements.money, event[`option${(i + 1)}`].requirements.cultist, event[`option${(i + 1)}`].requirements.food, event[`option${(i + 1)}`].requirements.prisoner, event[`option${(i + 1)}`].requirements.suspicion];
            provarr = [event[`option${(i + 1)}`].rewards.relic, event[`option${(i + 1)}`].rewards.money, event[`option${(i + 1)}`].rewards.cultist, event[`option${(i + 1)}`].rewards.food, event[`option${(i + 1)}`].rewards.prisoner, event[`option${(i + 1)}`].rewards.suspicion];
-       if(consarr.findIndex((num) =>{
+       
+       //   console.log(resources + " p2 " + provarr)
+         // console.log(resources + " c2 " + consarr)
+          
+          if(consarr.findIndex((num) =>{
         
          if(num == 420){
            return true;
@@ -87,16 +112,23 @@ module.exports = {
          }
          return false;
        });
-         consarr[index] = (resources[index] / 2) + (resources[index] % 2);
+         consarr[index] = (resources[index] / 2) + (resources[index] % 2);         
+       }      
          
-       }        
   for(let i2 = 0; i2 < 6; i2++){  //indicates type of resource
-   
+   if(event[`option${(i + 1)}`].cultistequalsprisoner == 1 && i2 == 2){
     for(let i3 = 0; i3 < consarr[i2]; i3++){ //indicates count of resource
-      consumes[i] = consumes[i] + " " + name[i2];
+      
+        consumes[i] = consumes[i] + " " + ecp;
+      
      // console.log(null);
      // console.log("i:"+ i + "c[i]:" + consumes[i] + "i2:" + i2 + "i3:" + i3);
     }
+     }else{
+       for(let i3 = 0; i3 < consarr[i2]; i3++){
+      consumes[i] = consumes[i] + " " + name[i2];
+      }
+     }
   }
 for(let i2 = 0; i2 < 6; i2++){  
     for(let i3 = 0; i3 < provarr[i2]; i3++){
@@ -123,7 +155,7 @@ for(let i2 = 0; i2 < 6; i2++){
             outputtext[i] = "";
           }
       }
-        
+       
          const embed = new Discord.MessageEmbed()
 .setAuthor(optiontext[0])
 .setDescription(":x: "+ consumes[0] + "\n" + ":white_check_mark: " + provides[0] + "\n" + outputtext[0] )
@@ -161,7 +193,13 @@ files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`]
       message.channel.send('Game Interrupted');
     return run = false;
     }
+     consarr = [event[`option${(optsel)}`].requirements.relic, event[`option${(optsel)}`].requirements.money, event[`option${(optsel)}`].requirements.cultist, event[`option${(optsel)}`].requirements.food, event[`option${(optsel)}`].requirements.prisoner, event[`option${(optsel)}`].requirements.suspicion];
+           
+   // console.log(resources + " c " + consarr)
          for(let i = 0; i < 6; i++){ 
+           if(i == 0){
+             
+           }else{
       if(consarr[i] > resources[i] + resources[0]){ //fix this for relics pls
       message.channel.send("No enough resources");
         return
@@ -169,27 +207,41 @@ files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`]
         if(consarr[i] > resources[i]){
           let overflow = consarr[i] - resources[i]; 
           resources[i] = 0;
-          resources [0] -= overflow;
+          resources[0] = resources[0] - overflow;
         }else{
-          resources[i] -= consarr[i]; 
+          resources[i] = resources[i] - consarr[i]; 
         }
       }
+           }
      }
+    provarr = [event[`option${(optsel)}`].rewards.relic, event[`option${(optsel)}`].rewards.money, event[`option${(optsel)}`].rewards.cultist, event[`option${(optsel)}`].rewards.food, event[`option${(optsel)}`].rewards.prisoner, event[`option${(optsel)}`].rewards.suspicion];
+       
+   // console.log(resources + " p " + provarr)
+    for(let i = 0; i < 6; i++){
+    resources[i] = resources[i] + provarr[i];
+    
+    }
 			//message.channel.send(`You've entered: ${messages.first().content}`);
 	//	console.log("N");
     
       if(event.isrecurring == 1){ 
         
     discard_deck.push(base_deck[0]);
-        console.log("true")
+        
       }
     base_deck.shift();
-    discard_deck.concat(event[`option${(optsel)}`].shuffle.specifids)
-    console.log(event[`option${(optsel)}`].shuffle.specifids)
+    let specificids = event[`option${(optsel)}`].shuffle.specificids;
+    for(let i = 0; i < specificids.length; i++){
+      discard_deck.push(specificids[i]);
+    }
+   // for(let i = 0; i < event[`option${(optsel)}`].shuffle.specificids.length; i+)
+   // discard_deck.concat(specificids);
+   // console.log(specificids)
     
     if(base_deck.length == 0){ 
  base_deck = discard_deck;
       discard_deck = [];
+      message.channel.send("Reshuffling deck from discard...")
   }
     
     
