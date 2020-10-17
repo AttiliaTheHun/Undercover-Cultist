@@ -43,7 +43,7 @@ module.exports = {
       }
     }
     
-     let randoms = [1, 3, 4,6, 7, 8, 9, 10, 13, 14, 24, 26, 28, 37, 45, 51, 67, 68, 69]; //random events to be iinserted into the deck
+     let randoms = [1, 3, 4,6, 7, 8, 9, 10, 13, 14, 24, 26, 28, 37, 45, 51, 67, 68, 69]; //random events to be inserted into the deck
    
      for(let i = 0; i < 9; i++){
       let random = Math.floor(Math.random() * randoms.length);
@@ -76,11 +76,7 @@ module.exports = {
     
    
     /*TODO
-   
-    P: fix cards where no specificids but insertation must be performed
-    M: make foresight
-    M: make foresight with discard
-    L:check other options before allowing to lose
+ L:check other options before allowing to lose
     */
     
 
@@ -99,8 +95,10 @@ module.exports = {
     //game controlling boolean
  let run = true;
   
-
     
+      let foresight = false;
+      let with_discard = false;
+      let recurring = false;
     
     let event;
     //shuffle the deck before game starts
@@ -113,11 +111,55 @@ module.exports = {
         message.channel.send("Game Terminated: *Ran out of cards in deck*");
         return run = false;
       }
+      if(foresight){
+        message.channel.send("",{
+files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`, `http://underhand.clanweb.eu/res/Card${base_deck[1]}.png`, `http://underhand.clanweb.eu/res/Card${base_deck[2]}.png`]
+});
+         const filter = m => message.author.id === m.author.id;
+//wait for response
+	await message.channel.awaitMessages(filter, { time: 180000, max: 1, errors: ['time'] })
+		.then(messages => {
+    //message content matters only if discarding
+       if(with_discard){
+          let optsel;
+    //get selected otpion
+    if(messages.first().content.toLowerCase().trim() == "a" || messages.first().content.toLowerCase().trim() == "1"){
+
+      optsel = 1;
+    }else if((messages.first().content.toLowerCase().trim() == "b" || messages.first().content.toLowerCase().trim() == "2") && o[1] == true){
+      optsel = 2;
+      
+    }else if((messages.first().content.toLowerCase().trim() == "c" || messages.first().content.toLowerCase().trim() == "3") && o[2] == true){
+      optsel = 3;
+      //check if save call happened
+    }else if(messages.first().content.toLowerCase().trim() == "save" || messages.first().content.toLowerCase().trim() == "s"){
+      message.channel.send(`Here is your data string, you can load it using the *load* argument\n\`\`\`{"base":[${base_deck}],"discard":[${discard_deck}],"resources":[${resources}]}\`\`\`Game Terminated`);
+      return run = false;
+    }else{
+      //no option selected
+optsel = null;
+    }
+    if(optsel != null){
+      if(recurring){
+        discard_deck.push(base_deck[optsel - 1]);
+      }
+      base_deck.splice(optsel - 1,1);
+    }
+         
+       }
+        }).catch(() => {
+     message.channel.send("Game Terminated");
+    run = false;
+  })
+      }      
+      foresight = false;
+      with_discard = false;
+            recurring = false;
       //get current event from data file
       event = cardwip[base_deck[0]];
      
        
-      message.channel.send("[" +base_deck.map(r => `${r}`).join(' ') + "]\n[" + discard_deck.map(r => `${r}`).join(' ') + "]");
+   //   message.channel.send("[" +base_deck.map(r => `${r}`).join(' ') + "]\n[" + discard_deck.map(r => `${r}`).join(' ') + "]");
                 //void the values 
         let consumes = [];
          let provides = [];
@@ -126,6 +168,8 @@ module.exports = {
       let consarr = [];
       let provarr = [];
       let o = [];
+      
+      
       
         for(let i = 0; i < 3; i++){ //indicates option number
           consumes[i] = "";
@@ -247,7 +291,18 @@ files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`]
     return run = false;
     }
     
- 
+    
+    //check if event has foresight
+    if(event[`option${(optsel)}`].foresight.hasforesight == 1){
+    foresight = true;
+      //check if event can discard
+      if(event[`option${(optsel)}`].foresight.candiscard == 1){
+    with_discard = true;
+      }
+      if(event[`option${(optsel)}`].isrecurring == 1){
+    recurring = true;
+      }
+    }
     //check if player won
     if(event[`option${(optsel)}`].iswin != ""){
       let god = event[`option${(optsel)}`].iswin;
@@ -286,7 +341,7 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
          for(let i = 0; i < 6; i++){ 
            if(i == 0){ //you don't wanna double up player's relics
              if(consarr[i] > resources[i]){ //check if enough of relics
-               console.log(1)
+               
            message.channel.send("No enough resources");
         return
         }else{
@@ -294,7 +349,7 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
         }
            }else{
       if(consarr[i] > resources[i] + resources[0]){ //check if enough resources 
-        console.log(2)
+        
       message.channel.send("No enough resources");
         return
       }else{
@@ -382,18 +437,26 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
       
     }
     //work off random requirements
-  let ranreq = event[`option${(optsel)}`].randomrequirements;
-    for(let i = 0;i < ranreq; i++){
-      var indexes = [], i2 = -1;
-    while ((i2 = resources.indexOf(!0, i2+1)) != -1){
-        indexes.push(i2);
+    let indexes = [0, 1, 2, 3, 4, 5]; //indexes of all resources in the resources array
+  let ranreq = event[`option${(optsel)}`].randomrequirements; //get the random requirements
+   
+    randloop:
+    for(let f = 0; f < ranreq; f++){ 
+      indexes = [];
+      for(let i = 0; i < 6; i++){
+      if (resources[i] != 0) {
+        indexes.push(i);
+                         }}
+      if(indexes.length == 0){ //break the loop if no more resources available
+      break randloop;
     }
-    if(indexes.length == 0){
-      break;
+    let random = Math.floor(Math.random() * indexes.length); //get random number applyable to the indexes array as index
+      resources[indexes[random]] = resources[indexes[random]] - 1; //decrease random resource by one
+    console.log(indexes)
     }
-      let random = Math.floor(Math.random() * indexes.length -1) + 1;
-   resources[random] = resources[random] - 1;
-    }
+    
+   
+    
 
     //reshuffle if deck is empty
     if(base_deck.length == 0){ 

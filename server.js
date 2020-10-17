@@ -66,7 +66,7 @@ return;
   client.commands.get('godlist').execute(message, args);
 }else if(command === 'user'){
   client.commands.get('user').execute(message, args, client);
-}else if(command === 'underhand' || command === 'play'){
+}else if(command === 'underhand' || command === 'u' || command === 'play' || command === 'p' ){
   client.commands.get('underhand').execute(message, args, client);
 }else if(command ===  'restart'){
   client.commands.get('restart').execute(message, args);
