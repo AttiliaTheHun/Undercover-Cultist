@@ -67,6 +67,9 @@ return;
 }else if(command === 'user'){
   client.commands.get('user').execute(message, args, client);
 }else if(command === 'underhand' || command === 'u' || command === 'play' || command === 'p' ){
+ if(message.guild.id == 643706781427695616 && (message.channel.id != 721735042682060853 && message.channel.id != 766993942242787369)){
+ 	return;
+    } 
   client.commands.get('underhand').execute(message, args, client);
 }else if(command ===  'restart'){
   client.commands.get('restart').execute(message, args);

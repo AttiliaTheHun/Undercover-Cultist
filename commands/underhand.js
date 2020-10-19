@@ -10,15 +10,22 @@ module.exports = {
     let discard_deck = [];
     let message = msg;
     let resources = [];
-	if(args[0] == "play" || args[0] == "p"){
-    resources = [0, 2, 2, 2, 2, 0];
-    // base_deck.push(110);
-        base_deck.push(29); //Rhybaax
-    base_deck.push(106); //Jhai'ti
-    base_deck.push(85); //Kekujira
-    base_deck.push(79); //Yacare
-    base_deck.push(57); //Uhl'Uht'C
     
+    if(args[0] == "load" || args[0] == "l"){
+      if(args[1] == null /*|| !args[1].includes("{\"base\"}:[")*/){
+        message.channel.send("Missing the data string, don\'t forget to provide it.")
+        return;
+      }else{
+        //get data from data string
+        let game_data = JSON.parse(args[1]);
+        //load data
+         base_deck = game_data.base;
+     discard_deck = game_data.discard;
+        resources = game_data.resources;
+                
+      }
+    }else	if(args[0] == "play" || args[0] == "p" || args[0] == null){
+   new_game()
     if(args[1] != null){
       if(args[1].indexOf("g") != -1){
         base_deck.push(96, 98);
@@ -43,7 +50,48 @@ module.exports = {
       }
     }
     
-     let randoms = [1, 3, 4,6, 7, 8, 9, 10, 13, 14, 24, 26, 28, 37, 45, 51, 67, 68, 69]; //random events to be inserted into the deck
+    
+    
+    }else if(args[0].includes("g") || args[0].includes("r") || args[0].includes("w") || args[0].includes("j") || args[0].includes("k") || args[0].includes("y") || args[0].includes("u")){
+      new_game()
+       if(args[0] != null){
+      if(args[0].indexOf("g") != -1){
+        base_deck.push(96, 98);
+      }
+      if(args[0].indexOf("r") != -1){
+        base_deck.push(21, 70);
+      }
+      if(args[0].indexOf("w") != -1){
+        base_deck.push(23, 97);
+      }
+      if(args[0].indexOf("j") != -1){
+        base_deck.push(112, 114);
+      }
+      if(args[0].indexOf("k") != -1){
+        base_deck.push(72, 113);
+      }
+      if(args[0].indexOf("y") != -1){
+       base_deck.push(38, 111);
+      }
+      if(args[0].indexOf("u") != -1){
+       base_deck.push(22, 25);
+      }
+    }
+    }else{
+    message.channel.send(`Do you want to play a game? Type **${prefix}underhand play** to start a new game. You can also apply blessings by adding argument with capital letters of the respective god. Example: **${prefix}underhand play kyg** goes for *Kekujira*, *Yacare*, *God of Beginnings*.`);
+ return;
+  }
+    
+    function new_game(){
+       resources = [0, 2, 2, 2, 2, 0];
+    // base_deck.push(110);
+        base_deck.push(29); //Rhybaax
+    base_deck.push(106); //Jhai'ti
+    base_deck.push(85); //Kekujira
+    base_deck.push(79); //Yacare
+    base_deck.push(57); //Uhl'Uht'C
+    
+         let randoms = [1, 3, 4,6, 7, 8, 9, 10, 13, 14, 24, 26, 28, 37, 45, 51, 67, 68, 69]; //random events to be inserted into the deck
    
      for(let i = 0; i < 9; i++){
       let random = Math.floor(Math.random() * randoms.length);
@@ -51,29 +99,7 @@ module.exports = {
       randoms = randoms.filter(function(value, index, arr){ return value != randoms[random];});
     }
     
-    
-    
-    }else if(args[0] == "load" || args[0] == "l"){
-      if(args[1] == null /*|| !args[1].includes("{\"base\"}:[")*/){
-        message.channel.send("Missing the data string, don\'t forget to provide it.")
-        return;
-      }else{
-        //get data from data string
-        let game_data = JSON.parse(args[1]);
-        //load data
-         base_deck = game_data.base;
-     discard_deck = game_data.discard;
-        resources = game_data.resources;
-        
-        
-        
-      }
-    }else{
-    message.channel.send(`Do you want to play a game? Type **${prefix}underhand play** to start a new game. You can also apply blessings by adding argument with capital letters of the respective god. Example: **${prefix}underhand play kyg** goes for *Kekujira*, *Yacare*, *God of Beginnings*.`);
- return;
-  }
-    
-    
+    }
    
     /*TODO
  L:check other options before allowing to lose
@@ -95,7 +121,7 @@ module.exports = {
     //game controlling boolean
  let run = true;
   
-    
+      let optsel = 0;
       let foresight = false;
       let with_discard = false;
       let recurring = false;
@@ -103,6 +129,8 @@ module.exports = {
     let event;
     //shuffle the deck before game starts
     base_deck = module.exports.shuffle(base_deck);
+    
+    
     //the game loop
     game:
     while(run){
@@ -121,7 +149,7 @@ files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`, `http://underh
 		.then(messages => {
     //message content matters only if discarding
        if(with_discard){
-          let optsel;
+         
     //get selected otpion
     if(messages.first().content.toLowerCase().trim() == "a" || messages.first().content.toLowerCase().trim() == "1"){
 
@@ -149,6 +177,8 @@ optsel = null;
        }
         }).catch(() => {
      message.channel.send("Game Terminated");
+     console.log(`card: ${base_deck[0]} option: ${optsel} o: ${o[optsel - 1]} log: 1`);
+   
     run = false;
   })
       }      
@@ -157,7 +187,16 @@ optsel = null;
             recurring = false;
       //get current event from data file
       event = cardwip[base_deck[0]];
-     
+      
+      //check if event is registrede in the source file
+     try{
+       let check = event.title;
+       check = check.length.toString(); //fails if check is undefined
+     }catch(err){
+       message.channel.send("**UndefinedEventException:** one event was skiped because of null information about this event");
+   base_deck.shift(); //remove the event from the deck
+     continue game; //skip the loop for we have no event to work with
+     }
        
    //   message.channel.send("[" +base_deck.map(r => `${r}`).join(' ') + "]\n[" + discard_deck.map(r => `${r}`).join(' ') + "]");
                 //void the values 
@@ -185,8 +224,8 @@ optsel = null;
            return true;
          }
          return false;
-       }) != -1){
-            //get reource tyoe to halve
+       }) != -1 ){
+            //get reource type to halve
          let index = consarr.findIndex((num) =>{
          if(num == 420){
            return true;
@@ -194,7 +233,9 @@ optsel = null;
          return false;
        });
             //do the halving
-         consarr[index] = Math.ceil(resources[index] / 2);         
+            if(resources[index] != 1){ //if he has only one card, he should keep it
+         consarr[index] = Math.ceil(resources[index] / 2);    
+            }
        }      
          
   for(let i2 = 0; i2 < 6; i2++){  //indicates type of resource
@@ -266,13 +307,13 @@ files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`]
          await message.channel.send(module.exports.print_deck(message, resources))
       
       
-      
+      //handling the input now\\
       
   const filter = m => message.author.id === m.author.id;
 //wait for response
 	await message.channel.awaitMessages(filter, { time: 180000, max: 1, errors: ['time'] })
 		.then(messages => {
-    let optsel;
+
     //get selected otpion
     if(messages.first().content.toLowerCase().trim() == "a" || messages.first().content.toLowerCase().trim() == "1"){
 
@@ -288,6 +329,7 @@ files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`]
       return run = false;
     }else{
       message.channel.send('Game Terminated');
+      console.log(`card: ${base_deck[0]} option: ${optsel} o: ${o[optsel - 1]} input: ${messages.first().content.trim()}`);
     return run = false;
     }
     
@@ -335,7 +377,9 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
          return false;
        });
             //do the halving
-         consarr[index] = Math.ceil(resources[index] / 2);         
+            if(resources[index] != 1){ //if he has only one card, he should keep it
+         consarr[index] = Math.ceil(resources[index] / 2);    
+            }       
        }      
    // console.log(resources + " c " + consarr)
          for(let i = 0; i < 6; i++){ 
@@ -384,10 +428,18 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
     base_deck.shift();
     //get target specificids
     let specificids = event[`option${(optsel)}`].shuffle.specificids;
+    //some options inserts the same card multiple times
+    if(specificids.length == 1){
+      for(let i = 0; i < event[`option${(optsel)}`].shuffle.numcards; i++){
+      discard_deck.push(specificids[0]);
+    }
+    }else{
     //insert target specificids into discard deck
     for(let i = 0; i < specificids.length; i++){
       discard_deck.push(specificids[i]);
     }
+    }
+    if(event[`option${(optsel)}`].outputtext != null){
     if(specificids[0] == null && event[`option${(optsel)}`].outputtext.includes("Insert")){
       
       let type = event[`option${(optsel)}`].outputtext.substring(event[`option${(optsel)}`].outputtext.indexOf("\'") + 1, event[`option${(optsel)}`].outputtext.lastIndexOf("\'")).toLowerCase();
@@ -436,6 +488,7 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
       }
       
     }
+    }
     //work off random requirements
     let indexes = [0, 1, 2, 3, 4, 5]; //indexes of all resources in the resources array
   let ranreq = event[`option${(optsel)}`].randomrequirements; //get the random requirements
@@ -462,7 +515,7 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
     if(base_deck.length == 0){ 
  base_deck = discard_deck;
       discard_deck = [];
-      message.channel.send("Reshuffling deck from discard...")
+      setTimeout(message.channel.send("Reshuffling deck from discard..."), 1000);
      base_deck = module.exports.shuffle(base_deck);
   }
     //we want to add only one punishment at the time
@@ -491,8 +544,10 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
         punishment = true;
       }
     }
-  }).catch(() => {
+  }).catch((err) => {
 			message.channel.send('Game Terminated');
+    console.log(err);
+     console.log(`card: ${base_deck[0]} option: ${optsel} o: ${o[optsel - 1]} log: 2`);
     return run = false;
 }); 
           
@@ -510,15 +565,22 @@ print_deck(message, resources, client){
   let name = ["<:exchange_relic:644177849606995978>", "<:exchange_money:644177896575074323>", "<:exchange_cultist:644175421755097098>", "<:exchange_food:644178025809707157>","<:exchange_prisoner:644177784876433408>", "<:exchange_suspicion:644177968536748032>"];
   let string = "";
   for(let i = 0; i < 6; i++){  //type of resource
-    for(let i2 = 0; i2 < resources[i]; i2++){ //number of resources
-;
-      
+    for(let i2 = 0; i2 < resources[i]; i2++){ //number of resources   
       string += " " + name[i];
     }
   }
+  
+  
+  if(string.length > 4000){
+   string = `${resources[0]}x <:exchange_relic:644177849606995978> ${resources[1]}x <:exchange_money:644177896575074323> ${resources[2]}x <:exchange_cultist:644175421755097098> ${resources[3]}x <:exchange_food:644178025809707157> ${resources[4]}x <:exchange_prisoner:644177784876433408> ${resources[5]}x <:exchange_suspicion:644177968536748032>`
+ }
+  
+  
+  
+  
   string += ` (${resources[0] + resources[1] +resources[2] + resources[3] + resources[4] + resources[5]})`
+ 
   const embed = new Discord.MessageEmbed()
-
 .setDescription(string);
   return embed;
 },
