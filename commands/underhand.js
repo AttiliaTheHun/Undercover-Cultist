@@ -11,6 +11,9 @@ module.exports = {
     let message = msg;
     let resources = [];
     
+    
+    let mode = "play";
+    
     if(args[0] == "load" || args[0] == "l"){
       if(args[1] == null /*|| !args[1].includes("{\"base\"}:[")*/){
         message.channel.send("Missing the data string, don\'t forget to provide it.")
@@ -22,6 +25,7 @@ module.exports = {
          base_deck = game_data.base;
      discard_deck = game_data.discard;
         resources = game_data.resources;
+        mode = "load";
                 
       }
     }else	if(args[0] == "play" || args[0] == "p" || args[0] == null){
@@ -120,7 +124,15 @@ module.exports = {
     
     //game controlling boolean
  let run = true;
-  
+    
+    //cheat variables
+  let cheats = false;
+    let greedprotect = false;
+    let nopolice = false;
+    let marco = false;
+    
+    
+    
       let optsel = 0;
       let foresight = false;
       let with_discard = false;
@@ -177,8 +189,7 @@ optsel = null;
        }
         }).catch(() => {
      message.channel.send("Game Terminated");
-     console.log(`card: ${base_deck[0]} option: ${optsel} o: ${o[optsel - 1]} log: 1`);
-   
+   //  console.log(`card: ${base_deck[0]} option: ${optsel} o: ${o[optsel - 1]} log: 1`);  
     run = false;
   })
       }      
@@ -197,9 +208,11 @@ optsel = null;
    base_deck.shift(); //remove the event from the deck
      continue game; //skip the loop for we have no event to work with
      }
-       
-   //   message.channel.send("[" +base_deck.map(r => `${r}`).join(' ') + "]\n[" + discard_deck.map(r => `${r}`).join(' ') + "]");
-                //void the values 
+       if(marco){
+      message.channel.send("[" +base_deck.map(r => `${r}`).join(' ') + "]\n[" + discard_deck.map(r => `${r}`).join(' ') + "]");
+       }
+      
+      //void the values 
         let consumes = [];
          let provides = [];
           let optiontext = [];
@@ -309,7 +322,7 @@ files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`]
       
       //handling the input now\\
       
-  const filter = m => message.author.id === m.author.id;
+  const filter = m => (message.author.id === m.author.id && message.content.startsWith("//") == false);
 //wait for response
 	await message.channel.awaitMessages(filter, { time: 180000, max: 1, errors: ['time'] })
 		.then(messages => {
@@ -327,6 +340,64 @@ files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`]
     }else if(messages.first().content.toLowerCase().trim() == "save" || messages.first().content.toLowerCase().trim() == "s"){
       message.channel.send(`Here is your data string, you can load it using the *load* argument\n\`\`\`{"base":[${base_deck}],"discard":[${discard_deck}],"resources":[${resources}]}\`\`\`Game Terminated`);
       return run = false;
+    }else if(messages.first().content.toLowerCase().trim() == "i r winner"){
+      message.channel.send("**You Won**")
+      cheats = true;
+    return run = false;  
+      
+    }else if(messages.first().content.toLowerCase().trim() == "resign"){
+      message.channel.send("You lost")
+      cheats = true;
+    return run = false;  
+      
+    }else if(messages.first().content.toLowerCase().trim() == "marco"){
+      if(marco){
+        marco = false;
+      }else{
+      marco = true;
+      }
+      cheats = true;
+    return;  
+      
+    }else if(messages.first().content.toLowerCase().trim() == "robin hood"){
+      resources[1] = resources[1] + 100;
+      cheats = true;
+    return;
+    }else if(messages.first().content.toLowerCase().trim() == "man undercover"){
+      resources[2] = resources[2] + 100;
+      cheats = true;
+    return;
+    }else if(messages.first().content.toLowerCase().trim() == "cheese steak jimmy\'s"){
+      resources[3] = resources[3] + 100;
+      cheats = true;
+    return;
+    }else if(messages.first().content.toLowerCase().trim() == "suspected suspect"){
+      resources[5] = resources[5] + 100;
+      cheats = true;
+    return;
+    }else if(messages.first().content.toLowerCase().trim() == "no police"){
+      if(nopolice){
+        nopolice = false;
+      }else{
+        nopolice = true;
+      resources[5] = 0;
+      cheats = true;
+      if(base_deck[0] == 2){
+        base_deck.shift();
+      }
+      }
+    return;
+    }else if(messages.first().content.toLowerCase().trim() == "not greedy"){
+      if(greedprotect){
+        greedprotect = false;
+      }else{
+        greedprotect = true;
+      cheats = true;
+      if(base_deck[0] == 56){
+        base_deck.shift();
+      }
+      }
+    return;
     }else{
       message.channel.send('Game Terminated');
       console.log(`card: ${base_deck[0]} option: ${optsel} o: ${o[optsel - 1]} input: ${messages.first().content.trim()}`);
@@ -515,7 +586,8 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
     if(base_deck.length == 0){ 
  base_deck = discard_deck;
       discard_deck = [];
-      setTimeout(message.channel.send("Reshuffling deck from discard..."), 1000);
+// setTimeout(() => {message.channel.send("Reshuffling deck from discard...")}, 1000);
+      message.channel.send("Reshuffling deck from discard...")
      base_deck = module.exports.shuffle(base_deck);
   }
     //we want to add only one punishment at the time
@@ -537,7 +609,7 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
       }
     }
     //check card count for greed
-    if(resources[0] + resources[1] +resources[2] + resources[3] + resources[4] + resources[5]> 15 && punishment == false){
+    if(resources[0] + resources[1] +resources[2] + resources[3] + resources[4] + resources[5]> 15 && punishment == false && greedprotect == false){
       let random = Math.floor(Math.random() * 2);
       if(random == 0){
         base_deck.unshift(56);
@@ -546,8 +618,8 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
     }
   }).catch((err) => {
 			message.channel.send('Game Terminated');
-    console.log(err);
-     console.log(`card: ${base_deck[0]} option: ${optsel} o: ${o[optsel - 1]} log: 2`);
+ //   console.log(err);
+  //   console.log(`card: ${base_deck[0]} option: ${optsel} o: ${o[optsel - 1]} log: 2`);
     return run = false;
 }); 
           
