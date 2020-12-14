@@ -36,9 +36,17 @@ if(message.content.toLowerCase().includes(`goose`)){
 } if(message.content.toLowerCase().includes(`undercover cultist`) || message.mentions.members.first() == client.user.id){
 	message.channel.send(`Shhh, ${message.author.username}, I do not want to be exposed!`);
 } 
-if (!message.content.startsWith(prefix) || message.author.bot) 
+if (!message.content.startsWith(prefix) && !message.content.startsWith(prefix.trim()) || message.author.bot) 
 return; 
-	const args = message.content.slice(prefix.length).split(/ +/); 
+  let args;
+  if(message.content.startsWith(prefix)){
+    
+	 args = message.content.slice(prefix.length).split(/ +/); 
+  }else if(message.content.startsWith(prefix.trim())){
+    args = message.content.slice(prefix.trim().length).split(/ +/);
+  }else{
+     args = message.content.split(/ +/);
+  }
   try{
 	const command = args.shift().toLowerCase(); /*
 		if (command === 'ping') { 		client.commands.get('ping').execute(message, args); 	}
@@ -62,8 +70,8 @@ return;
   client.commands.get('invite').execute(message, args);
 }else if(command === 'god'){
   client.commands.get('god').execute(message, args);
-}else if(command === 'godlist'){
-  client.commands.get('godlist').execute(message, args);
+}else if(command === 'eventlist' || command === 'cardlist' || command === 'events'){
+  client.commands.get('events').execute(message, args);
 }else if(command === 'user'){
   client.commands.get('user').execute(message, args, client);
 }else if(command === 'underhand' || command === 'u' || command === 'play' || command === 'p' ){
@@ -73,7 +81,17 @@ return;
   client.commands.get('underhand').execute(message, args, client);
 }else if(command ===  'restart'){
   client.commands.get('restart').execute(message, args);
-} ;
+}else if(command ===  'blessing'){
+  client.commands.get('blessing').execute(message, args);
+}else if(command ===  'embed'){
+  client.commands.get('embed').execute(message, args);
+}else if(command ===  'notes'){
+  client.commands.get('notes').execute(message, args);
+}else if(command ===  'addnote'){
+  client.commands.get('addnote').execute(message, args);
+}else if(command ===  'delnote'){
+  client.commands.get('delnote').execute(message, args);
+};
    }catch(err1) {
      console.log(err1);
    }

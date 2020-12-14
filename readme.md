@@ -1,2 +1,2 @@
-#Undercover Cultist
-Undercover Cultist discord bot is made by AttilaTheHun / Black Dragon for the underhand discord server.
+# Undercover Cultist
+A discord bot made by AttilaTheHun for the Underhand discord server.
