@@ -1,29 +1,58 @@
 const Discord = require('discord.js');
 module.exports = {
 name: 'user',
-description: 'shows user info',
+description: 'user [mention]/[id]/[username]',
+action: "shows information about target user",
+note: "",
+legend: "mention, id, username",
 execute(message, args, client){
-if(args[0].indexOf("#") == -1 && isNaN(args[0])){
+  
+if(!args.join(" ").includes("#") && isNaN(args[0]) && args[0] != null && message.mentions.members.first == null){
   return message.channel.send("IlegalArgumentException: \`user tag or ID is the only acceptable argument\`");
 }
   let user;
-  if(isNaN(args[0])){ 
-  user = client.users.find(user => user.username == args[0]);
+  if(args[0] == null){
+    user = message.member;
+}else if(message.mentions.members.first() != null){
+  user = message.mentions.members.first();
+}else if(isNaN(args[0])){ 
+    let tag = args.join(" ");
+    let username= tag.substring(0, tag.indexOf("#"));
+  user = message.guild.members.cache.find(user => user.user.username.includes(username));
   }else{
-     user = message.guild.members.cache.find(user => user.id == args[0]);
+     user = message.guild.members.cache.get(args[0]);
+  }
+  let description = `Here is the latest report\n`;
+  description += `**ID:** ${user.id}\n`;
+  if(user.nickname != null){
+    description += `**Nickname:** ${user.nickname}\n`;
+  }
+   description += `**Admin:** ${user.permissions.has("ADMINISTRATOR")}\n`;
+  description += `**Bot:** ${user.user.bot}\n`;
+  description += `**Color:** ${user.displayHexColor}\n`;
+  description += `**Highest Role:** ${user.roles.highest}\n`;
+  if(user.premiumSince != null){
+      description += `**Premium Since:** ${user.premiumSince}\n`;
+  }
+  if(user.user.flags.toArray()[0] != null){
+      description += `**User Flags:** ${user.user.flags.toArray()}\n`;
+  }
+  description += `**Joined:** ${user.joinedAt}\n`;
+  description += `**Created:** ${user.user.createdAt}\n`;
+  if(user.lastMessage != null){
+     description += `**Last Server Message:** ${user.lastMessage}:${user.lastMessage.channel}:${user.lastMessage.createdAt}\n`;
+  }
+  if(user.user.lastMessage != null){
+    description += `**Last Message:** ${user.user.lastMessage}:${user.user.lastMessage.channel}:${user.user.lastMessage.createdAt}\n`;
   }
   const embed = new Discord.MessageEmbed()
 .setColor('#005E1F')
   .setTitle(`${user.user.tag}`) 	
   .setAuthor('', '') 	
-  .setDescription('Here is the latest report') 
+  .setDescription(description) 
   .setThumbnail(user.user.avatarURL()) 
-  .addField('ID', user.id, false) 	  
-  .addField('Joined', user.joinedAt, true)
-  .addField('Created', user.user.createdAt/*.toString().substring(0, 31)*/, false)		
-  .addField('Bot', user.user.bot, true)
-  .addField(`Roles(${user.guild.member.roles.cache.size})`, user.guild.member.roles.cache.map(r => `${r}`).join(' | '), true)
- .setTimestamp() 	
+ /* .addField(`Roles(${user.guild.member.roles.cache.size})`, user.guild.member.roles.cache.map(r => `${r}`).join(' | '), true)
+ */ .setTimestamp() 	
   .setFooter('We could benefit from having someone on the inside', client.user.avatarURL());
   message.channel.send(embed);
   

@@ -1,19 +1,24 @@
 const Discord = require('discord.js');
-const cardwipfile = require('../cardwip.json');
-const cardwip = JSON.parse(JSON.stringify(cardwipfile));
+const cardwipfile = require('../cardwip.json'); //import data file
+const cardwip = JSON.parse(JSON.stringify(cardwipfile)); //initialize data file
 const prefix = require('../config.json').prefix;
 module.exports = { 	
   name: 'underhand', 	
-  description: 'Who wants to play Underhand?', 	
+  name: 'play',
+  description: 'underhand ["load"][blessings]',
+  action: "starts a game of Underhand right here in dicord",
+  note: "",
+  legend: "",
   async execute(msg, args, client) { 	
+    //create arrays so I can add items to them
     let base_deck = [];
     let discard_deck = [];
     let message = msg;
     let resources = [];
-    
-    
+    //default value play means new game
     let mode = "play";
     
+    //handle save data loading
     if(args[0] == "load" || args[0] == "l"){
       if(args[1] == null /*|| !args[1].includes("{\"base\"}:[")*/){
         message.channel.send("Missing the data string, don\'t forget to provide it.")
@@ -25,11 +30,13 @@ module.exports = {
          base_deck = game_data.base;
      discard_deck = game_data.discard;
         resources = game_data.resources;
+        //sayd that game was loaded from data string to track data string manipulation
         mode = "load";
-                
       }
+      //handle new game
     }else	if(args[0] == "play" || args[0] == "p" || args[0] == null){
-   new_game()
+   new_game(); //base game initialization
+      //add blessings to the deck
     if(args[1] != null){
       if(args[1].indexOf("g") != -1){
         base_deck.push(96, 98);
@@ -55,7 +62,7 @@ module.exports = {
     }
     
     
-    
+    //handle blessings for shorter syntax commans
     }else if(args[0].includes("g") || args[0].includes("r") || args[0].includes("w") || args[0].includes("j") || args[0].includes("k") || args[0].includes("y") || args[0].includes("u")){
       new_game()
        if(args[0] != null){
@@ -97,6 +104,7 @@ module.exports = {
     
          let randoms = [1, 3, 4,6, 7, 8, 9, 10, 13, 14, 24, 26, 28, 37, 45, 51, 67, 68, 69]; //random events to be inserted into the deck
    
+      //add random events to the deck
      for(let i = 0; i < 9; i++){
       let random = Math.floor(Math.random() * randoms.length);
       base_deck.push(randoms[random]);
@@ -151,6 +159,7 @@ module.exports = {
         message.channel.send("Game Terminated: *Ran out of cards in deck*");
         return run = false;
       }
+      //handle foresight
       if(foresight){
         message.channel.send("",{
 files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`, `http://underhand.clanweb.eu/res/Card${base_deck[1]}.png`, `http://underhand.clanweb.eu/res/Card${base_deck[2]}.png`]
@@ -180,6 +189,7 @@ files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`, `http://underh
 optsel = null;
     }
     if(optsel != null){
+      //check if event is recurring
       if(recurring){
         discard_deck.push(base_deck[optsel - 1]);
       }
@@ -190,16 +200,17 @@ optsel = null;
         }).catch(() => {
      message.channel.send("Game Terminated");
    //  console.log(`card: ${base_deck[0]} option: ${optsel} o: ${o[optsel - 1]} log: 1`);  
-    run = false;
+    run = false; //terminate the game
   })
       }      
+      //reset the values
       foresight = false;
       with_discard = false;
             recurring = false;
       //get current event from data file
       event = cardwip[base_deck[0]];
       
-      //check if event is registrede in the source file
+      //check if event is registred in the source file
      try{
        let check = event.title;
        check = check.length.toString(); //fails if check is undefined
@@ -208,6 +219,7 @@ optsel = null;
    base_deck.shift(); //remove the event from the deck
      continue game; //skip the loop for we have no event to work with
      }
+      //handle open deck cheat
        if(marco){
       message.channel.send("[" +base_deck.map(r => `${r}`).join(' ') + "]\n[" + discard_deck.map(r => `${r}`).join(' ') + "]");
        }
@@ -238,7 +250,7 @@ optsel = null;
          }
          return false;
        }) != -1 ){
-            //get reource type to halve
+            //get resource type to halve
          let index = consarr.findIndex((num) =>{
          if(num == 420){
            return true;
@@ -255,9 +267,8 @@ optsel = null;
      //create consume emote set if cultist equals prisoner
    if(event[`option${(i + 1)}`].cultistequalsprisoner == 1 && i2 == 2){
     for(let i3 = 0; i3 < consarr[i2]; i3++){ //indicates count of resource
-      
+      //add the emote
         consumes[i] = consumes[i] + " " + ecp;
-      
      // console.log(null);
      // console.log("i:"+ i + "c[i]:" + consumes[i] + "i2:" + i2 + "i3:" + i3);
     }
@@ -269,9 +280,9 @@ optsel = null;
      }
   }
            //create provide emote set
-for(let i2 = 0; i2 < 6; i2++){  
-    for(let i3 = 0; i3 < provarr[i2]; i3++){
-      provides[i] += " " + name[i2];
+for(let i2 = 0; i2 < 6; i2++){  //indicates resource type
+    for(let i3 = 0; i3 < provarr[i2]; i3++){ //indicates count of resource
+      provides[i] += " " + name[i2]; //ad the emote
     }
   }
           //provide text to prevent emote size change
@@ -292,21 +303,19 @@ for(let i2 = 0; i2 < 6; i2++){
           //get output text
           if(event[`option${(i + 1)}`].outputtext != null){
             outputtext[i] = event[`option${(i + 1)}`].outputtext;
-            
           }else{
             //get rid of undefined
             outputtext[i] = "";
-           
           }
       }
        //create the options embed
          const embed = new Discord.MessageEmbed()
-.setAuthor(optiontext[0])
+.setAuthor(optiontext[0]) //event always has one option
 .setDescription(":x: "+ consumes[0] + "\n" + ":white_check_mark: " + provides[0] + "\n" + outputtext[0] )
-      if(o[1]){
+      if(o[1]){ //check if event has two options
          embed.addField(optiontext[1] , ":x: "+ consumes[1] + "\n" + ":white_check_mark: " + provides[1] + "\n" + outputtext[1] , false)
       }
-      if(o[2]){
+      if(o[2]){ //check if event has three options
          embed.addField( optiontext[2] , ":x: "+ consumes[2] + "\n" + ":white_check_mark: " + provides[2] + "\n" + outputtext[2] , false)
          }
         
@@ -324,33 +333,33 @@ files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`]
       
   const filter = m => (message.author.id === m.author.id && message.content.startsWith("//") == false);
 //wait for response
-	await message.channel.awaitMessages(filter, { time: 180000, max: 1, errors: ['time'] })
-		.then(messages => {
+	await message.channel.awaitMessages(filter, { time: 180 * 1000, max: 1, errors: ['time'] })
+		.then(messages => { //when message sent
 
     //get selected otpion
     if(messages.first().content.toLowerCase().trim() == "a" || messages.first().content.toLowerCase().trim() == "1"){
-
       optsel = 1;
     }else if((messages.first().content.toLowerCase().trim() == "b" || messages.first().content.toLowerCase().trim() == "2") && o[1] == true){
       optsel = 2;
-      
     }else if((messages.first().content.toLowerCase().trim() == "c" || messages.first().content.toLowerCase().trim() == "3") && o[2] == true){
       optsel = 3;
       //check if save call happened
     }else if(messages.first().content.toLowerCase().trim() == "save" || messages.first().content.toLowerCase().trim() == "s"){
       message.channel.send(`Here is your data string, you can load it using the *load* argument\n\`\`\`{"base":[${base_deck}],"discard":[${discard_deck}],"resources":[${resources}]}\`\`\`Game Terminated`);
-      return run = false;
+      return run = false; //close the game
+      //check if insta win cheat used
     }else if(messages.first().content.toLowerCase().trim() == "i r winner"){
-      message.channel.send("**You Won**")
+      message.channel.send("**You Won**");
       cheats = true;
-    return run = false;  
-      
+    return run = false;  //close the game
+      //check if resign cheat code used
     }else if(messages.first().content.toLowerCase().trim() == "resign"){
-      message.channel.send("You lost")
+      message.channel.send("You lost");
       cheats = true;
-    return run = false;  
-      
+    return run = false;  //close the game
+      //check if open deck cheat code used
     }else if(messages.first().content.toLowerCase().trim() == "marco"){
+      //can switch between on/off
       if(marco){
         marco = false;
       }else{
@@ -358,50 +367,56 @@ files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`]
       }
       cheats = true;
     return;  
-      
+      //check if free gold cheat code used
     }else if(messages.first().content.toLowerCase().trim() == "robin hood"){
-      resources[1] = resources[1] + 100;
+      resources[1] = resources[1] + 100; //add the gold
       cheats = true;
     return;
+      //check if free cultist cheat code used
     }else if(messages.first().content.toLowerCase().trim() == "man undercover"){
-      resources[2] = resources[2] + 100;
+      resources[2] = resources[2] + 100; //add the cultists
       cheats = true;
     return;
+      //check if free food cheat code used
     }else if(messages.first().content.toLowerCase().trim() == "cheese steak jimmy\'s"){
-      resources[3] = resources[3] + 100;
+      resources[3] = resources[3] + 100; //add the food
       cheats = true;
     return;
+      //check if free suspicion cheat code used
     }else if(messages.first().content.toLowerCase().trim() == "suspected suspect"){
       resources[5] = resources[5] + 100;
       cheats = true;
     return;
+      //check if no police cheat code used
     }else if(messages.first().content.toLowerCase().trim() == "no police"){
+      //can switch between on/off
       if(nopolice){
         nopolice = false;
       }else{
         nopolice = true;
-      resources[5] = 0;
+      resources[5] = 0; //get rid of the suspicion
       cheats = true;
-      if(base_deck[0] == 2){
+      if(base_deck[0] == 2){ //remove police raid from the deck
         base_deck.shift();
       }
       }
     return;
+      //check if greed protect cheat code used
     }else if(messages.first().content.toLowerCase().trim() == "not greedy"){
       if(greedprotect){
         greedprotect = false;
       }else{
         greedprotect = true;
       cheats = true;
-      if(base_deck[0] == 56){
+      if(base_deck[0] == 56){ //remove greed from the deck
         base_deck.shift();
       }
       }
     return;
-    }else{
-      message.channel.send('Game Terminated');
+    }else{ //close the game on random input
+      message.channel.send('Game Terminated'); 
       console.log(`card: ${base_deck[0]} option: ${optsel} o: ${o[optsel - 1]} input: ${messages.first().content.trim()}`);
-    return run = false;
+    return run = false; //close the game
     }
     
     
@@ -412,6 +427,7 @@ files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`]
       if(event[`option${(optsel)}`].foresight.candiscard == 1){
     with_discard = true;
       }
+      //check if event is recurring
       if(event[`option${(optsel)}`].isrecurring == 1){
     recurring = true;
       }
@@ -422,12 +438,12 @@ files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`]
       message.channel.send("**You Won**",{
 files:[`http://underhand.clanweb.eu/res/${god}.png`]
 })
-    return run = false;  
+    return run = false;  //close the game
       //check if player lost
     }else if (event[`option${(optsel)}`].islose == 1){
       message.channel.send("You Lose");
       //break the game cycle
-      return run = false;
+      return run = false; //close the game
     }
     //refresh consumed resources
      consarr = [event[`option${(optsel)}`].requirements.relic, event[`option${(optsel)}`].requirements.money, event[`option${(optsel)}`].requirements.cultist, event[`option${(optsel)}`].requirements.food, event[`option${(optsel)}`].requirements.prisoner, event[`option${(optsel)}`].requirements.suspicion];
@@ -456,15 +472,12 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
          for(let i = 0; i < 6; i++){ 
            if(i == 0){ //you don't wanna double up player's relics
              if(consarr[i] > resources[i]){ //check if enough of relics
-               
-           message.channel.send("No enough resources");
-        return
+         return message.channel.send("No enough resources");
         }else{
-          resources[i] = resources[i] - consarr[i]; 
+          resources[i] = resources[i] - consarr[i]; //remove the resources
         }
            }else{
       if(consarr[i] > resources[i] + resources[0]){ //check if enough resources 
-        
       message.channel.send("No enough resources");
         return
       }else{
@@ -485,14 +498,10 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
     //add rewards
     for(let i = 0; i < 6; i++){ //for every resource
     resources[i] = resources[i] + provarr[i]; 
-    
     }
 			//message.channel.send(`You've entered: ${messages.first().content}`);
-
-    
     //reinsert if event is recurring
       if(event.isrecurring == 1){    
-        
     discard_deck.push(base_deck[0]);        
       }
     //remove current event from the base deck
@@ -609,7 +618,7 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
       }
     }
     //check card count for greed
-    if(resources[0] + resources[1] +resources[2] + resources[3] + resources[4] + resources[5]> 15 && punishment == false && greedprotect == false){
+    if(resources[0] + resources[1] +resources[2] + resources[3] + resources[4] + resources[5] > 15 && punishment == false && greedprotect == false){
       let random = Math.floor(Math.random() * 2);
       if(random == 0){
         base_deck.unshift(56);
@@ -617,10 +626,10 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
       }
     }
   }).catch((err) => {
-			message.channel.send('Game Terminated');
+			message.channel.send('Game Terminated'); 
  //   console.log(err);
   //   console.log(`card: ${base_deck[0]} option: ${optsel} o: ${o[optsel - 1]} log: 2`);
-    return run = false;
+    return run = false; //close the game
 }); 
           
 
