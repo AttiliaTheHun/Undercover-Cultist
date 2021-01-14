@@ -1,6 +1,9 @@
 module.exports = { 	
   name: 'option', 	
-  description: 'Sends option card image dependent on given arguments.', 	
+  description: 'option ["active"/"dormant"/"ready"/"down"/"back"]',
+  action: "sends option texture",
+  note: "oy oy",
+  legend: "",
   execute(message, args) { 		
     if(args[0] == null){
       return message.channel.send('you must provide an argument. Use `help` command or check the bot help page http://underhand.clanweb.eu/undercover_cultist for more info.')
@@ -11,7 +14,7 @@ module.exports = {
 		files:["http://underhand.clanweb.eu/res/Option" + arg + ".png"]
 	});
     }else{
-      message.channel.send('Unknown argument. Try to looks for mistypes, use `help` command or check the bot help page http://underhand.clanweb.eu/undercover_cultist');
+      message.channel.send('Unknown argument. Try to looks for mistypes or use `help` command.');
     }
   
 

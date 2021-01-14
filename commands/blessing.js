@@ -1,6 +1,9 @@
 module.exports = { 	
   name: 'blessing', 	
-  description: 'Sends blessings.', 	
+  description: 'blessing [god]', 	
+  action: "shows blessings that belongs to the god",
+  note: "",
+  legend: "god",
   execute(message, args) { 
     if(args[0] == null){
       return message.channel.send("List of Gods:\n\`1.The God of Beginnings\n2.Rhybaax\n3.Wiindigoo\n4.Jhai\'Ti\n5.Kekujira\n6.Yacare\n7.Uhl\'Uht\'C\`");

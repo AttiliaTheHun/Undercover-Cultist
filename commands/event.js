@@ -3,11 +3,14 @@ const cardwipfile = require('../cardwip.json');
 const cardwip = JSON.parse(JSON.stringify(cardwipfile));
 module.exports = {
 name: "event",
-description: "send event sample",
+description: "event [number]",
+action: "creates event sample specified by event number",
+note: "",
+legend: "number",
 async execute(message, args){ 
       if(args[0] == null){
         
-        return message.channel.send(`NullPointerException: \`You must provide and argument\``);
+        return message.channel.send(`NullPointerException: \`You must provide an argument\``);
       }
   
   if(!isNaN(args[0]) && 0 < args[0] && args[0] < 119){

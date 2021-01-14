@@ -3,7 +3,10 @@ const cardwipfile = require('../cardwip.json');
 const cardwip = JSON.parse(JSON.stringify(cardwipfile));
 module.exports = { 	
   name: 'events', 	
-  description: 'Sends ordered event list.', 	
+  description: 'events [nothing]',
+  action: "sends event list",
+  note: "",
+  legend: "nothing",
   execute(message, args) { 		
     let list = "";
     let event;

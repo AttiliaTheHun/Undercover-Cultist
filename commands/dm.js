@@ -1,9 +1,9 @@
 module.exports = { 	
-  name: 'card', 	
-  description: 'card [number]', 	
-  action: "sends card texture specified by it's number",
-  note: "",
-  legend: "number",
+  name: 'dm', 	
+  description: 'dm [mention]/[id] [message]', 	
+  action: "sends a dm to the target user",
+  note: "you need the `BAN_MEMBERS` and `MANAGE_MESSAGES` permission for this command",
+  legend: "mention, id",
   execute(message, args) { 		
     
        if(args[0] == null){

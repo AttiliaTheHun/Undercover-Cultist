@@ -1,6 +1,9 @@
 module.exports = { 	
   name: 'cardback', 	
-  description: 'Sends cardback image.', 	
+  description: 'cardback [nothing]', 
+  action: "sends cardback texture",
+  note: "",
+  legend: "nothing",
   execute(message, args) { 		
 	
 	message.channel.send("Cardback",{

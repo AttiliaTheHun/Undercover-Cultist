@@ -1,6 +1,9 @@
 module.exports = { 	
   name: 'losescreen', 	
-  description: 'Sends LoseScreen image.', 	
+  description: 'losescreen [nothing]',
+  action: "sends lose screen texture",
+  note: "",
+  legend: "nothing",
   execute(message, args) { 		
 	
 	message.channel.send("LoseScreen",{

@@ -1,6 +1,9 @@
 module.exports = { 	
   name: 'god', 	
-  description: 'Sends god texture.', 	
+  description: 'god [god]["thumbnail"/"t"]',
+  action: "sends god texture",
+  note: "",
+  legend: "god",
   execute(message, args) { 
     if(args[0] == null){
       return message.channel.send("List of Gods:\n\`1.The God of Beginnings\n2.Rhybaax\n3.Wiindigoo\n4.Jhai\'Ti\n5.Kekujira\n6.Yacare\n7.Uhl\'Uht\'C\`");
