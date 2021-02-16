@@ -1,7 +1,7 @@
 module.exports = { 	
   name: 'losescreen', 	
   description: 'losescreen [nothing]',
-  action: "sends lose screen texture",
+  action: "Sends lose screen texture",
   note: "",
   legend: "nothing",
   execute(message, args) { 		

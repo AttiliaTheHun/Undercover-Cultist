@@ -4,13 +4,13 @@ const cardwip = JSON.parse(JSON.stringify(cardwipfile));
 module.exports = {
 name: "event",
 description: "event [number]",
-action: "creates event sample specified by event number",
+action: "Shows target event sample",
 note: "",
 legend: "number",
 async execute(message, args){ 
       if(args[0] == null){
-        
-        return message.channel.send(`NullPointerException: \`You must provide an argument\``);
+        message.channel.send(`NullPointerException: \`You must provide an argument\``);
+        return; 
       }
   
   if(!isNaN(args[0]) && 0 < args[0] && args[0] < 119){
@@ -38,25 +38,10 @@ async execute(message, args){
            provarr = [event[`option${(i + 1)}`].rewards.relic, event[`option${(i + 1)}`].rewards.money, event[`option${(i + 1)}`].rewards.cultist, event[`option${(i + 1)}`].rewards.food, event[`option${(i + 1)}`].rewards.prisoner, event[`option${(i + 1)}`].rewards.suspicion];
     //   console.log(consarr + provarr);
           //check for variable consume value
-          if(consarr.findIndex((num) =>{
-        //420 in the data file means bigger half of curent number of resources
-         if(num == 420){
-           return true;
-         }
-         return false;
-       }) != -1 ){
-            //get reource type to halve
-         let index = consarr.findIndex((num) =>{
-         if(num == 420){
-           return true;
-         }
-         return false;
-       });
-            //do the halving
-          //  if(resources[index] != 1){ //if he has only one card, he should keep it
-         consarr[index] = 2;    //we need it to look legit
-          //  }
-       }      
+        if(consarr[i] == 420){
+          consarr[i] = 2;
+          consumes[i] = "*";
+          }     
          
   for(let i2 = 0; i2 < 6; i2++){  //indicates type of resource
      //create consume emote set if cultist equals prisoner
@@ -64,20 +49,29 @@ async execute(message, args){
     for(let i3 = 0; i3 < consarr[i2]; i3++){ //indicates count of resource
       
         consumes[i] = consumes[i] + " " + ecp;
-      
-     // console.log(null);
-     // console.log("i:"+ i + "c[i]:" + consumes[i] + "i2:" + i2 + "i3:" + i3);
+
     }
      }else{
+       if(consarr[i2] > 3){
+                consumes[i] = consumes[i] + ` ${consarr[i2]}x ${name[i2]}`;
+                break;
+              }
        //create consume emote set
        for(let i3 = 0; i3 < consarr[i2]; i3++){
+        
       consumes[i] = consumes[i] + " " + name[i2];
-      }
-     }
+      } 
+      
+    
   }
+
            //create provide emote set
 for(let i2 = 0; i2 < 6; i2++){  
     for(let i3 = 0; i3 < provarr[i2]; i3++){
+      if(provarr[i2] > 3){
+                provides[i] = provides[i] + ` ${provarr[i2]}x ${name[i2]}`;
+                break;
+              }
       provides[i] += " " + name[i2];
     }
   }
@@ -103,7 +97,7 @@ for(let i2 = 0; i2 < 6; i2++){
           }else{
             //get rid of undefined
             outputtext[i] = "";
-           
+          }
           }
       }
        //create the options embed

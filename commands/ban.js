@@ -1,17 +1,18 @@
 module.exports = { 	
   name: 'ban', 	
   description: 'ban [mention]/[id]', 	
-  action: "ban target user",
-  note: "you need the `BAN_MEMBERS` permission for this command",
+  action: "Bans the target user from the server",
+  note: "You need the `BAN_MEMBERS` permission for this command",
   legend: "mention, id",
   async execute(message, args) { 		
-    try{
+  //  try{
     if(!message.member.hasPermission("BAN_MEMBERS")){
-      return message.reply(`SecurityException: \`Missing permission\``);
+      message.reply(`SecurityException: \`Missing permission\``);
+      return;
     }
        if(args[0] == null){
-        
-        return message.channel.send(`NullPointerException: \`You must provide an argument\``);
+        message.channel.send(`NullPointerException: \`You must provide an argument\``);
+        return;
       }
     let member;
       
@@ -30,13 +31,14 @@ if(!isNaN(args[0])){
   id = member.id;
 } 	
       if(!member.bannable){
-       return message.reply("This member is above my might, I can't ban him");
+        message.reply("This member is above my might, I can't ban him");
+       return;
       }
       args.shift();
        member.ban(args.join(" "));
     message.reply(`The fake cultist <@${id}> was banned from this sacred place.`);
-    }catch(err){
+  /*  }catch(err){
       console.log(err);
       message.reply("WTF gimme me permissions bruh");
-    }
+    }*/
   }, };

@@ -1,7 +1,7 @@
 module.exports = { 	
   name: 'winscreen', 	
   description: 'winscreen [nothing]',
-  action: "sends in screen texture",
+  action: "Sends in screen texture",
   note: "",
   legend: "nothing",
   execute(message, args) { 			

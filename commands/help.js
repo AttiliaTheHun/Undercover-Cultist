@@ -28,28 +28,29 @@ module.exports = {
       field1 = "Performs Action";
       field2 = "Note";
       field3 = "Legend";
-      legend = legend.replace("note", "[note] means string of data, text");
-      legend = legend.replace("god", "[god] means god name or number");
-      legend = legend.replace("number", "[number] means integer in range of 0 - 119 excluded");
-     // legend = legend.replace("code", "[code] means in-game code of the player");      
-      legend = legend.replace("nothing", "[nothing] means that command can be run without any arguments");
-      legend = legend.replace("id", "[id] means user id, for example 672748100007362561");
-      legend = legend.replace("mention", "[mention] means user mention, for example <@672748100007362561>")
-      legend = legend.replace("username", "[username] means user name and his tag, for example Undercover Cultist#5057");
-      // legend = legend.replace("date", "[date] means the date that will be saved as starting date and appears in info message of the target tournament");
-    }catch(err2){
-       name = "I will help to everyone who asks.";
+      legend = legend.replace("note", "[note] string of data (text)");
+      legend = legend.replace("god", "[god] god name or number it's number");
+      legend = legend.replace("number", "[number] an integer in range of 0 - 119 excluded");   
+      legend = legend.replace("nothing", "[nothing] command can be run without any arguments");
+      legend = legend.replace("id", "[id] user id, for example 672748100007362561");
+      legend = legend.replace("mention", "[mention] user mention, for example <@672748100007362561>")
+      legend = legend.replace("count", "[count] an integer in range of 0 - 21 excluded")
+      legend = legend.replace("username", "[username] user name and his tag, for example Undercover Cultist#5057");
+      legend = legend.replace("input", "[input] a text that is processed by special formatting");
+      legend = legend.replace("blessings", "[blessings] string containing first letters of target gods names, for example ykj");
+   }catch(err2){
+       name = "My Commands";
       action = "card cardback option god winscreen losescreen";
       note = "server user events credits";
-      legend = "addnote delnote notes clearnotes embed event ban unban kick dm setnickname generate";      
+      legend = "addnote delnote notes clearnotes embed event ban unban kick dm setnickname generate underhand";      
       description = `Don't forget to use my prefix (${prefix}) before every command! You can also use *help [command]* to gain more precise info.`;		   
       field1 = "Texture commands";
       field2 = "Informative commands";
       field3 = "Utility commands";
     }
       
-     	embed
-    .setTitle(name)		
+     	
+    embed.setTitle(name)		
       .setDescription(description)
     .addField(field1, action, false);
    if(note != ""){

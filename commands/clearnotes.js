@@ -2,18 +2,22 @@ const Discord = require("discord.js");
 module.exports = { 	
   name: 'clearnotes', 	
   description: 'clearnotes [nothing]',
-  action: "deletes all notes for the server",
-  note: "",
+  action: "Clears the collection of notes of this server",
+  note: "This is admin-only command",
   legend: "nothing",
   async execute(message, args, sequelize, Notes) { 		
     
     if(!message.member.hasPermission('ADMINISTRATOR')){
-      return message.reply('Haha, this is admin-only command.');
+      message.reply('Haha, this is admin-only command.');
+      return; 
     }
     
     const rowCount = await Notes.destroy({ where: { server: message.guild.id} });
-if (!rowCount) return message.reply('That did never existed exist.');
+if (!rowCount){
+  message.reply('That did never existed exist.');
+  return; 
+} 
 
-return message.reply('All clear.');
+message.reply('All clear.');
     
 	}, };

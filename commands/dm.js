@@ -1,7 +1,7 @@
 module.exports = { 	
   name: 'dm', 	
   description: 'dm [mention]/[id] [message]', 	
-  action: "sends a dm to the target user",
+  action: "Sends a Direct Message to the target user",
   note: "you need the `BAN_MEMBERS` and `MANAGE_MESSAGES` permission for this command",
   legend: "mention, id",
   execute(message, args) { 		

@@ -2,8 +2,8 @@ const Discord = require("discord.js");
 module.exports = { 	
   name: 'embed', 	
   description: 'embed [input]', 
-  action: "creates embed from the input",
-  note: "",
+  action: "Creates a cool embed",
+  note: "the formatting",
   legend: "input",
   execute(message, args) { 		
 	const embed = new Discord.MessageEmbed()

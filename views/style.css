@@ -10,3 +10,6 @@ header img{
   width: 28px;
   height: 28px;
 }
+img{
+  cursor: pointer;
+}

@@ -4,7 +4,7 @@ const cardwip = JSON.parse(JSON.stringify(cardwipfile));
 module.exports = { 	
   name: 'events', 	
   description: 'events [nothing]',
-  action: "sends event list",
+  action: "Shows complete event list",
   note: "",
   legend: "nothing",
   execute(message, args) { 		

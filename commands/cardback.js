@@ -1,7 +1,7 @@
 module.exports = { 	
   name: 'cardback', 	
   description: 'cardback [nothing]', 
-  action: "sends cardback texture",
+  action: "Sends cardback texture",
   note: "",
   legend: "nothing",
   execute(message, args) { 		

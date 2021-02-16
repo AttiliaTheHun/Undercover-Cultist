@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 module.exports = { 	
   name: 'credits', 	
   description: 'credits [nothing]', 
-  action: "sends embed with credits",
+  action: "Shows information about the bot",
   note: "",
   legend: "nothing",
   execute(message, args) { 		
@@ -17,6 +17,7 @@ module.exports = {
 	.addField('Invite', '[link](https://discord.com/api/oauth2/authorize?client_id=672748100007362561&permissions=469892166&scope=bot)', true)
    .addField('Support Server', '[link](<https://discord.gg/PcS56ck>)', true)
     .addField('Created', '28.5.2020', true)
+    .addField('Source Code', '[GitHub](https://github.com/AttiliaTheHun/Undercover-Cultist)', false)
 	 	.setTimestamp() 	
 	.setFooter('Undercover Cultist#5057', ''); 
       message.channel.send(embed);

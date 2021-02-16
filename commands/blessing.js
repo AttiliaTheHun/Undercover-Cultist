@@ -1,16 +1,20 @@
 module.exports = { 	
   name: 'blessing', 	
   description: 'blessing [god]', 	
-  action: "shows blessings that belongs to the god",
+  action: "Shows blessings that belong to the target god",
   note: "",
   legend: "god",
   execute(message, args) { 
     if(args[0] == null){
-      return message.channel.send("List of Gods:\n\`1.The God of Beginnings\n2.Rhybaax\n3.Wiindigoo\n4.Jhai\'Ti\n5.Kekujira\n6.Yacare\n7.Uhl\'Uht\'C\`");
+      message.channel.send("List of Gods:\n\`1.The God of Beginnings\n2.Rhybaax\n3.Wiindigoo\n4.Jhai\'Ti\n5.Kekujira\n6.Yacare\n7.Uhl\'Uht\'C\`");
+   return;
     }
+      
     if((args[0] < 1 || args[0] > 7) && !isNaN(args[0])){
-      return message.channel.send('IllegalArgumentException: \`only integers in range from 1 to 7 included or Strings are accepted \`');
+      message.channel.send('IllegalArgumentException: \`only integers in range from 1 to 7 included or Strings are accepted \`');
+     return;
     }
+     
     let gods = [null, "God of Beginnings", "Rhybaax", "Wiindigoo", "Jhat\'Ti", "Kekujira", "Yacare", "Uhl\'Uht\'C"];
     let god = null;
     if(!isNaN(args[0])){
