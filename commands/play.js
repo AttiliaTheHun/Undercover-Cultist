@@ -58,7 +58,7 @@ module.exports = {
     let cheats = false;
     let greedprotect = false;
     let nopolice = false;
-    let marco = true;
+    let marco = false;
     
     
     let option_selected = 0;
@@ -69,7 +69,7 @@ module.exports = {
     
     let run = true;
     let options;
-    let option_property
+    let option_property;
     
         main_loop:
     while(run){
@@ -100,7 +100,6 @@ module.exports = {
         options = [new Option(), new Option(), new Option()]
       option_property = "";
       
-      console.log("Generating event...")
       /*Generate event options*/
       for(let option_number = 0; option_number < 3; option_number++){
         option_property = `option${option_number + 1}`;
@@ -109,8 +108,10 @@ module.exports = {
         if(event[option_property].optiontext != ""){
             options[option_number].option_text = event[option_property].optiontext;
             options[option_number].defined = true;
-           if(event[option_property].outputtext != ""){
+           if(event[option_property].outputtext != "" && event[option_property].outputtext != undefined){
             options[option_number].output_text = event[option_property].outputtext;
+           }else if(event[option_property].islose == 1){
+             options[option_number].output_text = "You Lose";
            }
           }else{
             break;
@@ -159,11 +160,8 @@ module.exports = {
           }
         
       
-          
-         
         
       }
-      console.log("Done")
       const embed = new Discord.MessageEmbed();
         for(let option of options){
           if(!option.defined){
@@ -177,15 +175,12 @@ module.exports = {
         });
         await  message.channel.send(embed);
         await message.channel.send(module.exports.create_hand(resources_discord_emojis, resources));
-      console.log("UI refreshed")
       }
       /*console.log(options[option_number].consume_values)
       console.log(options[option_number].provide_values)*/
         const filter = m => (m.author.id === message.author.id && m.content.startsWith("//") == false);
-      	console.log("Awaiting messages...")
       await message.channel.awaitMessages(filter, { time: 180 * 1000, max: 1, errors: ['time'] })
         .then(async function(messages) { 
-        console.log("Done")
         let option_selected;
         let option_number;
         if(foresight && !with_discard){
@@ -295,10 +290,9 @@ module.exports = {
     }else{ 
       run = false; 
     }
-          console.log("Message resolved")
           /*consume_values = [event[option_selected].requirements.relic, event[option_selected].requirements.money, event[option_selected].requirements.cultist, event[option_selected].requirements.food, event[option_selected].requirements.prisoner, event[option_selected].requirements.suspicion];
           provide_values = [event[option_selected].rewards.relic, event[option_selected].rewards.money, event[option_selected].rewards.cultist, event[option_selected].rewards.food, event[option_selected].rewards.prisoner, event[option_selected].rewards.suspicion];
-       */console.log("Looping...")
+       */
           for(let resource_number = 0; resource_number < 6; resource_number++){
              if(options[option_number].consume_values[resource_number] == 420){
             if(resources[resource_number] == 1){
@@ -351,7 +345,6 @@ module.exports = {
             resources[indexes[random]]--;
           }
         }
-    console.log("Resources exchange resolved")
         if(event[option_property].randomrequirements > 0){
           
         }
@@ -368,7 +361,6 @@ module.exports = {
           });
           return run = false;
         }
-          console.log("Win/Lose resolved")
           
     if(event[option_selected].foresight.hasforesight == 1){
       if(base_deck.length < 4){
@@ -392,7 +384,6 @@ module.exports = {
     if(event.isrecurring == 1){    
     discard_deck.push(base_deck[0]);        
       }
-console.log("Inserting specificids...")
     let specificids = event[option_selected].shuffle.specificids;   
           for(let card_count = 0; card_count < event[option_selected].shuffle.numcards; card_count++){
     if(specificids.length > 0){
@@ -402,14 +393,12 @@ console.log("Inserting specificids...")
     }
     }
         base_deck.shift();
-          console.log("Done")
     if(base_deck.length == 0){ 
       base_deck = discard_deck;
       discard_deck = [];
      await setTimeout(() => {message.channel.send("Reshuffling deck from discard...");}, 500);
       base_deck = module.exports.shuffle(base_deck);
   }
-        console.log("Checking for punishments...")
     let punishment = false;
     if(resources[3] == 0 && punishment == false){
       let random = Math.floor(Math.random() * 2);
@@ -433,7 +422,6 @@ console.log("Inserting specificids...")
         punishment = true;
       }
     }
-          console.log("Done")
         }).catch((err) => {  	
         // run = false; 
           console.log(err);

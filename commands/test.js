@@ -6,7 +6,7 @@ module.exports = {
   note: "",
   legend: "number",
   async execute(message, args) { 		
- let event = cardwip[57];
+ let event = cardwip[83];
     console.log(event.option3.outputtext)
     message.channel.send(event.option3.outputtext == null)
     message.channel.send(event.option3.outputtext == undefined)
