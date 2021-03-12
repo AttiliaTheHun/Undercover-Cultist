@@ -1,8 +1,11 @@
 module.exports = { 	
   name: 'option', 	
-  description: 'option ["active"/"dormant"/"ready"/"down"/"back"]',
-  action: "Sends option texture",
-  note: "oy oy",
+  syntax: 'option ["active"/"dormant"/"ready"/"down"/"back"]',
+  description: "Sends option texture",
+  note: "",
+  permissions: "",
+  master: false,
+  aliases: [],
   legend: "",
   execute(message, args) { 		
     if(args[0] == null){

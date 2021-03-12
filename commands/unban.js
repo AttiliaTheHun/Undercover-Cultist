@@ -1,8 +1,11 @@
 module.exports = { 	
   name: 'unban', 	
-  description: 'unban [mention]/[id]', 	
-  action: "Removes the ban from target user",
-  note: "You need the `BAN_MEMBERS` permission for this command",
+  syntax: 'unban [mention]/[id]', 	
+  description: "Removes the ban from target user",
+  note: "",
+  permissions: "`BAN_MEMBERS`",
+  master: false,
+  aliases: [],
   legend: "mention, id",
   execute(message, args) { 		
  //   try{

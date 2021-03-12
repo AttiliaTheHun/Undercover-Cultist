@@ -1,8 +1,11 @@
 module.exports = { 	
   name: 'nickname', 	
-  description: 'nickname [mention]/[id] [nickname]', 	
-  action: "Changes the nickname of the target member",
-  note: "You need the `MANAGE_NICKNAMES` permission for using this command on other members",
+  syntax: 'nickname [mention]/[id] [nickname]', 	
+  description: "Changes the nickname of the target member",
+  note: "",
+  permissions: "`MANAGE_NICKNAMES`",
+  master: false,
+  aliases: ["nick", "setnick", "setnickname"],
   legend: "mention, id",
   async execute(message, args) { 		
   //  try{

@@ -1,10 +1,13 @@
 const Discord = require("discord.js");
 module.exports = { 	
   name: 'embed', 	
-  description: 'embed [input]', 
-  action: "Creates a cool embed",
-  note: "the formatting",
-  legend: "input",
+  syntax: 'embed [uce-formatted-text]', 
+  description: "Creates a cool embed",
+  note: "",
+  permissions: "",
+  master: false,
+  aliases: [],
+  legend: "uce-formatted-text",
   execute(message, args) { 		
 	const embed = new Discord.MessageEmbed()
   .setTitle("Invite")

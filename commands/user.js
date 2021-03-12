@@ -1,10 +1,13 @@
 const Discord = require('discord.js');
 module.exports = {
-name: 'user',
-description: 'user [mention]/[id]/[username]',
-action: "Shows information about target user",
-note: "",
-legend: "mention, id, username",
+  name: 'user',
+  syntax: 'user [mention]/[id]/[username]',
+  description: "Shows information about target user",
+  note: "",
+  permissions: "",
+  master: false,
+  aliases: ["profile", "useinfo", "member", "memberinfo", "whois"],
+  legend: "mention, id, username",
 execute(message, args, client){
   
 if(!args.join(" ").includes("#") && isNaN(args[0]) && args[0] != null && message.mentions.members.first == null){

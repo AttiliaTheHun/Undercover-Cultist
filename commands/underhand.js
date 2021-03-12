@@ -1,3 +1,12 @@
+/*
+THIS COMMAND IS THE FIRST VERSION OF THE PLAY COMMAND,
+THIS FILE IS ARCHIVED AND IS NOT MEANT TO BE EXECUTED,
+THIS CODE CONTAINS KNOWN UNFIXED BUG AND BAD PROGRAMMING APPROACHES,
+THIS FILE WAS REPLACED WITH play.js
+*/
+
+
+
 const Discord = require('discord.js');
 const cardwipfile = require('../cardwip.json'); //import data file
 const cardwip = JSON.parse(JSON.stringify(cardwipfile)); //initialize data file

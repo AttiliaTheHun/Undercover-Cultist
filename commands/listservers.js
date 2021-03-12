@@ -1,10 +1,13 @@
 const Discord = require("discord.js");
 module.exports = { 	
-  name: 'listservers', /*	
-  description: 'dm [mention]/[id] [message]', 	
-  action: "Sends a Direct Message to the target user",
-  note: "you need the `BAN_MEMBERS` and `MANAGE_MESSAGES` permission for this command",
-  legend: "mention, id",*/
+  name: 'listservers', 
+  syntax: 'listservers', 	
+  description: "Lists all the servers the bot is in",
+  note: "This can be a huge spam",
+  permissions: "",
+  master: true,
+  aliases: [],
+  legend: "",
   execute(message, args, client) { 		
   let servers = client.guilds.cache.array();
     for(let server of servers){

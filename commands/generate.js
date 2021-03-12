@@ -1,9 +1,12 @@
 module.exports = { 	
   name: 'generate', 	
-  description: 'generate [count]/["change"]', 	
-  action: "Generates target number of Underhand-themed nicknames",
-  note: "don't spam it hard in legit channels",
-  legend: "count",
+  syntax: 'generate [number(0-21)]/["change"]', 	
+  description: "Generates target number of Underhand-themed nicknames, used with \"change\" will change your nickname to Underhand-themed one",
+  note: "Please use this command only in bot commands channels",
+  permissions: "",
+  master: false,
+  aliases: ["gen"],
+  legend: "number",
   execute(message, args) { 		
     
     try{

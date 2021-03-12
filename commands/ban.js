@@ -1,8 +1,11 @@
 module.exports = { 	
   name: 'ban', 	
-  description: 'ban [mention]/[id]', 	
-  action: "Bans the target user from the server",
-  note: "You need the `BAN_MEMBERS` permission for this command",
+  syntax: 'ban [mention]/[id]', 	
+  description: "Bans the target user from the server",
+  note: "",
+  permissions: "`BAN_MEMBERS`",
+  master: false,
+  aliases: ["banuser"],
   legend: "mention, id",
   async execute(message, args) { 		
   //  try{

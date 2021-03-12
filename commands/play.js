@@ -4,12 +4,19 @@ const event_data_file = JSON.parse(JSON.stringify(cardwipfile)); //initialize da
 const prefix = require('../config.json').prefix;
 module.exports = { 	
   name: 'play' , 	
-  //name: 'play',
-  description: 'underhand ["load"][blessings]',
-  action: "Starts a game of Underhand right here in dicord",
+  syntax: 'play ["load"]/[blessings]',
+  description: "Starts a game of Underhand right here in dicord",
   note: "Complete guide can be found in <#767455245382320138> in the [Underhand server](https://discord.gg/invite/Rb5kUzE)",
+  note: "This can produce tons of spam so please, use it in designed channels or bot commands channels",
+  permissions: "",
+  master: false,
+  aliases: ["p", "underhand", "u"],
   legend: "blessings",
   async execute(message, args, client) { 	
+  
+    if(message.guild.id == 643706781427695616 && (message.channel.id != 721735042682060853 && message.channel.id != 766993942242787369)){
+ 	            return message.channel.send("Not in this channel please");
+            }
     
          class Option{
           constructor(){
@@ -78,7 +85,8 @@ module.exports = {
       //prevent app from fall
       if(base_deck.length == 0 || base_deck[0] == null){
     message.channel.send("Game Terminated: Ran out of cards in deck");
-        return run = false;
+       run = false;
+        return; 
       }
     
     event = event_data_file[base_deck[0]];
@@ -289,6 +297,7 @@ module.exports = {
     return;
     }else{ 
       run = false; 
+      message.channel.send("Game Terminated");
     }
           /*consume_values = [event[option_selected].requirements.relic, event[option_selected].requirements.money, event[option_selected].requirements.cultist, event[option_selected].requirements.food, event[option_selected].requirements.prisoner, event[option_selected].requirements.suspicion];
           provide_values = [event[option_selected].rewards.relic, event[option_selected].rewards.money, event[option_selected].rewards.cultist, event[option_selected].rewards.food, event[option_selected].rewards.prisoner, event[option_selected].rewards.suspicion];

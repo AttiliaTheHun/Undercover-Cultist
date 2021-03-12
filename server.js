@@ -1,17 +1,19 @@
-/*
-server.js
-app entry point
+/*server.js
+App entry point
+This is where commands and events are handled
 */
-// init project
-//create imports and constants
+/*import */
 const express = require("express");
 const fs = require("fs");
-const app = express();
 const Discord = require('discord.js'); 
 const Sequelize = require('sequelize');
+
+const app = express();
  const prefix = require('./config.json').prefix; //get bot prefix
 const token = process.env.TOKEN; //get bot token
 const client = new Discord.Client(); //create discord client
+const TalkEngine = require('./util/TalkEngine.js');
+//const utils = require('./util/utils.js');
 //initialize bot commands
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -30,6 +32,64 @@ const sequelize = new Sequelize('database', 'user', 'password', {
 	storage: 'database.sqlite',
 });
 
+/* Initialize the database models
+*/
+const Config = sequelize.define('Config', {
+  name:{
+    type: Sequelize.STRING,
+    unique: false
+  },
+	value:{
+    type: Sequelize.STRING,
+    unique: false
+  },
+  last_updated_by: {
+		type: Sequelize.STRING(20),
+		unique: false
+	}
+});
+
+const Masters = sequelize.define('Masters', {
+	user:{
+    type: Sequelize.STRING(20),
+    unique: true
+  },
+  promoted_by: {
+		type: Sequelize.STRING(20),
+		unique: false
+	},
+  date:{
+    type: Sequelize.STRING,
+    unique: false
+  }
+});
+
+const Bans = sequelize.define('Bans', {
+  server:{
+    type: Sequelize.STRING(20),
+    unique: false
+  },
+	global:{
+    type: Sequelize.BOOLEAN,
+    unique: false
+  },
+  user: {
+		type: Sequelize.STRING(20),
+		unique: false
+	},
+  banned_by: {
+		type: Sequelize.STRING(20),
+		unique: false
+	},
+  date:{
+    type: Sequelize.STRING,
+    unique: false
+  },
+	reason:{
+    type: Sequelize.STRING(600),
+    unique: false
+  }
+});
 
 const Notes = sequelize.define('Notes', {
 	server:{
@@ -45,190 +105,118 @@ const Notes = sequelize.define('Notes', {
     unique: false
   },
 	note:{
-    type: Sequelize.STRING(2000),
+    type: Sequelize.STRING(600),
     unique: false
   }
 });
 
-
-
 //when client is ready
 client.once('ready', () => { 	
+  Config.sync();
+  Masters.sync();
+  Bans.sync();
   Notes.sync();
   console.log(`Bot running: ${client.user.tag}`);
-client.user.setActivity(`${prefix} help | Someone on the inside`);  
- /*  client.user.setActivity({
-     status: `${prefix} help | Someone on the inside`,
-        activity: {
-            name: 'Underhand',
+  let status = 0;
+   setInterval(function () {
+    switch (status) {
+      case 0 :   
+        client.user.setActivity(`${prefix}help`, { type: 'LISTENING' });
+        status = 1;
+        break;
+      case 1 :   
+        client.user.setActivity(`Someone on the inside`, { type: 'WATCHING' });
+        status = 2;
+        break;
+      case 2 :   
+        client.user.setActivity("Underhand", {
             type: "PLAYING",
-            url: "http://underhand.clanweb.eu"
-        }
-    }); */
+            url: "http://underhand.tk"
+        } );
+        status = 0;
+        break;
+    }
+
+  }, 15000);
   });
 
 
 
-  //when message was sent
+  /*This is where the commands are handled,
+  when the bot sees a message was sent
+  */
  client.on('message', async message => {
-  let args = null;
-    let command = null;
-  try{
+  let args;
+
 if(message.content.toLowerCase().includes(`goose`)){
 	message.channel.send(`Honk!`);
-} if(message.content.toLowerCase().includes(`undercover cultist`) || message.mentions.members != null && message.mentions.members.first() == client.user.id){
-	message.channel.send(`Shhh, ${message.author.username}, I do not want to be exposed!`);
 } 
   if(message.channel.type === 'dm' && !message.author.bot){
-        if(message.content.toLowerCase().includes("neither should you")){
-          message.channel.send("I see you are a man of culture. Very well!");
-        }else{
-          message.channel.send("You shouldn't be here.");
-        }
-      }else{
-  //check if prefix was called and ignore another bots
-if (!message.content.startsWith(prefix) && !message.content.startsWith(prefix.trim()) || message.author.bot) 
-return; 
-  
-  //remove the prefix from the message
-  if(message.content.startsWith(prefix)){
-	 args = message.content.slice(prefix.length).split(/ +/); 
-    //remove prefix with whitespaces from the message
-  }else if(message.content.startsWith(prefix.trim())){
-    args = message.content.slice(prefix.trim().length).split(/ +/);
-  }else{
-     args = message.content.split(/ +/);
+    TalkEngine.dm(message);
+    return;
+      }
+  // ignore another bots
+if (message.author.bot){ 
+  return; 
+}
+   
+   
+   
+   let cases = [prefix, prefix.trim(), `<@${client.user.id}>`, `<@!${client.user.id}>`];
+   let match = false;
+   for(let type of cases){
+     if(message.content.toLowerCase().startsWith(type)){
+       args = message.content.slice(type.length).trim().split(/ +/); 
+       match = true;
+       break;
+       }
+   }
+
+   if(!match)
+     return
+   
+   const bans = await Bans.findAll({ where: { global: true } || { server: message.guild.id, global: false } });
+      if (bans) {
+  if(bans.length > 0){
+    let id;
+    for(let i = 0; i < bans.length; i++){
+      id = bans[i].get('user');
+      if(id = message.author.id){
+        await client.commands.get('log').execute(message, undefined, client, Config, 'ignored');
+        message.channel.send("This user is banned");
+        return;
+      }
+    }
   }
+      }
+   
+   
     //get what command was called
-	 command = args.shift().toLowerCase(); 
+	let commandName = args.shift().toLowerCase(); 
   let execution_status;
     //handle commands
-        switch (command) {
-          case 'card':
-            execution_status = await client.commands.get('card').execute(message, args);
-            break;
-          case  'help':
-            execution_status = await client.commands.get('help').execute(message, args, client);
-            break;
-          case 'server':
-          case 'serverinfo':
-          case 'guild':
-          case 'guildinfo':
-            execution_status = await client.commands.get('server').execute(message, args, client);
-            break;
-          case 'event':
-            execution_status = await client.commands.get('event').execute(message, args);
-            break;
-          case 'cardback':
-            execution_status = await client.commands.get('cardback').execute(message, args);
-            break;
-          case 'winscreen':
-            execution_status = await client.commands.get('winscreen').execute(message, args);
-            break;
-          case 'losescreen':
-            execution_status = await client.commands.get('losescreen').execute(message, args);
-            break;
-          case 'option':
-            execution_status = await client.commands.get('option').execute(message, args);
-            break;
-          case 'credits':
-            execution_status = await client.commands.get('credits').execute(message, args);
-            break;
-          case 'god':
-            execution_status = await client.commands.get('god').execute(message, args);
-            break;
-          case 'eventlist':
-          case 'events':
-          case 'cardlist':
-            execution_status = await client.commands.get('events').execute(message, args);
-            break;
-          case 'user':
-          case 'userinfo':
-          case 'member':
-          case 'memberinfo':
-          case 'profile':
-          case 'whois':
-            execution_status = await client.commands.get('user').execute(message, args, client);
-            break;
-          case 'underhand':
-          case 'play':
-          case 'u':
-          case 'p':
-            if(message.guild.id == 643706781427695616 && (message.channel.id != 721735042682060853 && message.channel.id != 766993942242787369)){
- 	            return message.channel.send("Not in this channel please");
-            } 
-              execution_status = await client.commands.get('play').execute(message, args, client);
-            break;
-          case 'restart':
-            execution_status = await client.commands.get('restart').execute(message, args, client);
-            break;
-          case 'blessing':
-            execution_status = await client.commands.get('blessing').execute(message, args, client);
-            break;
-          case 'embed':
-            execution_status = await client.commands.get('embed').execute(message, args, client);
-            break;
-          case 'notes':
-            execution_status = await client.commands.get('notes').execute(message, args, sequelize, Notes, client);
-            break;
-          case 'addnote':
-            execution_status = await client.commands.get('addnote').execute(message, args, sequelize, Notes);
-            break;
-          case 'delnote':
-          case 'deletenote':
-          case 'removenote':
-            execution_status = await client.commands.get('delnote').execute(message, args, sequelize, Notes);
-            break;
-          case 'clearnotes':
-            execution_status = await client.commands.get('clearnotes').execute(message, args, sequelize, Notes);
-            break;
-          case 'ban':
-            execution_status = await client.commands.get('ban').execute(message, args);
-            break;
-          case 'kick':
-            execution_status = await client.commands.get('kick').execute(message, args);
-            break;
-          case 'dm':
-            execution_status = await client.commands.get('dm').execute(message, args);
-            break;
-          case 'nickname':
-          case 'nick':
-          case 'setnickname':
-          case 'setnick':
-            execution_status = await client.commands.get('nickname').execute(message, args);
-            break;
-          case 'generate':
-          case 'gen':
-            execution_status = await client.commands.get('generate').execute(message, args);
-            break;
-          case 'listservers':
-            execution_status = await client.commands.get('listservers').execute(message, args, client);
-            break;
-            case 'p2':
-            execution_status = await client.commands.get('underhand').execute(message, args, client);
-            break;
-            case 'test':
-            execution_status = await client.commands.get('test').execute(message, args, client);
-            break;
-          default:
-            return;
-        }
+         const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+ // Return if the command doesn't exist
+  if (!command)
+    return
+        try{
+        execution_status = await command.execute(message, args, client, Config, Masters, Bans, Notes);
+  
         if(execution_status){
-         client.commands.get('log').execute(message, args, client, 'error', command, execution_status);
+         await client.commands.get('log').execute(message, args, client, Config, 'error', commandName, execution_status);
          message.channel.send("Something went wrong");
         }else{
-        client.commands.get('log').execute(message, args, client, 'command', command);
+       await client.commands.get('log').execute(message, args, client, Config, 'command', commandName);
       }
-      }
+      
    }catch(err1) {
-     client.commands.get('log').execute(message, args, client, 'error', command, err1);
+    await client.commands.get('log').execute(message, args, client, Config, 'error', commandName, err1);
      message.channel.send("Something went very wrong");
    }
-      
 });
 
   
-  client.on("guildCreate", guild => {
+  client.on("guildCreate", async guild => {
     console.log("Joined a new guild: " + guild.name);
 
       let channelID;
@@ -247,12 +235,12 @@ return;
 channel.send('Don\'t mind me, I am not here. Really.');
 /* const role = guild.roles.cache.find(role => role.name === 'Undercover Cultist');
    role.setColor("#005e1f");*/
-client.commands.get('log').execute(undefined, undefined, client, 'guild_added', undefined, undefined, guild);
+await client.commands.get('log').execute(undefined, undefined, client, 'guild_added', undefined, undefined, guild);
 });
   
 
-client.on("guildDelete", guild => {
-client.commands.get('log').execute(undefined, undefined, client, 'guild_removed', undefined, undefined, guild);
+client.on("guildDelete", async guild => {
+await client.commands.get('log').execute(undefined, undefined, client, 'guild_removed', undefined, undefined, guild);
 
 });
 

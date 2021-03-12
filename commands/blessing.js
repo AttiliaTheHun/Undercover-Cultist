@@ -1,8 +1,11 @@
 module.exports = { 	
   name: 'blessing', 	
-  description: 'blessing [god]', 	
-  action: "Shows blessings that belong to the target god",
+  syntax: 'blessing [god]', 	
+  description: "Shows blessings that belong to the target god",
   note: "",
+  permissions: "",
+  master: false,
+  aliases: [],
   legend: "god",
   execute(message, args) { 
     if(args[0] == null){

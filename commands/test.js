@@ -1,14 +1,23 @@
-const cardwip = require('../cardwip.json');
+const Discord = require('discord.js');
 module.exports = { 	
   name: 'test', 	
-  description: 'card [number]', 	
-  action: "sends card texture specified by it's number",
-  note: "",
-  legend: "number",
-  async execute(message, args) { 		
- let event = cardwip[83];
-    console.log(event.option3.outputtext)
-    message.channel.send(event.option3.outputtext == null)
-    message.channel.send(event.option3.outputtext == undefined)
-    message.channel.send(event.option3.outputtext == "")
+  syntax: 'no stable syntax', 	
+  description: "no stable description",
+  note: "Administration command",
+  permissions: "",
+  master: true,
+  aliases: [],
+  legend: "",
+  async execute(message, args, client, Config, Masters, Bans, Notes) { 		
+
+    const rowCount = await Bans.destroy({ where: {global: true} });
+    if (!rowCount){
+      message.reply('Glubal Bans Clear.');
+      return;
+    } 
+
+    message.reply('Nothing.');
+    return;  
+    
+    
   }, };

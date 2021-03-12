@@ -2,12 +2,15 @@ const Discord = require('discord.js');
 const cardwipfile = require('../cardwip.json');
 const cardwip = JSON.parse(JSON.stringify(cardwipfile));
 module.exports = {
-name: "event",
-description: "event [number]",
-action: "Shows target event sample",
-note: "",
-legend: "number",
-async execute(message, args){ 
+  name: "event",
+  syntax: "event [number(0-119)]",
+  description: "Shows target event sample",
+  note: "",
+  permissions: "",
+  master: false,
+  aliases: [],
+  legend: "number",
+  async execute(message, args){ 
       if(args[0] == null){
         message.channel.send(`NullPointerException: \`You must provide an argument\``);
         return; 
@@ -122,8 +125,8 @@ files:[`http://underhand.clanweb.eu/res/Card${args[0]}.png`]
     
     
 }else{
-	return message.channel.send(`IllegalArgumentException: \`Number range should be in between 0-119 excluded\``);
-	
+	message.channel.send(`IllegalArgumentException: \`Number range should be in between 0-119 excluded\``);
+	return;
 	
 }
   

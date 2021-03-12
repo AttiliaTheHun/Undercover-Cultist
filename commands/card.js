@@ -1,8 +1,11 @@
 module.exports = { 	
   name: 'card', 	
-  description: 'card [number]', 	
-  action: "Sends the target card texture",
+  syntax: 'card [number(0-119)]', 	
+  description: "Sends the target card texture",
   note: "",
+  permissions: "",
+  master: false,
+  aliases: [],
   legend: "number",
   execute(message, args) { 		
     

@@ -1,4 +1,10 @@
 {
   "token" : "Sozin's comet",
-  "prefix" : "!c "
+  "prefix" : "!c ",
+  "version" : "2.1",
+  "default_master" : "608673444061773827",
+  "log_guild" : "714932914089099335",
+  "complete_log_channel" : "806437144653856789",
+  "event_log_channel" : "806437179999780924",
+  "dm_dump_channel" : "819890681773948939"
 }

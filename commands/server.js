@@ -1,10 +1,13 @@
 const Discord = require('discord.js');
 module.exports = {
-name: 'server',
-description: 'server [nothing]',
-  action: "Shows information about this server",
+  name: 'server',
+  syntax: 'server',
+  description: "Shows information about this server",
   note: "",
-  legend: "nothing",
+  permissions: "",
+  master: false,
+  aliases: ["serverinfo", "guild", "guildinfo"],
+  legend: "",
 execute(message, args, client){
 let owner;
   

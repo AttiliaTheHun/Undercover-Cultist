@@ -1,8 +1,11 @@
 module.exports = { 	
   name: 'kick', 	
-  description: 'kick [mention]/[id]', 	
-  action: "Kicks the member from the server",
-  note: "You need the `KICK_MEMBERS` permission for this command",
+  syntax: 'kick [mention]/[id]', 	
+  description: "Kicks the member from the server", 
+  note: "",
+  permissions: "`KICK_MEMBERS`",
+  master: false,
+  aliases: ["kickuser"],
   legend: "mention, id",
   async execute(message, args) { 		
      //try{

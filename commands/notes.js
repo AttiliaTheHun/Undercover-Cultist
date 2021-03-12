@@ -1,11 +1,14 @@
 const Discord = require("discord.js");
 module.exports = { 	
   name: 'notes', 	
-  description: 'notes [nothing]',
-  action: "Shows notes collection for the server",
-  note: "",
-  legend: "nothing",
-  async execute(message, args, sequelize, Notes, client) { 	
+  syntax: 'notes',
+  description: "Shows notes collection for the server",
+  note: "Notes are **not** encrypted and are freely visible to other users.",
+  permissions: "",
+  master: false,
+  aliases: ["shownotes"],
+  legend: "",
+  async execute(message, args, client, Config, Masters, Bans, Notes) { 	
     try{
       const notes = await Notes.findAll({ where: { server: message.guild.id }, /*raw: true*/});
       if (notes) {
@@ -23,9 +26,8 @@ let embed = new Discord.MessageEmbed()
     member = message.guild.members.cache.get(id);
     username = member.user.username + "#" + member.user.discriminator;
     embed.addField(username, notes[i].get('note'), false);	
-  }
-    embed.setTimestamp() 	
-	.setFooter('Undercover Cultist#5057', ''); 
+  }	
+	embed.setFooter('Undercover Cultist#5057', ''); 
     message.channel.send(embed);
 	return undefined;
     
