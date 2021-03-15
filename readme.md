@@ -20,10 +20,10 @@ This directory contains all the logic behind each of bot's commands, each having
 This folder contains files, responsible for bot's utilities that are not core (index.js) or command (/commands/) utilities. For example handling DM or predefined functions.
 ## How to use the bot
 ### User guide
-Currently, the bot's commands can be sorted in three categories
-__texture commands__ these commands will respond with the corresponding texture, the textures are usually game resources from the game Underhand.
-__informative command__ these commands usually display some information, for example information about target user.
-__utility commands__ these commands perform some actions, for example kicking target user from the server.
+Currently, the bot's commands can be sorted in three categories:
+__texture commands__ these commands will respond with the corresponding texture, the textures are usually game resources from the game Underhand;
+__informative commands__ these commands usually display some information, for example information about target user;
+__utility commands__ these commands perform some actions, for example kicking target user from the server;
 
 Use the `help` command to find out all the commands you can use, use the `help` command with other command's name as an argument, for example `help userinfo` to find cool stuff about the command.
 ### Admin guide
