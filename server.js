@@ -3,12 +3,10 @@ App entry point
 This is where commands and events are handled
 */
 /*import */
-const express = require("express");
 const fs = require("fs");
 const Discord = require('discord.js'); 
 const Sequelize = require('sequelize');
 
-const app = express();
  const prefix = require('./config.json').prefix; //get bot prefix
 const token = process.env.TOKEN; //get bot token
 const client = new Discord.Client(); //create discord client
@@ -251,18 +249,3 @@ process.on('uncaughtException', (err) => {
   //login the client
  client.login(token);
  
-
- 
- 
-
-
-
-// make the server look http
-app.use(require('./guides'));
-
-// http://expressjs.com/en/starter/static-files.html
-app.use(express.static("public"));
-// listen for requests :)
-const listener = app.listen(process.env.PORT, function() {
-  console.log("Your app is listening on port " + listener.address().port);
-});
