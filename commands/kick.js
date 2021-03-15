@@ -1,17 +1,21 @@
 module.exports = { 	
   name: 'kick', 	
-  description: 'kick [mention]/[id]', 	
-  action: "kicks the member from the server",
-  note: "you need the `KICK_MEMBERS` permission for this command",
+  syntax: 'kick [mention]/[id]', 	
+  description: "Kicks the member from the server", 
+  note: "",
+  permissions: "`KICK_MEMBERS`",
+  master: false,
+  aliases: ["kickuser"],
   legend: "mention, id",
   async execute(message, args) { 		
-     try{
+     //try{
     if(!message.member.hasPermission("KICK_MEMBERS")){
-      return message.reply(`SecurityException: \`Missing permission\``);
+       message.reply(`SecurityException: \`Missing permission\``);
+      return;
     }
        if(args[0] == null){
-        
-        return message.channel.send(`NullPointerException: \`You must provide an argument\``);
+         message.channel.send(`NullPointerException: \`You must provide an argument\``);
+        return;
       }
     let member;
       
@@ -30,12 +34,13 @@ if(!isNaN(args[0])){
   id = member.id;
 } 	
       if(!member.kickable){
-       return message.reply("This member is above my might, I can't ban him");
+         message.reply("This member is above my might, I can't ban him");
+       return;
       }
       args.shift();
        member.kick(args.join(" "));
     message.reply(`The fake cultist <@${id}> was banished from this sacred place.`);
-    }catch(err){
+    /*}catch(err){
       console.log(err);
       message.reply("WTF gimme me permissions bruh");
-    }	}, };
+    }	*/}, };

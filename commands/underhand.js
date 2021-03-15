@@ -1,15 +1,25 @@
+/*
+THIS COMMAND IS THE FIRST VERSION OF THE PLAY COMMAND,
+THIS FILE IS ARCHIVED AND IS NOT MEANT TO BE EXECUTED,
+THIS CODE CONTAINS KNOWN UNFIXED BUG AND BAD PROGRAMMING APPROACHES,
+THIS FILE WAS REPLACED WITH play.js
+*/
+
+
+
 const Discord = require('discord.js');
 const cardwipfile = require('../cardwip.json'); //import data file
 const cardwip = JSON.parse(JSON.stringify(cardwipfile)); //initialize data file
 const prefix = require('../config.json').prefix;
 module.exports = { 	
-  name: 'underhand', 	
-  name: 'play',
+  name: 'underhand' , 	
+  //name: 'play',
   description: 'underhand ["load"][blessings]',
-  action: "starts a game of Underhand right here in dicord",
-  note: "",
-  legend: "",
+  action: "Starts a game of Underhand right here in dicord",
+  note: "Complete guide can be found in <#767455245382320138> in the [underhand server](https://discord.gg/invite/Rb5kUzE)",
+  legend: "blessings",
   async execute(msg, args, client) { 	
+    try{
     //create arrays so I can add items to them
     let base_deck = [];
     let discard_deck = [];
@@ -331,7 +341,7 @@ files:[`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`]
       
       //handling the input now\\
       
-  const filter = m => (message.author.id === m.author.id && message.content.startsWith("//") == false);
+  const filter = m => (message.author.id === m.author.id && m.content.startsWith("//") == false);
 //wait for response
 	await message.channel.awaitMessages(filter, { time: 180 * 1000, max: 1, errors: ['time'] })
 		.then(messages => { //when message sent
@@ -635,7 +645,9 @@ files:[`http://underhand.clanweb.eu/res/${god}.png`]
 
       }   
 
-     
+    }catch(err){
+      return err;
+    } 
             
     //}
     

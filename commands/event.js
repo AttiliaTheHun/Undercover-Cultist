@@ -2,121 +2,120 @@ const Discord = require('discord.js');
 const cardwipfile = require('../cardwip.json');
 const cardwip = JSON.parse(JSON.stringify(cardwipfile));
 module.exports = {
-name: "event",
-description: "event [number]",
-action: "creates event sample specified by event number",
-note: "",
-legend: "number",
-async execute(message, args){ 
+  name: "event",
+  syntax: "event [number(0-119)]",
+  description: "Shows target event sample",
+  note: "",
+  permissions: "",
+  master: false,
+  aliases: [],
+  legend: "number",
+  async execute(message, args){ 
       if(args[0] == null){
-        
-        return message.channel.send(`NullPointerException: \`You must provide an argument\``);
+        message.channel.send(`NullPointerException: \`You must provide an argument\``);
+        return; 
       }
   
   if(!isNaN(args[0]) && 0 < args[0] && args[0] < 119){
 	
-    event = cardwip[args[0]];
-   
-  //  let resources;
-    let consumes = [];
-         let provides = [];
-          let optiontext = [];
-          let outputtext = [];
-      let consarr = [];
-      let provarr = [];
-      let o = [];
-    //resources emotes
-    const name = ["<:exchange_relic:644177849606995978>", "<:exchange_money:644177896575074323>", "<:exchange_cultist:644175421755097098>", "<:exchange_food:644178025809707157>","<:exchange_prisoner:644177784876433408>", "<:exchange_suspicion:644177968536748032>"];
- //exchange cultist prisoner emote
-    const ecp = "<:exchange_cultist_prisoner:766628698963050566>";
+             class Option{
+          constructor(){
+            this.defined = false,
+            this.consume_values = [],
+            this.consume_emojis = "",
+            this.provide_values = [],
+            this.provide_emojis = "",
+            this.option_text = "",
+            this.output_text = ""
+          }
+        }
     
-	for(let i = 0; i < 3; i++){ //indicates option number
-          consumes[i] = "";
-          provides[i] = "";
-          //initialize requirements and rewards
-           consarr = [event[`option${(i + 1)}`].requirements.relic, event[`option${(i + 1)}`].requirements.money, event[`option${(i + 1)}`].requirements.cultist, event[`option${(i + 1)}`].requirements.food, event[`option${(i + 1)}`].requirements.prisoner, event[`option${(i + 1)}`].requirements.suspicion];
-           provarr = [event[`option${(i + 1)}`].rewards.relic, event[`option${(i + 1)}`].rewards.money, event[`option${(i + 1)}`].rewards.cultist, event[`option${(i + 1)}`].rewards.food, event[`option${(i + 1)}`].rewards.prisoner, event[`option${(i + 1)}`].rewards.suspicion];
-    //   console.log(consarr + provarr);
-          //check for variable consume value
-          if(consarr.findIndex((num) =>{
-        //420 in the data file means bigger half of curent number of resources
-         if(num == 420){
-           return true;
-         }
-         return false;
-       }) != -1 ){
-            //get reource type to halve
-         let index = consarr.findIndex((num) =>{
-         if(num == 420){
-           return true;
-         }
-         return false;
-       });
-            //do the halving
-          //  if(resources[index] != 1){ //if he has only one card, he should keep it
-         consarr[index] = 2;    //we need it to look legit
-          //  }
-       }      
-         
-  for(let i2 = 0; i2 < 6; i2++){  //indicates type of resource
-     //create consume emote set if cultist equals prisoner
-   if(event[`option${(i + 1)}`].cultistequalsprisoner == 1 && i2 == 2){
-    for(let i3 = 0; i3 < consarr[i2]; i3++){ //indicates count of resource
-      
-        consumes[i] = consumes[i] + " " + ecp;
-      
-     // console.log(null);
-     // console.log("i:"+ i + "c[i]:" + consumes[i] + "i2:" + i2 + "i3:" + i3);
+   let event = cardwip[args[0]];
+    
+    if(args[1] == "raw"){
+      message.channel.send(JSON.stringify(event));
+      return;
     }
-     }else{
-       //create consume emote set
-       for(let i3 = 0; i3 < consarr[i2]; i3++){
-      consumes[i] = consumes[i] + " " + name[i2];
-      }
-     }
-  }
-           //create provide emote set
-for(let i2 = 0; i2 < 6; i2++){  
-    for(let i3 = 0; i3 < provarr[i2]; i3++){
-      provides[i] += " " + name[i2];
-    }
-  }
-          //provide text to prevent emote size change
-          if(consumes[i] == ""){
-            consumes[i] = "-";
-          }
-          if(provides[i] == ""){
-            provides[i] = "-";
-          }
-          //get option text
-          if((event[`option${(i + 1)}`].optiontext).length != 0){
-            optiontext[i] = event[`option${(i + 1)}`].optiontext;
-          o[i] = true;
-          }else{
-            optiontext[i] = "";
-            o[i] = false;
-          }
-          //get output text
-          if(event[`option${(i + 1)}`].outputtext != null){
-            outputtext[i] = event[`option${(i + 1)}`].outputtext;
-            
-          }else{
-            //get rid of undefined
-            outputtext[i] = "";
-           
-          }
-      }
-       //create the options embed
-         const embed = new Discord.MessageEmbed()
-.setAuthor(optiontext[0])
-.setDescription(":x: "+ consumes[0] + "\n" + ":white_check_mark: " + provides[0] + "\n" + outputtext[0] )
-      if(o[1]){
-         embed.addField(optiontext[1] , ":x: "+ consumes[1] + "\n" + ":white_check_mark: " + provides[1] + "\n" + outputtext[1] , false)
-      }
-      if(o[2]){
-         embed.addField( optiontext[2] , ":x: "+ consumes[2] + "\n" + ":white_check_mark: " + provides[2] + "\n" + outputtext[2] , false)
-         }
+   
+    const resources_discord_emojis = ["<:exchange_relic:644177849606995978>", "<:exchange_money:644177896575074323>", "<:exchange_cultist:644175421755097098>", "<:exchange_food:644178025809707157>","<:exchange_prisoner:644177784876433408>", "<:exchange_suspicion:644177968536748032>"];
+    const cultist_equals_prisoner_emoji = "<:exchange_cultist_prisoner:766628698963050566>";
+    
+    let options = [new Option(), new Option(), new Option()]
+    let  option_property = "";
+    
+     for(let option_number = 0; option_number < 3; option_number++){
+        option_property = `option${option_number + 1}`;
+
         
+        if(event[option_property].optiontext != ""){
+            options[option_number].option_text = event[option_property].optiontext;
+            options[option_number].defined = true;
+           if(event[option_property].outputtext != "" && event[option_property].outputtext != undefined){
+            options[option_number].output_text = event[option_property].outputtext;
+           }else if(event[option_property].islose == 1){
+             options[option_number].output_text = "You Lose";
+           }
+          }else{
+            break;
+          }
+        
+        options[option_number].consume_values = [event[option_property].requirements.relic, event[option_property].requirements.money, event[option_property].requirements.cultist, event[option_property].requirements.food, event[option_property].requirements.prisoner, event[option_property].requirements.suspicion];
+        options[option_number].provide_values = [event[option_property].rewards.relic, event[option_property].rewards.money, event[option_property].rewards.cultist, event[option_property].rewards.food, event[option_property].rewards.prisoner, event[option_property].rewards.suspicion];
+       
+       for(let resource_number = 0; resource_number < 6; resource_number++){
+          /*420 is a magic number indicating the bigger half of player's resources of given type*/
+          if(options[option_number].consume_values[resource_number] == 420){
+              options[option_number].consume_values[resource_number] = 2;
+              options[option_number].consume_emojis = "*";
+          }  
+       }
+       /*Create consumes and provides emoji sets for each resource*/
+        for(let resource_number = 0; resource_number < 6; resource_number++){
+          /*420 is a magic number indicating the bigger half of player's resources of given type*/
+          /*create consumes emoji set*/
+          for(let resource_count = 0; resource_count < options[option_number].consume_values[resource_number]; resource_count++){
+            if(option_number == 2 && event[option_property].cultistequalsprisoner == 1){
+              options[option_number].consume_emojis = options[option_number].consume_emojis + " " + cultist_equals_prisoner_emoji;
+            }else{
+              if(options[option_number].consume_values[resource_number] > 3){
+                options[option_number].consume_emojis = options[option_number].consume_emojis + ` ${options[option_number].consume_values[resource_number]}x ${resources_discord_emojis[resource_number]}`;
+                break;
+              }
+              options[option_number].consume_emojis = options[option_number].consume_emojis + " " + resources_discord_emojis[resource_number];   
+            }                 
+          }
+          
+          
+          for(let resource_count = 0; resource_count < options[option_number].provide_values[resource_number]; resource_count++){
+              if(options[option_number].provide_values[resource_number] > 3){
+                options[option_number].provide_emojis = options[option_number].provide_emojis + ` ${options[option_number].provide_values[resource_number]}x ${resources_discord_emojis[resource_number]}`;
+                break;
+              }
+            options[option_number].provide_emojis = options[option_number].provide_emojis + " " + resources_discord_emojis[resource_number];                  
+          }
+        }
+        if(options[option_number].consume_emojis== ""){
+            options[option_number].consume_emojis = "-";
+          }
+        if(options[option_number].provide_emojis == ""){
+            options[option_number].provide_emojis = "-";
+          }
+        
+      
+          
+         
+        
+      }
+      const embed = new Discord.MessageEmbed();
+        for(let option of options){
+          if(!option.defined){
+            break;
+          }
+          embed.addField(`${option.option_text}`, `:x: ${option.consume_emojis}\n:white_check_mark:${option.provide_emojis}\n${option.output_text}`);
+        }
+    
+    
+    
 //sent event texture
         await message.channel.send("",{
 files:[`http://underhand.clanweb.eu/res/Card${args[0]}.png`]
@@ -126,8 +125,8 @@ files:[`http://underhand.clanweb.eu/res/Card${args[0]}.png`]
     
     
 }else{
-	return message.channel.send(`IllegalArgumentException: \`Number range should be in between 0-119 excluded\``);
-	
+	message.channel.send(`IllegalArgumentException: \`Number range should be in between 0-119 excluded\``);
+	return;
 	
 }
   

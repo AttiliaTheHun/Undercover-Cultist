@@ -1,15 +1,18 @@
 module.exports = { 	
   name: 'generate', 	
-  description: 'generate [count]/["change"]', 	
-  action: "generates target number of Underhand-themed nicknames",
-  note: "don't spam it hard in legit channels",
-  legend: "count",
+  syntax: 'generate [number(0-21)]/["change"]', 	
+  description: "Generates target number of Underhand-themed nicknames, used with \"change\" will change your nickname to Underhand-themed one",
+  note: "Please use this command only in bot commands channels",
+  permissions: "",
+  master: false,
+  aliases: ["gen"],
+  legend: "number",
   execute(message, args) { 		
     
     try{
        if(args[0] == null){
-        
-        return message.channel.send(`NullPointerException: \`You must provide an argument\``);
+        message.channel.send(`NullPointerException: \`You must provide an argument\``);
+        return; 
       }
   
     
@@ -27,8 +30,8 @@ if(!isNaN(args[0]) && 0 < args[0] && args[0] < 21 || args[0] == "change" || args
     message.channel.send(response);
   }
 }else{
-	return message.channel.send(`IllegalArgumentException: \`Number range should be in between 0-21excluded\``);
-	
+  message.channel.send(`IllegalArgumentException: \`Number range should be in between 0-21excluded\``);
+	return; 
 } 	
      }catch(err){
       console.log(err);
@@ -38,9 +41,9 @@ if(!isNaN(args[0]) && 0 < args[0] && args[0] < 21 || args[0] == "change" || args
 generate(){
   const templates = ["[superlative] [person]", "The [person] of [action]", "[person] in [location]"];
   const person = ["Beginner", "Prisoner", "Assassin", "Salesperson", "Milkman", "Vendor", "Cultist", "Soothsayer", "Collector", "Farmer", "Ancestor", "Guest", "Necromancer", "Aeromancer", "Hatchling", "Fisherman"];
-  const superlative = ["Mysterious", "Golden", "Dead", "Rival", "Horrific", "Dark", "Eggcelent", "Tea", "Long", "Hungry", "Hideous", "Desperate", "Small", "Failing", "Booming", "Insatiable", "Red", "Greedy", "Holiday", "Ancestral", "Police", "Bountiful", "Suspicious", "Tasty", "Haunted", "Cyclopean", "Sacrificial", " Undercover", "Wandering", "Recruiting", "Travelling"];
-  const action = ["the Wild", "Day", "Beginnings", "War", "Failure", "Harvest", "Darkness", "the Gods", "Time"];
-  const location = ["Time", "Town", "Storm", "Rain", "Deck", "Future"];
+  const superlative = ["Mysterious", "Golden", "Dead", "Rival", "Horrific", "Dark", "Eggcelent", "Tea", "Long", "Hungry", "Hideous", "Desperate", "Small", "Failing", "Booming", "Insatiable", "Red", "Greedy", "Holiday", "Ancestral", "Police", "Bountiful", "Suspicious", "Tasty", "Haunted", "Cyclopean", "Sacrificial", "Undercover", "Wandering", "Recruiting", "Travelling", "Losing", "Importing"];
+  const action = ["the Wild", "Day", "Beginnings", "War", "Failure", "Harvest", "Darkness", "the Gods", "Time", "Strategy", "Tricks"];
+  const location = ["Time", "Town", "Storm", "Rain", "the Deck", "the Future"];
   let template = templates[Math.floor(Math.random() * templates.length)]
   template = template.replace("[person]", person[Math.floor(Math.random() * person.length)]);
   template = template.replace("[superlative]", superlative[Math.floor(Math.random() * superlative.length)]);

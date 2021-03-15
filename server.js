@@ -1,17 +1,17 @@
-/*
-server.js
-app entry point
+/*server.js
+App entry point
+This is where commands and events are handled
 */
-// init project
-//create imports and constants
-const express = require("express");
+/*import */
 const fs = require("fs");
-const app = express();
 const Discord = require('discord.js'); 
 const Sequelize = require('sequelize');
+
  const prefix = require('./config.json').prefix; //get bot prefix
 const token = process.env.TOKEN; //get bot token
 const client = new Discord.Client(); //create discord client
+const TalkEngine = require('./util/TalkEngine.js');
+//const utils = require('./util/utils.js');
 //initialize bot commands
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -30,14 +30,65 @@ const sequelize = new Sequelize('database', 'user', 'password', {
 	storage: 'database.sqlite',
 });
 
-/*
- * equivalent to: CREATE TABLE tags(
- * name VARCHAR(255),
- * description TEXT,
- * username VARCHAR(255),
- * usage INT
- * );
- */
+/* Initialize the database models
+*/
+const Config = sequelize.define('Config', {
+  name:{
+    type: Sequelize.STRING,
+    unique: false
+  },
+	value:{
+    type: Sequelize.STRING,
+    unique: false
+  },
+  last_updated_by: {
+		type: Sequelize.STRING(20),
+		unique: false
+	}
+});
+
+const Masters = sequelize.define('Masters', {
+	user:{
+    type: Sequelize.STRING(20),
+    unique: true
+  },
+  promoted_by: {
+		type: Sequelize.STRING(20),
+		unique: false
+	},
+  date:{
+    type: Sequelize.STRING,
+    unique: false
+  }
+});
+
+const Bans = sequelize.define('Bans', {
+  server:{
+    type: Sequelize.STRING(20),
+    unique: false
+  },
+	global:{
+    type: Sequelize.BOOLEAN,
+    unique: false
+  },
+  user: {
+		type: Sequelize.STRING(20),
+		unique: false
+	},
+  banned_by: {
+		type: Sequelize.STRING(20),
+		unique: false
+	},
+  date:{
+    type: Sequelize.STRING,
+    unique: false
+  },
+	reason:{
+    type: Sequelize.STRING(600),
+    unique: false
+  }
+});
+
 const Notes = sequelize.define('Notes', {
 	server:{
     type: Sequelize.STRING(20),
@@ -52,131 +103,120 @@ const Notes = sequelize.define('Notes', {
     unique: false
   },
 	note:{
-    type: Sequelize.STRING(2000),
+    type: Sequelize.STRING(600),
     unique: false
   }
 });
 
-
-
-
-
-
 //when client is ready
 client.once('ready', () => { 	
+  Config.sync();
+  Masters.sync();
+  Bans.sync();
   Notes.sync();
   console.log(`Bot running: ${client.user.tag}`);
-client.user.setActivity(`${prefix} help | Someone on the inside`);  
- /*  client.user.setActivity({
-     status: `${prefix} help | Someone on the inside`,
-        activity: {
-            name: 'Underhand',
+  let status = 0;
+   setInterval(function () {
+    switch (status) {
+      case 0 :   
+        client.user.setActivity(`${prefix}help`, { type: 'LISTENING' });
+        status = 1;
+        break;
+      case 1 :   
+        client.user.setActivity(`Someone on the inside`, { type: 'WATCHING' });
+        status = 2;
+        break;
+      case 2 :   
+        client.user.setActivity("Underhand", {
             type: "PLAYING",
-            url: "http://underhand.clanweb.eu"
-        }
-    }); */
+            url: "http://underhand.tk"
+        } );
+        status = 0;
+        break;
+    }
+
+  }, 15000);
   });
 
 
 
-  //when message was sent
-client.on('message', message => { 	
+  /*This is where the commands are handled,
+  when the bot sees a message was sent
+  */
+ client.on('message', async message => {
+  let args;
+
 if(message.content.toLowerCase().includes(`goose`)){
 	message.channel.send(`Honk!`);
-} if(message.content.toLowerCase().includes(`undercover cultist`) || message.mentions.members.first() == client.user.id){
-	message.channel.send(`Shhh, ${message.author.username}, I do not want to be exposed!`);
 } 
-  //check if prefix was called and ignore another bots
-if (!message.content.startsWith(prefix) && !message.content.startsWith(prefix.trim()) || message.author.bot) 
-return; 
-  let args;
-  //remove the prefix from the message
-  if(message.content.startsWith(prefix)){
-	 args = message.content.slice(prefix.length).split(/ +/); 
-    //remove prefix with whitespaces from the message
-  }else if(message.content.startsWith(prefix.trim())){
-    args = message.content.slice(prefix.trim().length).split(/ +/);
-  }else{
-     args = message.content.split(/ +/);
+  if(message.channel.type === 'dm' && !message.author.bot){
+    TalkEngine.dm(message);
+    return;
+      }
+  // ignore another bots
+if (message.author.bot){ 
+  return; 
+}
+   
+   
+   
+   let cases = [prefix, prefix.trim(), `<@${client.user.id}>`, `<@!${client.user.id}>`];
+   let match = false;
+   for(let type of cases){
+     if(message.content.toLowerCase().startsWith(type)){
+       args = message.content.slice(type.length).trim().split(/ +/); 
+       match = true;
+       break;
+       }
+   }
+
+   if(!match)
+     return
+   
+   const bans = await Bans.findAll({ where: { global: true } || { server: message.guild.id, global: false } });
+      if (bans) {
+  if(bans.length > 0){
+    let id;
+    for(let i = 0; i < bans.length; i++){
+      id = bans[i].get('user');
+      if(id = message.author.id){
+        await client.commands.get('log').execute(message, undefined, client, Config, 'ignored');
+        message.channel.send("This user is banned");
+        return;
+      }
+    }
   }
-  try{
+      }
+   
+   
     //get what command was called
-	const command = args.shift().toLowerCase(); 
+	let commandName = args.shift().toLowerCase(); 
+  let execution_status;
     //handle commands
-	        if (command === 'card'){	
-      client.commands.get('card').execute(message, args);
-		}else if(command === 'help'){	
-      client.commands.get('help').execute(message, args, client);
-		}else if(command === 'server'){
-			client.commands.get('server').execute(message, args, client);
-		}else if(command === 'event'){
-      client.commands.get('event').execute(message, args);
-}else if(command === 'cardback'){
-      client.commands.get('cardback').execute(message, args);
-}else if(command === 'winscreen'){
-      client.commands.get('winscreen').execute(message, args);
-}else if(command === 'losescreen'){
-      client.commands.get('losescreen').execute(message, args);
-}else if(command === 'option'){
-  client.commands.get('option').execute(message, args);
-}else if(command === 'credits'){
-  client.commands.get('credits').execute(message, args);
-}else if(command === 'god'){
-  client.commands.get('god').execute(message, args);
-}else if(command === 'eventlist' || command === 'cardlist' || command === 'events'){
-  client.commands.get('events').execute(message, args);
-}else if(command === 'user'){
-  client.commands.get('user').execute(message, args, client);
-}else if(command === 'underhand' || command === 'u' || command === 'play' || command === 'p' ){
-  //I don't want people to play outside specified channels
- if(message.guild.id == 643706781427695616 && (message.channel.id != 721735042682060853 && message.channel.id != 766993942242787369)){
- 	return message.channel.send("Not in this channel please");
-    } 
-  client.commands.get('underhand').execute(message, args, client);
-}else if(command ===  'restart'){
-  client.commands.get('restart').execute(message, args);
-}else if(command ===  'blessing'){
-  client.commands.get('blessing').execute(message, args);
-}else if(command ===  'embed'){
-  client.commands.get('embed').execute(message, args);
-}else if(command ===  'notes'){
-  client.commands.get('notes').execute(message, args, sequelize, Notes, client);
-}else if(command ===  'addnote'){
-  client.commands.get('addnote').execute(message, args, sequelize, Notes);
-}else if(command ===  'delnote'){
-  client.commands.get('delnote').execute(message, args, sequelize, Notes);
-}else if(command ===  'test'){
-  client.commands.get('test').execute(message, args, sequelize, Notes);
-}else if(command ===  'clearnotes'){
-  client.commands.get('clearnotes').execute(message, args, sequelize, Notes);
-}else if(command ===  'ban'){
-  client.commands.get('ban').execute(message, args);
-}else if(command ===  'unban'){
-  client.commands.get('unban').execute(message, args);
-}else if(command ===  'kick'){
-  client.commands.get('kick').execute(message, args);
-}else if(command ===  'dm'){
-  client.commands.get('dm').execute(message, args);
-}else if(command ===  'nickname' || command ===  'setnickname' || command ===  'setnick' || command ===  'nick'){
-  client.commands.get('nickname').execute(message, args);
-}else if(command ===  'generate' || command ===  'gen'){
-  client.commands.get('generate').execute(message, args);
-};
+         const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+ // Return if the command doesn't exist
+  if (!command)
+    return
+        try{
+        execution_status = await command.execute(message, args, client, Config, Masters, Bans, Notes);
+  
+        if(execution_status){
+         await client.commands.get('log').execute(message, args, client, Config, 'error', commandName, execution_status);
+         message.channel.send("Something went wrong");
+        }else{
+       await client.commands.get('log').execute(message, args, client, Config, 'command', commandName);
+      }
+      
    }catch(err1) {
-     console.log(err1);
+    await client.commands.get('log').execute(message, args, client, Config, 'error', commandName, err1);
+     message.channel.send("Something went very wrong");
    }
 });
+
   
-  
-  client.on("guildCreate", guild => {
+  client.on("guildCreate", async guild => {
     console.log("Joined a new guild: " + guild.name);
-  /* const embed = new Discord.MessageEmbed()
-    .setColor('#ffbc03') 	
-    .setTitle('Greetings everyone!')		
-    .setDescription(`Hello guys, **${guild.name}** looks like nice place, yeah? But I am here to make it **cool**. Is there any admin, because I need you to run the *config* command to prepare the server for my presence. Don't be afraid of it, it just creates *@tournament admin* role and some channels, everyone is safe! \n \n Right after that you can use *adminguide* or *playerguide* command to get better knowledge on how we can be friends.`) 		
-  .addField('Need human help?', 'Ask AttilaTheHun#9489', true)
-	 	.setTimestamp() 	
-	.setFooter('Tournament Guy#1413', ''); */
+
       let channelID;
   
     let channels = guild.channels.cache.get;
@@ -191,26 +231,21 @@ return;
  
     let channel = guild.channels.cache.get(guild.systemChannelID || channelID);
 channel.send('Don\'t mind me, I am not here. Really.');
- const role = guild.roles.cache.find(role => role.name === 'Undercover Cultist');
-   role.setColor("#005e1f");
-
-})
+/* const role = guild.roles.cache.find(role => role.name === 'Undercover Cultist');
+   role.setColor("#005e1f");*/
+await client.commands.get('log').execute(undefined, undefined, client, 'guild_added', undefined, undefined, guild);
+});
   
+
+client.on("guildDelete", async guild => {
+await client.commands.get('log').execute(undefined, undefined, client, 'guild_removed', undefined, undefined, guild);
+
+});
+
+process.on('uncaughtException', (err) => {
+  client.commands.get('log').execute(undefined, undefined, client, 'error', undefined, err);
+});
+
   //login the client
  client.login(token);
  
-
- 
- 
-
-
-
-// make the server look http
-app.use(require('./guides'));
-
-// http://expressjs.com/en/starter/static-files.html
-app.use(express.static("public"));
-// listen for requests :)
-const listener = app.listen(process.env.PORT, function() {
-  console.log("Your app is listening on port " + listener.address().port);
-});

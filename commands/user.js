@@ -1,14 +1,18 @@
 const Discord = require('discord.js');
 module.exports = {
-name: 'user',
-description: 'user [mention]/[id]/[username]',
-action: "shows information about target user",
-note: "",
-legend: "mention, id, username",
+  name: 'user',
+  syntax: 'user [mention]/[id]/[username]',
+  description: "Shows information about target user",
+  note: "",
+  permissions: "",
+  master: false,
+  aliases: ["profile", "useinfo", "member", "memberinfo", "whois"],
+  legend: "mention, id, username",
 execute(message, args, client){
   
 if(!args.join(" ").includes("#") && isNaN(args[0]) && args[0] != null && message.mentions.members.first == null){
-  return message.channel.send("IlegalArgumentException: \`user tag or ID is the only acceptable argument\`");
+   message.channel.send("IlegalArgumentException: \`user tag or ID is the only acceptable argument\`");
+return;
 }
   let user;
   if(args[0] == null){
@@ -22,6 +26,9 @@ if(!args.join(" ").includes("#") && isNaN(args[0]) && args[0] != null && message
   }else{
      user = message.guild.members.cache.get(args[0]);
   }
+  if(user == undefined){
+    return message.channel.send("Could not find the user.")
+  }
   let description = `Here is the latest report\n`;
   description += `**ID:** ${user.id}\n`;
   if(user.nickname != null){
@@ -34,7 +41,7 @@ if(!args.join(" ").includes("#") && isNaN(args[0]) && args[0] != null && message
   if(user.premiumSince != null){
       description += `**Premium Since:** ${user.premiumSince}\n`;
   }
-  if(user.user.flags.toArray()[0] != null){
+  if(user.user.flags != undefined){
       description += `**User Flags:** ${user.user.flags.toArray()}\n`;
   }
   description += `**Joined:** ${user.joinedAt}\n`;
