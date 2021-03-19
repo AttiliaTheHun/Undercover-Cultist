@@ -7,7 +7,7 @@ module.exports = {
   note: "",
   permissions: "",
   master: false,
-  aliases: ["commands"],
+  aliases: ["commands", "hehelp"],
   legend: "",
   execute(message, args, client) {
     
