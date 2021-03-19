@@ -9,9 +9,16 @@ module.exports = {
   aliases: ["botbans"],
   legend: "",
   async execute(message, args, client, Config, Masters, Bans, Notes) { 	
+    let bans;
     try{
-      const bans = await Bans.findAll({ where: { server: message.guild.id, global: false } || { global: true }, /*raw: true*/});
-      if (bans) {
+      if(args[0] == "-global"){
+      const bans = await Bans.findAll({ where: {global: true}});
+      }else if(args[0] == "-local"){
+      const bans = await Bans.findAll({ where: { server: message.guild.id, global: false }});    
+      }else{
+        const bans = await Bans.findAll({ where: { server: message.guild.id, global: false }, where: {global: true}});
+      }
+        if (bans) {
   if(bans.length > 0){
 let embed = new Discord.MessageEmbed() 
     .setColor('#ffbc03') 	

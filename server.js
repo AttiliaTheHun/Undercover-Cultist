@@ -3,12 +3,14 @@ App entry point
 This is where commands and events are handled
 */
 /*import */
-const express = require("express");
 const fs = require("fs");
 const Discord = require('discord.js'); 
 const Sequelize = require('sequelize');
 
+const express = require("express");
+
 const app = express();
+
  const prefix = require('./config.json').prefix; //get bot prefix
 const token = process.env.TOKEN; //get bot token
 const client = new Discord.Client(); //create discord client
@@ -169,13 +171,13 @@ if (message.author.bot){
        args = message.content.slice(type.length).trim().split(/ +/); 
        match = true;
        break;
-       }
+     }
    }
 
    if(!match)
      return
    
- /*  const bans = await Bans.findAll({ where: { global: true } || { server: message.guild.id, global: false } });
+   const bans = await Bans.findAll({ where: { user: message.author.id } });
       if (bans) {
   if(bans.length > 0){
     let id;
@@ -183,12 +185,12 @@ if (message.author.bot){
       id = bans[i].get('user');
       if(id = message.author.id){
         await client.commands.get('log').execute(message, undefined, client, Config, 'ignored');
-        /*message.channel.send("This user is banned");
+        message.channel.send("This user is banned");
         return;
       }
     }
   }
-      }*/
+      }
    
    
     //get what command was called
@@ -235,28 +237,23 @@ if (message.author.bot){
 channel.send('Don\'t mind me, I am not here. Really.');
 /* const role = guild.roles.cache.find(role => role.name === 'Undercover Cultist');
    role.setColor("#005e1f");*/
-//await client.commands.get('log').execute(undefined, undefined, client, 'guild_added', undefined, undefined, guild);
+await client.commands.get('log').execute(undefined, undefined, client, 'guild_added', undefined, undefined, guild);
 });
   
 
 client.on("guildDelete", async guild => {
-//await client.commands.get('log').execute(undefined, undefined, client, 'guild_removed', undefined, undefined, guild);
+await client.commands.get('log').execute(undefined, undefined, client, 'guild_removed', undefined, undefined, guild);
 
 });
 
 process.on('uncaughtException', (err) => {
- // await client.commands.get('log').execute(undefined, undefined, client, 'error', undefined, err);
+  client.commands.get('log').execute(undefined, undefined, client, 'error', undefined, err);
 });
 
   //login the client
  client.login(token);
  
-
- 
-
-
-// make the server look http
-app.use(require('/public/router.js'));
+app.use(require('./public/router.js'));
 
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static("public"));
