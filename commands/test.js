@@ -10,14 +10,13 @@ module.exports = {
   legend: "",
   async execute(message, args, client, Config, Masters, Bans, Notes) { 		
 
-    const rowCount = await Bans.destroy({ where: {global: true} });
-    if (!rowCount){
-      message.reply('Glubal Bans Clear.');
-      return;
-    } 
-
-    message.reply('Nothing.');
-    return;  
+   let commandName = args.shift().toLowerCase(); 
+   const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+    if(command.master){
+      message.channel.send("True");
+    }else{
+      message.channel.send("False");
+    }
     
     
   }, };

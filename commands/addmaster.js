@@ -8,7 +8,7 @@ module.exports = {
   master: true,
   aliases: [],
   legend: "mention, id",
-  async execute(message, args, client, Config, Masters, Bans, Notes) { 	
+  async execute(message, args, client, Config, Masters, Bans, Notes, sequelize) { 	
     try {
         
         let today = new Date();

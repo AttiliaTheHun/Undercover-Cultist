@@ -3,12 +3,14 @@ App entry point
 This is where commands and events are handled
 */
 /*import */
-const express = require("express");
 const fs = require("fs");
 const Discord = require('discord.js'); 
 const Sequelize = require('sequelize');
 
+const express = require("express");
+
 const app = express();
+const config = require('./config.json');
  const prefix = require('./config.json').prefix; //get bot prefix
 const token = process.env.TOKEN; //get bot token
 const client = new Discord.Client(); //create discord client
@@ -169,27 +171,12 @@ if (message.author.bot){
        args = message.content.slice(type.length).trim().split(/ +/); 
        match = true;
        break;
-       }
+     }
    }
 
    if(!match)
      return
-   
- /*  const bans = await Bans.findAll({ where: { global: true } || { server: message.guild.id, global: false } });
-      if (bans) {
-  if(bans.length > 0){
-    let id;
-    for(let i = 0; i < bans.length; i++){
-      id = bans[i].get('user');
-      if(id = message.author.id){
-        await client.commands.get('log').execute(message, undefined, client, Config, 'ignored');
-        /*message.channel.send("This user is banned");
-        return;
-      }
-    }
-  }
-      }*/
-   
+    
    
     //get what command was called
 	let commandName = args.shift().toLowerCase(); 
@@ -199,8 +186,27 @@ if (message.author.bot){
  // Return if the command doesn't exist
   if (!command)
     return
+   
+      const [results, metadata] = await sequelize.query(`SELECT * FROM Bans WHERE (server = ${message.guild.id} AND user = ${message.author.id} AND global = false) OR (user = ${message.author.id} AND global = true);`)
+      if (results) {
+  if(results.length > 0){
+        await client.commands.get('log').execute(message, undefined, client, Config, 'ignored');
+        return;
+    }
+  }
+   if(command.master && message.author.id != config.default_master){
+      const [results2, metadata2] = await sequelize.query(`SELECT * FROM Masters WHERE user = ${message.author.id} ;`)
+      if (results2) {
+  if(results2.length <= 0){
+        await client.commands.get('log').execute(message, undefined, client, Config, 'ignored');
+        return;
+    }
+  }
+     
+   }
+   
         try{
-        execution_status = await command.execute(message, args, client, Config, Masters, Bans, Notes);
+        execution_status = await command.execute(message, args, client, Config, Masters, Bans, Notes, sequelize);
   
         if(execution_status){
          await client.commands.get('log').execute(message, args, client, Config, 'error', commandName, execution_status);
@@ -235,28 +241,24 @@ if (message.author.bot){
 channel.send('Don\'t mind me, I am not here. Really.');
 /* const role = guild.roles.cache.find(role => role.name === 'Undercover Cultist');
    role.setColor("#005e1f");*/
-//await client.commands.get('log').execute(undefined, undefined, client, 'guild_added', undefined, undefined, guild);
+await client.commands.get('log').execute(undefined, undefined, client, 'guild_added', undefined, undefined, guild);
 });
   
 
 client.on("guildDelete", async guild => {
-//await client.commands.get('log').execute(undefined, undefined, client, 'guild_removed', undefined, undefined, guild);
+await client.commands.get('log').execute(undefined, undefined, client, 'guild_removed', undefined, undefined, guild);
 
 });
 
 process.on('uncaughtException', (err) => {
- // await client.commands.get('log').execute(undefined, undefined, client, 'error', undefined, err);
+  console.log(err);
+  client.commands.get('log').execute(undefined, undefined, client, 'error', undefined, err);
 });
 
   //login the client
  client.login(token);
  
-
- 
-
-
-// make the server look http
-app.use(require('/public/router.js'));
+app.use(require('./public/router.js'));
 
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static("public"));
