@@ -10,7 +10,7 @@ const Sequelize = require('sequelize');
 const express = require("express");
 
 const app = express();
-
+const config = require('./config.json');
  const prefix = require('./config.json').prefix; //get bot prefix
 const token = process.env.TOKEN; //get bot token
 const client = new Discord.Client(); //create discord client
@@ -176,22 +176,7 @@ if (message.author.bot){
 
    if(!match)
      return
-   
-   const bans = await Bans.findAll({ where: { user: message.author.id } });
-      if (bans) {
-  if(bans.length > 0){
-    let id;
-    for(let i = 0; i < bans.length; i++){
-      id = bans[i].get('user');
-      if(id = message.author.id){
-        await client.commands.get('log').execute(message, undefined, client, Config, 'ignored');
-        message.channel.send("This user is banned");
-        return;
-      }
-    }
-  }
-      }
-   
+    
    
     //get what command was called
 	let commandName = args.shift().toLowerCase(); 
@@ -201,8 +186,27 @@ if (message.author.bot){
  // Return if the command doesn't exist
   if (!command)
     return
+   
+      const [results, metadata] = await sequelize.query(`SELECT * FROM Bans WHERE (server = ${message.guild.id} AND user = ${message.author.id} AND global = false) OR (user = ${message.author.id} AND global = true);`)
+      if (results) {
+  if(results.length > 0){
+        await client.commands.get('log').execute(message, undefined, client, Config, 'ignored');
+        return;
+    }
+  }
+   if(command.master && message.author.id != config.default_master){
+      const [results2, metadata2] = await sequelize.query(`SELECT * FROM Masters WHERE user = ${message.author.id} ;`)
+      if (results2) {
+  if(results2.length <= 0){
+        await client.commands.get('log').execute(message, undefined, client, Config, 'ignored');
+        return;
+    }
+  }
+     
+   }
+   
         try{
-        execution_status = await command.execute(message, args, client, Config, Masters, Bans, Notes);
+        execution_status = await command.execute(message, args, client, Config, Masters, Bans, Notes, sequelize);
   
         if(execution_status){
          await client.commands.get('log').execute(message, args, client, Config, 'error', commandName, execution_status);
@@ -247,6 +251,7 @@ await client.commands.get('log').execute(undefined, undefined, client, 'guild_re
 });
 
 process.on('uncaughtException', (err) => {
+  console.log(err);
   client.commands.get('log').execute(undefined, undefined, client, 'error', undefined, err);
 });
 
