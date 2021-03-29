@@ -15,7 +15,7 @@ module.exports = {
       }
   
     
-if(!isNaN(args[0]) && 0 < args[0] && args[0] < 119){
+if(!isNaN(args[0]) && 0 < args[0] && args[0] <= 119){
 	
 	message.channel.send("Card " + args[0],{
 		files:["http://underhand.clanweb.eu/res/Card" + args[0] + ".png"]
