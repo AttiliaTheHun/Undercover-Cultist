@@ -16,7 +16,7 @@ module.exports = {
         return; 
       }
   
-  if(!isNaN(args[0]) && 0 < args[0] && args[0] < 119){
+  if(!isNaN(args[0]) && 0 < args[0] && args[0] <= 119){
 	
              class Option{
           constructor(){
