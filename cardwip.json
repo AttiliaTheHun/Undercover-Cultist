@@ -13827,5 +13827,119 @@
         "animationframes": 1,
         "weight": 10,
         "cardartdone": 1
+    },
+    "119": {
+	"title":						"Impostor",
+	"flavortext":					"There is an impostor among us.",
+	"option1": {
+		"optiontext":				"\"It wasn't me guys, really\"",
+		"outputtext":				"",
+		"cultistequalsprisoner":	0,
+		"foresight": {
+			"hasforesight":			0,
+			"numcards":				0
+		},
+		"shuffle": {
+			"lowerbound":			999,
+			"upperbound":			999,
+			"specificids":			[],
+			"allowsdupes":			0,
+			"numcards":				0
+		},
+		"randomrequirements":		0,
+		"requirements": {
+			"relic":				0,
+			"money":				0,
+			"cultist":				0,
+			"prisoner":				0,
+			"food":					0,
+			"suspicion":			0
+		},
+		"rewards": {
+			"relic":				0,
+			"money":				0,
+			"cultist":				0,
+			"prisoner":				0,
+			"food":					0,
+			"suspicion":			2
+		},
+		"iswin":					0,
+		"islose":					0
+		},
+	"option2": {
+		"optiontext":				"\"It was the blue guy!\"",
+		"outputtext":				"Blue was not the Impostor.",
+		"cultistequalsprisoner":	0,
+		"foresight": {
+			"hasforesight":			0,
+			"numcards":				0
+		},
+		"shuffle": {
+			"lowerbound":			999,
+			"upperbound":			999,
+			"specificids":			[],
+			"allowsdupes":			0,
+			"numcards":				0
+		},
+		"randomrequirements":		0,
+		"requirements": {
+			"relic":				0,
+			"money":				1,
+			"cultist":				0,
+			"prisoner":				0,
+			"food":					0,
+			"suspicion":			0
+		},
+		"rewards": {
+			"relic":				0,
+			"money":				0,
+			"cultist":				1,
+			"prisoner":				0,
+			"food":					1,
+			"suspicion":			0
+		},
+		"iswin":					0,
+		"islose":					0
+	},
+	"option3": {
+		"optiontext":				"\"Did you guys check these cool tunnels?\"",
+		"outputtext":				"You Lose",
+		"cultistequalsprisoner":	0,
+		"foresight": {
+			"hasforesight":			0,
+			"numcards":				0
+		},
+		"shuffle": {
+			"lowerbound":			999,
+			"upperbound":			999,
+			"specificids":			[],
+			"allowsdupes":			0,
+			"numcards":				0
+		},
+		"randomrequirements":		0,
+		"requirements": {
+			"relic":				0,
+			"money":				0,
+			"cultist":				0,
+			"prisoner":				0,
+			"food":					0,
+			"suspicion":			0
+		},
+		"rewards": {
+			"relic":				0,
+			"money":				0,
+			"cultist":				0,
+			"prisoner":				0,
+			"food":					0,
+			"suspicion":			0
+		},
+		"iswin":					0,
+		"islose":					1
+	},
+	"isinitial":					1,
+	"isrecurring":					1,
+	"animationframes":				1,
+	"weight": 						1,
+	"cardartdone":					1
     }
 }
