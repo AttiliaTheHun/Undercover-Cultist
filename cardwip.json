@@ -13895,8 +13895,8 @@
 			"money":				0,
 			"cultist":				1,
 			"prisoner":				0,
-			"food":					1,
-			"suspicion":			0
+			"food":					0,
+			"suspicion":			2
 		},
 		"iswin":					0,
 		"islose":					0
