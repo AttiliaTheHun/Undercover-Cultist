@@ -1,22 +1,24 @@
-/*server.js
-App entry point
-This is where commands and events are handled
+/**server.js
+*App entry point
+*This file contains the logic behind
+*handling commands and events
 */
-/*import */
 const fs = require("fs");
 const Discord = require('discord.js'); 
 const Sequelize = require('sequelize');
-
 const express = require("express");
+const config = require('./config.json');
+const utils = require('./util/utils.js');
 
 const app = express();
-const config = require('./config.json');
- const prefix = require('./config.json').prefix; //get bot prefix
-const token = process.env.TOKEN; //get bot token
-const client = new Discord.Client(); //create discord client
-const TalkEngine = require('./util/TalkEngine.js');
-//const utils = require('./util/utils.js');
-//initialize bot commands
+const prefix = config.prefix;
+const token = process.env.TOKEN; 
+const client = new Discord.Client();
+
+/**
+* Create a Collection of all the bot commands
+* to easily access their properties
+*/
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
@@ -24,14 +26,15 @@ for (const file of commandFiles) {
   client.commands.set(command.name, command); 
 }
 
-
-
-const sequelize = new Sequelize('database', 'user', 'password', {
-	host: 'localhost',
-	dialect: 'sqlite',
-	logging: false,
-	// SQLite only
-	storage: 'database.sqlite',
+/**
+* Initialize the database driver for remote
+* MySQL database connection
+*/
+const sequelize = new Sequelize(process.env.db_name, process.env.db_user, process.env.db_password, {
+	host: process.env.db_server,
+  port: process.env.db_port,
+	dialect: 'mysql',
+	logging: console.log
 });
 
 /* Initialize the database models
@@ -112,7 +115,10 @@ const Notes = sequelize.define('Notes', {
   }
 });
 
-//when client is ready
+/**
+* When the client is ready, sync the database models
+* and set a custom status
+*/
 client.once('ready', () => { 	
   Config.sync();
   Masters.sync();
@@ -120,9 +126,10 @@ client.once('ready', () => {
   Notes.sync();
   console.log(`Bot running: ${client.user.tag}`);
   let status = 0;
-   setInterval(function () {
+   setInterval(async function () {
     switch (status) {
       case 0 :   
+       // let prefix = await utils.getConfig(sequelize, Config, 'prefix', true);
         client.user.setActivity(`${prefix}help`, { type: 'LISTENING' });
         status = 1;
         break;
@@ -143,27 +150,28 @@ client.once('ready', () => {
   });
 
 
-
-  /*This is where the commands are handled,
-  when the bot sees a message was sent
-  */
+/**
+* When the bot notices a message was sent, check
+* sender's credibility, exexute commands and perform other actions
+*/
  client.on('message', async message => {
   let args;
 
 if(message.content.toLowerCase().includes(`goose`)){
 	message.channel.send(`Honk!`);
 } 
-  if(message.channel.type === 'dm' && !message.author.bot){
-    TalkEngine.dm(message);
-    return;
-      }
-  // ignore another bots
+ 
+  // ignore bots
 if (message.author.bot){ 
   return; 
 }
    
+   //let prefix = await utils.getConfig(sequelize, Config, 'prefix', true);
    
-   
+/*
+* Check if message is meant for this bot,
+* by checking if it starts with the bot's prefix or bot's mention
+*/
    let cases = [prefix, prefix.trim(), `<@${client.user.id}>`, `<@!${client.user.id}>`];
    let match = false;
    for(let type of cases){
@@ -173,31 +181,37 @@ if (message.author.bot){
        break;
      }
    }
-
+//ingore other messages
    if(!match)
      return
     
-   
-    //get what command was called
 	let commandName = args.shift().toLowerCase(); 
   let execution_status;
-    //handle commands
+    //find whether the target command does exist
          const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
- // Return if the command doesn't exist
+ // Stop carring as soon as the command does not exist
   if (!command)
     return
-   
-      const [results, metadata] = await sequelize.query(`SELECT * FROM Bans WHERE (server = ${message.guild.id} AND user = ${message.author.id} AND global = false) OR (user = ${message.author.id} AND global = true);`)
-      if (results) {
-  if(results.length > 0){
+   /**
+   * Check if the user is not prohibited from bot's usage
+   */
+      const [bans, metadata] = await sequelize.query(`SELECT * FROM Bans WHERE (server = '${message.guild.id}' AND user = '${message.author.id}' AND global = false) OR (user = '${message.author.id}' AND global = true);`)
+      if (bans) {
+      	//And ignore him, if so
+  if(bans.length > 0){
         await client.commands.get('log').execute(message, undefined, client, Config, 'ignored');
         return;
     }
   }
+  /**
+  * If the command is master command, check if the user
+  * is a bot master
+  */
    if(command.master && message.author.id != config.default_master){
-      const [results2, metadata2] = await sequelize.query(`SELECT * FROM Masters WHERE user = ${message.author.id} ;`)
+      const [results2, metadata2] = await sequelize.query(`SELECT * FROM Masters WHERE user = '${message.author.id}' ;`)
       if (results2) {
-  if(results2.length <= 0){
+      	// and ignore him if not
+  if(results2.length == 0){
         await client.commands.get('log').execute(message, undefined, client, Config, 'ignored');
         return;
     }
@@ -206,8 +220,17 @@ if (message.author.bot){
    }
    
         try{
+        	/**
+        	* If the command raises an unexpected exception or error
+        * (wrong user input is expected), the execution_status will hold
+        * this error to forward it to the logging utility
+        	*/
         execution_status = await command.execute(message, args, client, Config, Masters, Bans, Notes, sequelize);
   
+  /**
+  * In case of no errors the execution_status will remain
+  * undefined and won't pass the if statement
+  */
         if(execution_status){
          await client.commands.get('log').execute(message, args, client, Config, 'error', commandName, execution_status);
          message.channel.send("Something went wrong");
@@ -221,6 +244,10 @@ if (message.author.bot){
    }
 });
 
+/**
+* When the bot is added to a new server, send a "welcome" 
+* message and log the event
+*/
   
   client.on("guildCreate", async guild => {
     console.log("Joined a new guild: " + guild.name);
@@ -244,7 +271,9 @@ channel.send('Don\'t mind me, I am not here. Really.');
 await client.commands.get('log').execute(undefined, undefined, client, 'guild_added', undefined, undefined, guild);
 });
   
-
+/**
+* When the bot is removed from a server, log the event
+*/
 client.on("guildDelete", async guild => {
 await client.commands.get('log').execute(undefined, undefined, client, 'guild_removed', undefined, undefined, guild);
 
@@ -255,14 +284,17 @@ process.on('uncaughtException', (err) => {
   client.commands.get('log').execute(undefined, undefined, client, 'error', undefined, err);
 });
 
-  //login the client
+ 
  client.login(token);
  
+ 
+ /**
+ * Create an express router to make the app
+ * listen for http requests, for the purposes of
+ * waking it up and showing a help page
+ */
 app.use(require('./public/router.js'));
-
-// http://expressjs.com/en/starter/static-files.html
 app.use(express.static("public"));
-// listen for requests :)
 const listener = app.listen(process.env.PORT, function() {
   console.log("Your app is listening on port " + listener.address().port);
 });

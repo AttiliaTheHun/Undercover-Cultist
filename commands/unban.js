@@ -1,3 +1,4 @@
+const utils = require('../util/utils.js');
 module.exports = { 	
   name: 'unban', 	
   syntax: 'unban [mention]/[id]', 	
@@ -7,7 +8,8 @@ module.exports = {
   master: false,
   aliases: [],
   legend: "mention, id",
-  execute(message, args) { 		
+  category: "utility",
+  async execute(message, args) { 		
  //   try{
        if(!message.member.hasPermission("BAN_MEMBERS")){
           message.reply(`SecurityException: \`Missing permission\``);
@@ -18,19 +20,14 @@ module.exports = {
         return;
       }
   
-      let id;
-if(!isNaN(args[0])){
-  id = args[0];
-}else{
-  if(!message.content.includes("<@!")){
-    message.reply("I can't identify the user from this, sorry");
+      let user = await utils.resolveUser(message, args);
+  if(user == undefined){
+    return message.channel.send("Could not find the user.")
   }
-  id = message.content.substring(message.content.indexOf("<@!") + "<@!".length, message.content.indexOf(">"));
-}
   args.shift();
-	message.guild.members.unban(id, args.join(" "));
+	message.guild.members.unban(user.id, args.join(" "));
 
-    message.reply(`The cultist <@${id}> was allowed to come back to this sacred place.`);
+    message.reply(`The cultist <@${user.id}> was allowed to come back to this sacred place.`);
 /*	}catch(err){
       console.log(err);
       message.reply("WTF gimme me permissions bruh");

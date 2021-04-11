@@ -8,6 +8,7 @@ module.exports = {
   master: false,
   aliases: ["about", "info", "botinfo"],
   legend: "",
+  category: "informative",
   async execute(message, args, client, Config, Masters, Bans, Notes) { 		
 
     try{

@@ -7,6 +7,7 @@ module.exports = {
   master: false,
   aliases: [],
   legend: "god",
+  category: "underhand",
   execute(message, args) { 
     if(args[0] == null){
       message.channel.send("List of Gods:\n\`1.The God of Beginnings\n2.Rhybaax\n3.Wiindigoo\n4.Jhai\'Ti\n5.Kekujira\n6.Yacare\n7.Uhl\'Uht\'C\`");

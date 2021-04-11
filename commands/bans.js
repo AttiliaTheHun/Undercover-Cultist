@@ -9,6 +9,7 @@ module.exports = {
   master: true,
   aliases: ["botbans"],
   legend: "",
+  category: "informative",
   async execute(message, args, client, Config, Masters, Bans, Notes, sequelize) { 	
     let bans;
     let where = "";

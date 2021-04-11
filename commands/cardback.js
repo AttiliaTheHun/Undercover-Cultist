@@ -7,10 +7,10 @@ module.exports = {
   master: false,
   aliases: [],
   legend: "",
+  category: "underhand",
   execute(message, args) { 		
-	
-	message.channel.send("Cardback",{
-		files:["http://underhand.clanweb.eu/res/Cardback.png"]
-	});
-    
-	}, };
+	  message.channel.send("Cardback",{
+		  files:["http://underhand.clanweb.eu/res/Cardback.png"]
+	  });
+  }, 
+};

@@ -7,6 +7,7 @@ module.exports = {
   master: false,
   aliases: ["nick", "setnick", "setnickname"],
   legend: "mention, id",
+  category: "utility",
   async execute(message, args) { 		
   //  try{
      if(!message.member.hasPermission("MANAGE_NICKNAMES")){

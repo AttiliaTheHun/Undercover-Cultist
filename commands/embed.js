@@ -8,6 +8,7 @@ module.exports = {
   master: false,
   aliases: [],
   legend: "uce-formatted-text",
+  category: "utility",
   execute(message, args) { 		
 	const embed = new Discord.MessageEmbed()
   .setTitle("Invite")

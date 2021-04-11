@@ -7,6 +7,7 @@ module.exports = {
   master: false,
   aliases: [],
   legend: "",
+  category: "underhand",
   execute(message, args) { 		
     if(args[0] == null){
       message.channel.send('You must provide an argument. Use `help` command or check the bot help page http://underhand.clanweb.eu/undercover_cultist for more info.')

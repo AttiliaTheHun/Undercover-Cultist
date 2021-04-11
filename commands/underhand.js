@@ -18,6 +18,7 @@ module.exports = {
   action: "Starts a game of Underhand right here in dicord",
   note: "Complete guide can be found in <#767455245382320138> in the [underhand server](https://discord.gg/invite/Rb5kUzE)",
   legend: "blessings",
+  category: "archived",
   async execute(msg, args, client) { 	
     try{
     //create arrays so I can add items to them

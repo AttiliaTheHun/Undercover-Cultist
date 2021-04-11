@@ -10,6 +10,7 @@ module.exports = {
   master: false,
   aliases: ["eventlist", "cardlist"],
   legend: "",
+  cateory: "underhand",
   execute(message, args) { 		
     let list = "";
     let event;
@@ -17,17 +18,18 @@ module.exports = {
       event = cardwip[i];
       list = list + i + ": " + event.title + "\n";
     }
-	const embed1 = new Discord.MessageEmbed()
-  .setTitle("List of events [Part 1]")
-  .setDescription(list);
+	  const embed1 = new Discord.MessageEmbed()
+    .setTitle("List of events [Part 1]")
+    .setDescription(list);
     list = "";
     for(let i = 64; i <= 118; i++){
       event = cardwip[i];
       list = list + i + ": " + event.title + "\n";
     }
     const embed2 = new Discord.MessageEmbed()
-  .setTitle("List of events [Part 2]")
-  .setDescription(list);
-	message.channel.send(embed1);
-    message.channel.send(embed2);
-	}, };
+    .setTitle("List of events [Part 2]")
+    .setDescription(list);
+	  message.channel.send(embed1);
+      message.channel.send(embed2);
+	}, 
+};

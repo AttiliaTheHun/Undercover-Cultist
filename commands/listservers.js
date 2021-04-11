@@ -8,6 +8,7 @@ module.exports = {
   master: true,
   aliases: [],
   legend: "",
+  category: "informative",
   execute(message, args, client) { 		
   let servers = client.guilds.cache.array();
     for(let server of servers){

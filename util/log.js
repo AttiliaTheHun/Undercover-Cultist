@@ -1,3 +1,7 @@
+/**
+* This is the utility for logging bot's activity, to make it easy for 
+* the bot's owner to keep track of how the bot is being used.
+*/
 const Discord = require("discord.js");
 module.exports = { 	
   name: 'log', 
@@ -8,7 +12,6 @@ module.exports = {
   master: true,
   aliases: [],
   legend: "x",
-  catefory: "administrative",
   async execute(message, args, client, Config, type, command, error, guild) { 	
    /* let log_guild_id;
     let complete_log_channel_id;

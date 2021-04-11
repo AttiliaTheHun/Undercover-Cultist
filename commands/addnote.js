@@ -8,6 +8,7 @@ module.exports = {
   master: false,
   aliases: ["createnote"],
   legend: "text",
+  category: "utility",
   async execute(message, args, client, Config, Masters, Bans, Notes, sequelize) { 	
     try {
         if(!message.member.hasPermission('MANAGE_MESSAGES')){
