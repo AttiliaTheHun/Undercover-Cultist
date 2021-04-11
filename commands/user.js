@@ -1,3 +1,4 @@
+const utils = require('../util/utils.js');
 const Discord = require('discord.js');
 module.exports = {
   name: 'user',
@@ -6,26 +7,12 @@ module.exports = {
   note: "",
   permissions: "",
   master: false,
-  aliases: ["profile", "useinfo", "member", "memberinfo", "whois"],
+  aliases: ["profile", "userinfo", "member", "memberinfo", "whois", "stalk"],
   legend: "mention, id, username",
-execute(message, args, client){
+  category: "informative",
+  async execute(message, args, client){
   
-if(!args.join(" ").includes("#") && isNaN(args[0]) && args[0] != null && message.mentions.members.first == null){
-   message.channel.send("IlegalArgumentException: \`user tag or ID is the only acceptable argument\`");
-return;
-}
-  let user;
-  if(args[0] == null){
-    user = message.member;
-}else if(message.mentions.members.first() != null){
-  user = message.mentions.members.first();
-}else if(isNaN(args[0])){ 
-    let tag = args.join(" ");
-    let username= tag.substring(0, tag.indexOf("#"));
-  user = message.guild.members.cache.find(user => user.user.username.includes(username));
-  }else{
-     user = message.guild.members.cache.get(args[0]);
-  }
+  let user = await utils.resolveUser(message, args);
   if(user == undefined){
     return message.channel.send("Could not find the user.")
   }

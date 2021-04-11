@@ -12,10 +12,12 @@ module.exports = {
   master: false,
   aliases: ["p", "underhand", "u"],
   legend: "blessings",
+  category: "underhand",
   async execute(message, args, client) { 	
   
     if(message.guild.id == 643706781427695616 && (message.channel.id != 721735042682060853 && message.channel.id != 766993942242787369)){
- 	            return message.channel.send("Not in this channel please");
+ 	            message.channel.send("Not in this channel please");
+      return;
             }
     
          class Option{

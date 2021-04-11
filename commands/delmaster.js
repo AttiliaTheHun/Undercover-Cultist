@@ -8,7 +8,8 @@ module.exports = {
   master: true,
   aliases:  ["deletemaster", "remmaster", "removemaster"],
   legend: "mention, id",
-  async execute(message, args, client, Config, Masters, Bans, Notes) { 		
+  category: "administrative",
+  async execute(message, args, client, Config, Masters, Bans, Notes, sequelize) { 		
     
     let id
     let member;
@@ -25,10 +26,10 @@ module.exports = {
       member = message.mentions.members.first();
       id = member.id;
     } 	
-    
-    const rowCount = await Masters.destroy({ where: { user: id} });
-    if (!rowCount){
+    const [result, metadata] = await sequelize.query(`DELETE FROM Masters WHERE user = '${id}'`);
+    if (!result){
       message.reply('That user was not a bot Master.');
+      return;
     } 
 
     message.reply('This user is no longer a bot Master.');

@@ -8,6 +8,7 @@ module.exports = {
   master: false,
   aliases: ["serverinfo", "guild", "guildinfo"],
   legend: "",
+  category: "informative",
 execute(message, args, client){
 let owner;
   

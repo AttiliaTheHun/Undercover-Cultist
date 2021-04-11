@@ -8,15 +8,15 @@ module.exports = {
   master: false,
   aliases: [],
   legend: "",
-  async execute(message, args, client, Config, Masters, Bans, Notes) { 		
+  category: "utility",
+  async execute(message, args, client, Config, Masters, Bans, Notes, sequelize) { 		
     
     if(!message.member.hasPermission('ADMINISTRATOR')){
       message.reply('Haha, this is admin-only command.');
       return; 
     }
-    
-    const rowCount = await Notes.destroy({ where: { server: message.guild.id} });
-if (!rowCount){
+    const [result, metadata] = await sequelize.query(`DELETE FROM Notes WHERE server = '${message.guild.id}';`);
+if (!result){
   message.reply('No notes to clear.');
   return; 
 } 

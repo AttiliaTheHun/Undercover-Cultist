@@ -1,3 +1,4 @@
+const { QueryTypes } = require('sequelize');
 const Discord = require("discord.js");
 module.exports = { 	
     name: 'bans', 	
@@ -8,10 +9,21 @@ module.exports = {
   master: true,
   aliases: ["botbans"],
   legend: "",
-  async execute(message, args, client, Config, Masters, Bans, Notes) { 	
+  category: "informative",
+  async execute(message, args, client, Config, Masters, Bans, Notes, sequelize) { 	
+    let bans;
+    let where = "";
     try{
-      const bans = await Bans.findAll({ where: { server: message.guild.id, global: false } || { global: true }, /*raw: true*/});
-      if (bans) {
+      if(args[0] == "-global"){
+      where = `WHERE global = true`;
+      }else if(args[0] == "-local"){
+        where = `WHERE server = ${message.guild.id} AND global = false`;
+     }else{
+       where = `WHERE  (server = ${message.guild.id} AND global = false) OR (global = true)`;
+         }
+      const [bans, metadata] = await sequelize.query(`SELECT * FROM Bans ${where};`)
+     console.log(bans);
+        if (bans) {
   if(bans.length > 0){
 let embed = new Discord.MessageEmbed() 
     .setColor('#ffbc03') 	
@@ -24,15 +36,15 @@ let embed = new Discord.MessageEmbed()
     let banned_by_username;
     let banned_by_id;
   for(let i = 0; i < bans.length; i++){
-   id = bans[i].get('user');
+   id = bans[i].user;
     member = message.guild.members.cache.get(id);
     username = member.user.username + "#" + member.user.discriminator;
 
-      username += (bans[i].get('global')) ? " Global": " Local";
-  banned_by_id = bans[i].get('banned_by');
+      username += (bans[i].global) ? " Global": " Local";
+  banned_by_id = bans[i].banned_by;
   banned_by_member = message.guild.members.cache.get(banned_by_id);
   banned_by_username = banned_by_member.user.username + "#" + banned_by_member.user.discriminator;
-    embed.addField(username, `**Banned By:** ${banned_by_username}\n**Reason:** ${bans[i].get('reason')}`, false);	
+    embed.addField(username, `**Banned By:** ${banned_by_username}\n**Reason:** ${bans[i].reason}`, false);	
   }
 	embed.setFooter('Undercover Cultist#5057', ''); 
     message.channel.send(embed);

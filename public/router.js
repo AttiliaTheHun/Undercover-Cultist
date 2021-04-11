@@ -1,14 +1,14 @@
-/* This section of code is used by the install and setup guides, if you modify it make sure you still are hosting a webpage (seen in "show") or Uptime Robot will stop working */
+/**
+* This router handles GET requests to make Uptime Robot able to wake up
+* the Heroku application
+*/
 
 const express = require("express");
 const router = express.Router();
 
-
-
 router.get("/", function(request, response) {
-  response.sendFile(__dirname + "/views/index.html");
+  response.sendFile(__dirname + "/index.html");
 });
-
 
 router.get("/domainname", function(request, response) {
   let domain = process.env.PROJECT_DOMAIN;
@@ -16,6 +16,5 @@ router.get("/domainname", function(request, response) {
     message: domain
   });
 });
-
 
 module.exports = router;

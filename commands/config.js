@@ -8,10 +8,11 @@ module.exports = {
   master: true,
   aliases: ["cfg", "env"],
   legend: "",
-  async execute(message, args, client, Config, Masters, Bans, Notes) { 		
+  category: "administrative",
+  async execute(message, args, client, Config, Masters, Bans, Notes, sequlize) { 		
     try{
       if(args[0] == null){ 
-        const config = await Config.findAll({ where: {}});
+        const [config, metadata] = await Config.findAll({ where: {}});
         if (config) {
           if(config.length > 0){
 

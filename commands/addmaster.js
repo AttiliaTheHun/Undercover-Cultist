@@ -8,7 +8,8 @@ module.exports = {
   master: true,
   aliases: [],
   legend: "mention, id",
-  async execute(message, args, client, Config, Masters, Bans, Notes) { 	
+  category: "administrative",
+  async execute(message, args, client, Config, Masters, Bans, Notes, sequelize) { 	
     try {
         
         let today = new Date();
@@ -32,12 +33,7 @@ module.exports = {
             member = message.mentions.members.first();
             id = member.id;
         } 	
-      
-        const tag = await Masters.create({
-          user: id,
-		      promoted_by: message.author.id,
-		      date: today
-	      });
+        const [result, metadata] = await sequelize.query(`INSERT INTO Masters (user, promoted_by, date) VALUES ('${id}', '${message.author.id}', '${today}');`);
         message.reply(`<@${id}> is now a bot Master.`);
 	      return; 
        

@@ -9,6 +9,7 @@ module.exports = {
   master: false,
   aliases: ["commands"],
   legend: "",
+  category: "informative",
   execute(message, args, client) {
     
  try{

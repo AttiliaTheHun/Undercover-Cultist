@@ -8,6 +8,7 @@ module.exports = {
   master: false,
   aliases: ["shownotes"],
   legend: "",
+  category: "utility",
   async execute(message, args, client, Config, Masters, Bans, Notes) { 	
     try{
       const notes = await Notes.findAll({ where: { server: message.guild.id }, /*raw: true*/});

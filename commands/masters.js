@@ -8,9 +8,10 @@ module.exports = {
   master: true,
   aliases: ["listmasters", "botmasters"],
   legend: "",
-  async execute(message, args, client, Config, Masters, Bans, Notes) { 		
+  category: "informative",
+  async execute(message, args, client, Config, Masters, Bans, Notes, sequelize) { 		
     try{
-        const masters = await Masters.findAll({ where: {}});
+        const [masters, metadata] = await sequelize.query('SELECT * FROM Masters;');
         if (masters) {
           if(masters.length > 0){
 
@@ -25,10 +26,10 @@ module.exports = {
              let promoted_by_username;
             
              for(let i = 0; i < masters.length; i++){
-               master_id = masters[i].get('user');
+               master_id = masters[i].user;
                master_member = message.guild.members.cache.get(master_id);
                master_username = master_member.user.username + "#" + master_member.user.discriminator;
-               promoted_by_id = masters[i].get('promoted_by');
+               promoted_by_id = masters[i].promoted_by;
                promoted_by_member = message.guild.members.cache.get(promoted_by_id);
                promoted_by_username = promoted_by_member.user.username + "#" + promoted_by_member.user.discriminator;
                
