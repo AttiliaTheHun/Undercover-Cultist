@@ -32,15 +32,6 @@
         "max": 2
       }
     ],
-    "no-console": [
-      "error",
-      {
-        "allow": [
-          "warn",
-          "error"
-        ]
-      }
-    ],
     // "no-empty-function": "warn",
     "no-floating-decimal": "error",
     "no-multi-spaces": "error",
@@ -66,6 +57,7 @@
       "error"
     ],
     "no-useless-catch": "off",
+    "no-case-declarations": "off",
     "no-var": "error",
     "object-curly-spacing": [
       "error",
