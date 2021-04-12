@@ -1,5 +1,5 @@
 module.exports = {
-  name: "masterhelp",
+  name: "softban",
   syntax: "winscreen",
   description: "Sends in screen texture",
   note: "",
@@ -7,7 +7,7 @@ module.exports = {
   master: false,
   aliases: [],
   legend: "",
-  category: "informative",
+  category: "utility",
   execute(message) {
     message.channel.send("WinScreen", {
       files: ["http://underhand.clanweb.eu/res/WinScreen.png"]

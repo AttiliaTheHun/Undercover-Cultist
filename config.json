@@ -1,10 +1,13 @@
 {
-  "token" : "Sozin's comet",
-  "prefix" : "!c ",
-  "version" : "2.1",
-  "default_master" : "651459267718545489",
-  "log_guild" : "714932914089099335",
-  "complete_log_channel" : "806437144653856789",
-  "event_log_channel" : "806437179999780924",
-  "dm_dump_channel" : "819890681773948939"
+  "token": "Sozin's comet",
+  "prefix": "!b ",
+  "version": "2.1",
+  "default_master": "651459267718545489",
+  "log_guild": "714932914089099335",
+  "complete_log_channel": "806437144653856789",
+  "event_log_channel": "806437179999780924",
+  "dm_dump_channel": "819890681773948939",
+  "repo_link": "",
+  "support_server_invite": "",
+  "bot_invite_code": ""
 }
