@@ -1,6 +1,6 @@
-module.exports = { 	
-  name: 'softban', 	
-  syntax: 'winscreen',
+module.exports = {
+  name: "softban",
+  syntax: "winscreen",
   description: "Sends in screen texture",
   note: "",
   permissions: "",
@@ -8,9 +8,9 @@ module.exports = {
   aliases: [],
   legend: "",
   category: "utility",
-  execute(message, args) { 			
-	  message.channel.send("WinScreen",{
-		  files:["http://underhand.clanweb.eu/res/WinScreen.png"]
-	  });
-	}, 
+  execute(message) {
+    message.channel.send("WinScreen", {
+      files: ["http://underhand.clanweb.eu/res/WinScreen.png"]
+    });
+  },
 };

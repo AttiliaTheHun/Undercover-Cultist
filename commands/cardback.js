@@ -1,6 +1,6 @@
-module.exports = { 	
-  name: 'cardback', 	
-  syntax: 'cardback', 
+module.exports = {
+  name: "cardback",
+  syntax: "cardback",
   description: "Sends cardback texture",
   note: "",
   permissions: "",
@@ -8,9 +8,9 @@ module.exports = {
   aliases: [],
   legend: "",
   category: "underhand",
-  execute(message, args) { 		
-	  message.channel.send("Cardback",{
-		  files:["http://underhand.clanweb.eu/res/Cardback.png"]
-	  });
-  }, 
+  execute(message) {
+    message.channel.send("Cardback", {
+      files: ["http://underhand.clanweb.eu/res/Cardback.png"]
+    });
+  },
 };

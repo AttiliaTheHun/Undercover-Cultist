@@ -1,6 +1,6 @@
-module.exports = { 	
-  name: 'generate', 	
-  syntax: 'generate [number(0-21)]/["change"]', 	
+module.exports = {
+  name: "generate",
+  syntax: "generate [number(0-21)]/[\"change\"]",
   description: "Generates target number of Underhand-themed nicknames, used with \"change\" will change your nickname to Underhand-themed one",
   note: "Please use this command only in bot commands channels",
   permissions: "",
@@ -8,32 +8,32 @@ module.exports = {
   aliases: ["gen"],
   legend: "number",
   category: "underhand",
-  execute(message, args) { 		
-    try{
-       if(args[0] == null){
-        message.channel.send(`NullPointerException: \`You must provide an argument\``);
-        return; 
-      } 
-      if(!isNaN(args[0]) && 0 < args[0] && args[0] < 21 || args[0] == "change" || args[0] == "set" || args[0] == "ch" || args[0] == "s"){
-        if(isNaN(args[0])){
-           message.member.setNickname(module.exports.generate()).catch(err => {
-             message.reply("WTF gimme me permissions bruh");
-           });
-        }else{
+  execute(message, args) {
+    try {
+      if (args[0] == null) {
+        message.channel.send("NullPointerException: `You must provide an argument`");
+        return;
+      }
+      if (!isNaN(args[0]) && args[0] > 0 && args[0] < 21 || args[0] == "change" || args[0] == "set" || args[0] == "ch" || args[0] == "s") {
+        if (isNaN(args[0])) {
+          message.member.setNickname(module.exports.generate()).catch(() => {
+            message.reply("WTF gimme me permissions bruh");
+          });
+        } else {
           let response = "";
-          for(let i = args[0]; i > 0; i--){
+          for (let i = args[0]; i > 0; i--) {
             response += module.exports.generate() + "\n";
           }
           message.channel.send(response);
         }
-      }else{
-        message.channel.send(`IllegalArgumentException: \`Number range should be in between 0-21excluded\``);
-      } 	
-    }catch(err){
+      } else {
+        message.channel.send("IllegalArgumentException: `Number range should be in between 0-21excluded`");
+      }
+    } catch (err) {
       console.log(err);
     }
   },
-  generate(){
+  generate() {
     const templates = ["[superlative] [person]", "The [person] of [action]", "[person] in [location]"];
     const person = ["Beginner", "Prisoner", "Assassin", "Salesperson", "Milkman", "Vendor", "Cultist", "Soothsayer", "Collector", "Farmer", "Ancestor", "Guest", "Necromancer", "Aeromancer", "Hatchling", "Fisherman"];
     const superlative = ["Mysterious", "Golden", "Dead", "Rival", "Horrific", "Dark", "Eggcelent", "Tea", "Long", "Hungry", "Hideous", "Desperate", "Small", "Failing", "Booming", "Insatiable", "Red", "Greedy", "Holiday", "Ancestral", "Police", "Bountiful", "Suspicious", "Tasty", "Haunted", "Cyclopean", "Sacrificial", "Undercover", "Wandering", "Recruiting", "Travelling", "Losing", "Importing"];
