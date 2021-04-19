@@ -8,15 +8,15 @@ module.exports = {
   aliases: ["banuser", "banmember"],
   legend: "mention, id",
   category: "utility",
-  async execute(message, args, {resolveUser}) {
+  async execute(message, args, utils) {
     //  try{
     if (!message.member.hasPermission("BAN_MEMBERS")) {
       message.reply("You are not allowed to do this.");
       return;
     }
 
-    const member = await resolveUser(message, args);
-    if (!member) {
+    const member = await utils.resolveUser(message, args);
+    if (!member || member.id == message.member.id) {
       message.channel.send("Could not find the user.");
       return 
     }

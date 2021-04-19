@@ -26,6 +26,7 @@ module.exports = {
 
       if (results) {
         if(results.length > 0 && results != []){
+          console.log(results)
           return results[0].value;
          }     
         }else if(configDotJSON[name]){
@@ -112,17 +113,15 @@ module.exports = {
     let client = embed.client;
     embed.client = undefined;
 
-     // let log_guild_id = await module.exports.getConfig('log_guild');
     let complete_log_channel_id = await module.exports.getConfig('complete_log_channel');
   
-    //const log_guild = client.guilds.cache.get(log_guild_id);
     let complete_log_channel = await client.channels.cache.get(complete_log_channel_id);
       complete_log_channel.send({embed : embed});
 
 
     if(logAsEvent){
-      let event_log_channel_id = module.exports.getConfig('event_log_channel');
-      let event_log_channel = client.channels.cache.get(event_log_channel_id);
+      let event_log_channel_id = await module.exports.getConfig('event_log_channel');
+      let event_log_channel = await client.channels.cache.get(event_log_channel_id);
       event_log_channel.send({embed : embed});
     }
   },
@@ -290,11 +289,9 @@ module.exports = {
   async dumpDM(embed){
     let client = embed.client;
     embed.client = undefined;  
-    let dump_guild_id = await module.exports.getConfig('log_guild');
     let dm_dump_channel_id = await module.exports.getConfig('dm_dump_channel');
 
-    const dump_guild = await client.guilds.cache.get(dump_guild_id);
-    const dm_dump_channel = await dump_guild.channels.cache.get(dm_dump_channel_id);
+    const dm_dump_channel = await client.channels.cache.get(dm_dump_channel_id);
 
     dm_dump_channel.send(embed);
   },
@@ -338,28 +335,45 @@ module.exports = {
   buildEmbed(embedContent){
     let embed = new Discord.MessageEmbed()
     if(embedContent.title){
-    embed.setTitle(embedContent.title);
+      embed.setTitle(embedContent.title);
     }
-    embed.setColor(embedContent.color)
+    if(embedContent.color){
+      embed.setColor(embedContent.color)
+    }
     if(embedContent.description){
-    embed.setDescription(embedContent.description);
+      embed.setDescription(embedContent.description);
     }
-    embed.addFields(embedContent.fields.filter(field => field.value != ""));
+    if(embedContent.fields){
+      embed.addFields(embedContent.fields.filter(field => field.value != ""));
+    }
     if(embedContent.footer){
-    embed.setFooter(embedContent.footer.text, embedContent.footer.icon_url);
+      embed.setFooter(embedContent.footer.text, embedContent.footer.icon_url);
     }
     if(embed.timestamp){
       embed.setTimestamp();
     }
+    if(embed.author){
+      embed.setAuthor(embedContent.author.name, embedContent.author.icon_url, embedContent.author.url);
+    }
+    if(embedContent.url){
+      embed.setUrl(embedContent.url)
+    }
+    if(embedContent.image){
+      embed.setImage(embedContent.image.url)
+    }
+     if(embedContent.thumbnail){
+      embed.setThumbnail(embedContent.thumbnail.url)
+    }
     if(embedContent.client){
       embed.client = embedContent.client;
     }
-  return embed
+    
+    return embed
   },
   
   async query(query){
     try{
-      const {results, metadata} = await sequelize.query(query);
+      const [results, metadata] = await sequelize.query(query);
       return results;
     }catch(err){
       console.log(err);
@@ -386,7 +400,7 @@ module.exports = {
   async isGuildIgnored(guild){
     let does_ignore_record_exists = await module.exports.getConfig('ignored_guild', guild.id);
    
-    console.log(does_ignore_record_exists);//in case of absence of such record false is returned which does not pass the if statement
+    //in case of absence of such record false is returned which does not pass the if statement
     if(does_ignore_record_exists){
       return true;
     }

@@ -9,11 +9,7 @@ module.exports = {
   aliases: [],
   legend: "",
   category: "administrative",
-  async execute(message, args, client, Config, Masters, Bans, Notes, sequelize) {
-    // let [result, metadata] = await sequelize.query(`SELECT * FROM Config WHERE name = '${args[0]}'`);
-    const config = await utils.getConfig(sequelize, Config, args[0], undefined, true);
-    message.channel.send(config);
-    // message.channel.send("Result: " + result.length);
-    //console.log(result)
+  async execute(message, args, utils) {
+
   },
 };

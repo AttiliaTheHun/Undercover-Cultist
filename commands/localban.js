@@ -9,7 +9,7 @@ module.exports = {
   aliases: ["lban"],
   legend: "mention, id",
   category: "administrative",
-  async execute(message, args, client, Config, Masters, Bans, Notes, sequelize) {
+  async execute(message, args, utils) {
     try {
 
       let today = new Date();
@@ -19,12 +19,12 @@ module.exports = {
       today = mm + "/" + dd + "/" + yyyy;
 
       const user = await utils.resolveUser(message, args);
-      if (user == undefined) {
+      if (!user || user.id == message.member.id) {
         return message.channel.send("Could not find the user.")
       }
       const id = user.user.id;
       args.shift();
-      await sequelize.query(`INSERT INTO bans (server, global, user, banned_by, date, reason) VALUES ('${message.guild.id}', false, '${id}', '${message.author.id}', '${today}', '${args.join(" ")}');`);
+      let result = await utils.query(`INSERT INTO bans (server, global, user, banned_by, date, reason) VALUES ('${message.guild.id}', false, '${id}', '${message.author.id}', '${today}', '${args.join(" ")}');`);
 
       message.reply(`<@${id}> is locally banned from the bot usage.`);
       return;

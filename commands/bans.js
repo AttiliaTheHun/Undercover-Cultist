@@ -8,7 +8,7 @@ module.exports = {
   aliases: ["botbans"],
   legend: "",
   category: "informative",
-  async execute(message, args, {query, getUserNameStringFromMember}) {
+  async execute(message, args, utils) {
     let where = "";
     try {
       if (args[0] == "-global") {
@@ -18,7 +18,7 @@ module.exports = {
       } else {
         where = `WHERE (server = ${message.guild.id} AND global = false) OR (global = true)`;
       }
-      const [bans, metadata] = await query(`SELECT * FROM Bans ${where};`);
+      const [bans, metadata] = await utils.query(`SELECT * FROM Bans ${where};`);
       if (bans) {
         if (bans.length > 0) {
           let embed = {
@@ -36,11 +36,11 @@ module.exports = {
           for (let i = 0; i < bans.length; i++) {
             id = bans[i].user;
             member = message.guild.members.cache.get(id);
-            username = getUserNameStringFromMember(member);
+            username = utils.getUserNameStringFromMember(member);
             username += (bans[i].global) ? " Global" : " Local";
             banned_by_id = bans[i].banned_by;
             banned_by_member = message.guild.members.cache.get(banned_by_id);
-            banned_by_username = getUserNameStringFromMember(banned_by_member);
+            banned_by_username = utils.getUserNameStringFromMember(banned_by_member);
             embed.fields.push({
               name: username,
               value: `**Banned By:** ${banned_by_username}\n**Reason:** ${bans[i].reason}`,
@@ -50,7 +50,8 @@ module.exports = {
           embed.footer = {
             text:"Undercover Cultist#5057"
           };
-          message.channel.send(embed);
+          
+          message.channel.send(utils.buildEmbed(embed));
           return;
         }
       }

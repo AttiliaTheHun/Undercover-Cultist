@@ -11,10 +11,6 @@ module.exports = (sequelize, DataTypes, Model) => {
       type: DataTypes.STRING(20),
       unique: false
     },
-    date: {
-      type: DataTypes.STRING,
-      unique: false
-    },
     note: {
       type: DataTypes.STRING(600),
       unique: false

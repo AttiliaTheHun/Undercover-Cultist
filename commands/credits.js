@@ -8,7 +8,7 @@ module.exports = {
   aliases: ["about", "info", "botinfo"],
   legend: "",
   category: "informative",
-  async execute(message, args, {client, getConfig}) {
+  async execute(message, args, utils) {
 
     let embed = {
       title: "Credits",
@@ -27,22 +27,22 @@ module.exports = {
         },
         {
           name: "Version",
-          value: getConfig('version'),
+          value: await utils.getConfig('version'),
           inline: true
         },
         {
           name: "Invite",
-          value: `[link](${getConfig('bot_invite_link')})`,
+          value: `[link](${await utils.getConfig('bot_invite_link')})`,
           inline: true
         },
         {
           name: "Support Server",
-          value: `[link](${getConfig('support_server_invite_link')})`,
+          value: `[link](${await utils.getConfig('support_server_invite_link')})`,
           inline: true
         },
         {
           name: "Source Code",
-          value: `[link](${getConfig('source_code_link')})`,
+          value: `[link](${await utils.getConfig('source_code_link')})`,
           inline: true
         },
         {
@@ -52,7 +52,7 @@ module.exports = {
         },
         {
           name: "Servers",
-          value: client.guilds.cache.size,
+          value: message.client.guilds.cache.size,
           inline: true
         },
         {
@@ -68,7 +68,7 @@ module.exports = {
     }
     try {
      
-      message.channel.send(embed);
+      message.channel.send(utils.buildEmbed(embed));
 
     } catch (err) {
       console.log(err);

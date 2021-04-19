@@ -75,12 +75,6 @@ client.on("message", async message => {
   }
 
   //let prefix = await utils.getConfig(sequelize, Config, 'prefix', true);
-  let nickname = message.guild.members.cache.get(client.user.id).nickname;
-  if(nickname && nickname.includes(client.user.username)){
-    prefix = nickname.substring(0, nickname.indexOf(client.user.username));
-  }else{
-    prefix = config.prefix;
-  }
   
   
   /*

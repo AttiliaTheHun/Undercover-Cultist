@@ -8,18 +8,15 @@ module.exports = {
   aliases: ["createnote"],
   legend: "text",
   category: "utility",
-  async execute(message, args, client, Config, Masters, Bans, Notes, sequelize) {
+  async execute(message, args, utils) {
     try {
       if (!message.member.hasPermission("MANAGE_MESSAGES")) {
         message.reply("Nono, you need to have `MANAGE_MESSAGES` permission for this command");
         return;
       }
-      let today = new Date();
-      const dd = String(today.getDate()).padStart(2, "0");
-      const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-      const yyyy = today.getFullYear();
-
+      
       const note = args.join(" ");
+      
       if (note.length > 600) {
         message.reply("The note is too long, please fix it under 600 characters.");
         return;
@@ -27,14 +24,12 @@ module.exports = {
         message.reply("The note is *too* short.");
         return;
       }
-      today = mm + "/" + dd + "/" + yyyy;
+      
+      utils.sanitize(note);
+      
+      let query = `INSERT INTO Notes (server, author, note) VALUES ('${message.guild.id}', '${message.author.id}', '${note}');`;
 
-      const tag = await Notes.create({
-        server: message.guild.id,
-        author: message.author.id,
-        date: today,
-        note: note,
-      });
+      let result = await utils.query(query);
       message.reply("Note added.");
       return;
 

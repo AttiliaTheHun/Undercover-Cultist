@@ -9,14 +9,14 @@ module.exports = {
   aliases: ["gunban"],
   legend: "mention, id",
   category: "administrative",
-  async execute(message, args, client, Config, Masters, Bans, Notes, sequelize) {
+  async execute(message, args, utils) {
 
     const user = await utils.resolveUser(message, args);
-    if (user == undefined) {
+    if (!user || user.id == message.member.id) {
       return message.channel.send("Could not find the user.")
     }
 
-    const [result, metadata] = await sequelize.query(`DELETE FROM Bans WHERE user = '${user.id}' AND global = true;`);
+    const [result, metadata] = await utils.query(`DELETE FROM Bans WHERE user = '${user.id}' AND global = true;`);
     if (!result) {
       message.reply("That user was not globally banned.");
       return;

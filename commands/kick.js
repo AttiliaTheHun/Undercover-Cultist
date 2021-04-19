@@ -16,7 +16,7 @@ if (!message.member.hasPermission("BAN_MEMBERS")) {
     }
 
     const member = await resolveUser(message, args);
-    if (!member) {
+    if (!member || member.id == message.member.id) {
       message.channel.send("Could not find the user.");
       return 
     }

@@ -8,10 +8,11 @@ module.exports = {
   aliases: ["rawquery"],
   legend: "",
   category: "utility",
-  async execute(message, args, {query}) {
+  async execute(message, args, utils) {
     try {
-      await query(args.join(" "));
-      message.channel.send("Query executed");
+      let result = await utils.query(args.join(" "));
+      message.channel.send("Result length: " + result.length);
+      console.log(result);
     } catch (err) {
       console.log(err);
       return err;

@@ -92,7 +92,7 @@ module.exports = {
       legend = legend.replace("id", "[id] user id, for example 672748100007362561");
       legend = legend.replace("mention", "[mention] user mention, for example <@672748100007362561>")
       legend = legend.replace("username", "[username] user name and his tag, for example Undercover Cultist#5057");
-      legend = legend.replace("uce-formatted-text", "[uce-formatted-text] a text that is processed by special formatting");
+      legend = legend.replace("emd-formatted-text", "[emd-formatted-text] a text that is processed by special formatting");
       legend = legend.replace("blessings", "[blessings] string containing first letters of target gods names, for example ykj");
 
       embed.fields = [{
