@@ -6,7 +6,7 @@ module.exports = {
   name: "play",
   syntax: "play [\"load\"]/[blessings]",
   description: "Starts a game of Underhand right here in dicord",
-  note: "Complete guide can be found in <#767455245382320138> in the [Underhand server](https://discord.gg/invite/Rb5kUzE)\nThis can produce tons of spam so please, use it in designed channels or bot commands channels",
+  note: "Complete guide can be found in <#767455245382320138> in the [Underhand server](https://discord.gg/invite/Rb5kUzE)\nThis can produce tons of spam so please, use it in designated channels or bot commands channels",
   permissions: "",
   master: false,
   aliases: ["p", "underhand", "u"],

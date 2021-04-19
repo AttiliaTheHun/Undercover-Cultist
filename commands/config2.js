@@ -96,9 +96,9 @@ module.exports = {
     if (input.includes(";")) {
       const oldValue = input.substring(input.indexOf(";") + 1, input.lastIndexOf(";")).trim();
       const newValue = input.substring(input.lastIndexOf(";") + 1).trim();
-      query = `UPDATE Config SET value = '${newValue}' WHERE name='${name}' AND value = '${oldValue}'`;
+      query = `UPDATE Config SET value = '${newValue}', last_updated_by = '${message.author.id}' WHERE name='${name}' AND value = '${oldValue}'`;
     } else {
-      query = `UPDATE Config SET value = '${input}' WHERE name='${name}'`;
+      query = `UPDATE Config SET value = '${input}', last_updated_by = '${message.author.id}' WHERE name='${name}'`;
       const [rowCount, metadata] = await sequelize.query(`${query};`);
       if (!rowCount) {
         message.reply("That record cannot be found.");

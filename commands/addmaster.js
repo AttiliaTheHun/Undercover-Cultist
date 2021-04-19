@@ -8,32 +8,21 @@ module.exports = {
   aliases: [],
   legend: "mention, id",
   category: "administrative",
-  async execute(message, args, client, Config, Masters, Bans, Notes, sequelize) {
+  async execute(message, args, {resolveUser, query}) {
     try {
-
+/*
       let today = new Date();
       const dd = String(today.getDate()).padStart(2, "0");
       const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
       const yyyy = today.getFullYear();
-      today = mm + "/" + dd + "/" + yyyy;
-
-      let id
-      let member;
-      if (!isNaN(args[0])) {
-        id = args[0];
-        member = await message.guild.members.fetch(id);
-        if (member == undefined) {
-          message.reply("This ID does not seem to belong to any member");
-        }
-      } else {
-        if (!message.content.includes("<@")) {
-          message.reply("I can't identify the user from this, sorry");
-        }
-        member = message.mentions.members.first();
-        id = member.id;
+      today = mm + "/" + dd + "/" + yyyy;*/
+      let member = resolveUser(message, args);
+      if(!member){
+        message.channel.send("Couldn't identify the user.");
+        return;
       }
-      await sequelize.query(`INSERT INTO Masters (user, promoted_by, date) VALUES ('${id}', '${message.author.id}', '${today}');`);
-      message.reply(`<@${id}> is now a bot Master.`);
+      await query(`INSERT INTO Masters (user, promoted_by) VALUES ('${member.user.id}', '${message.author.id}');`);
+      message.reply(`<@${member.user.id}> is now a bot Master.`);
       return;
 
     } catch (e) {

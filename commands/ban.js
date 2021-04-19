@@ -1,4 +1,3 @@
-const utils = require("../util/utils.js");
 module.exports = {
   name: "ban",
   syntax: "ban [mention]/[id]",
@@ -6,23 +5,20 @@ module.exports = {
   note: "",
   permissions: "`BAN_MEMBERS`",
   master: false,
-  aliases: ["banuser"],
+  aliases: ["banuser", "banmember"],
   legend: "mention, id",
   category: "utility",
-  async execute(message, args) {
+  async execute(message, args, {resolveUser}) {
     //  try{
     if (!message.member.hasPermission("BAN_MEMBERS")) {
-      message.reply("SecurityException: `Missing permission`");
+      message.reply("You are not allowed to do this.");
       return;
     }
-    if (args[0] == null) {
-      message.channel.send("NullPointerException: `You must provide an argument`");
-      return;
-    }
-    let member;
-    const user = await utils.resolveUser(message, args);
-    if (user == undefined) {
-      return message.channel.send("Could not find the user.")
+
+    const member = await resolveUser(message, args);
+    if (!member) {
+      message.channel.send("Could not find the user.");
+      return 
     }
     if (!member.bannable) {
       message.reply("This member is above my might, I can't ban him");
@@ -30,7 +26,7 @@ module.exports = {
     }
     args.shift();
     member.ban(args.join(" "));
-    message.reply(`The fake cultist <@${user.id}> was banned from this sacred place.`);
+    message.reply(`The fake cultist <@${member.user.id}> was banned from this sacred place.`);
     /*  }catch(err){
         console.log(err);
         message.reply("WTF gimme me permissions bruh");
