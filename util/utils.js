@@ -23,14 +23,13 @@ module.exports = {
     try{
       const results = await module.exports.query(`SELECT * FROM Configs ${where};`);
       
-
       if (results) {
         if(results.length > 0 && results != []){
-          console.log(results)
           return results[0].value;
          }     
-        }else if(configDotJSON[name]){
-          return configDotJSON[name];   
+        }
+          if(configDotJSON[`${name}`]){
+          return configDotJSON[`${name}`];   
       }
       return false;
     }catch(err){
@@ -116,7 +115,7 @@ module.exports = {
     let complete_log_channel_id = await module.exports.getConfig('complete_log_channel');
   
     let complete_log_channel = await client.channels.cache.get(complete_log_channel_id);
-      complete_log_channel.send({embed : embed});
+    complete_log_channel.send({embed : embed});
 
 
     if(logAsEvent){

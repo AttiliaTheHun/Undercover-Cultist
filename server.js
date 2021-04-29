@@ -2,7 +2,7 @@
 * App entry point
 * This file contains the logic behind handling commands and events
 */
-
+require('dotenv').config();
 const express = require("express");
 const sequelize = require("./db/models/index.js");
 
@@ -48,22 +48,15 @@ client.once("ready", () => {
 client.on("message", async message => {
   let args;
 
-  if (message.content.toLowerCase().includes("goose")) {
-    message.channel.send("Honk!");
-  }
-
-  if( await utils.isGuildIgnored(message.guild)){
-    return;
-  }
-
-  if( await utils.isChannelIgnored(message.channel)){
-    return;
-  }
-
   // ignore bots
   if (message.author.bot) {
     return;
   }
+  
+  if (message.content.toLowerCase().includes("goose")) {
+    message.channel.send("Honk!");
+  }
+  
   /**
   * DM messages can not work as commands since DM channels are quite specific and lot of
   * features may not work in the expected way. DM channels are used for some sort of 
@@ -73,9 +66,6 @@ client.on("message", async message => {
     utils.handleDM(message);
     return;
   }
-
-  //let prefix = await utils.getConfig(sequelize, Config, 'prefix', true);
-  
   
   /*
   * Check if message is meant for this bot, by checking if it starts with the bot's
@@ -95,25 +85,34 @@ client.on("message", async message => {
     return
 
   const commandName = args.shift().toLowerCase();
-
-  if( await utils.isCommandIgnoredInChannel(commandName, message.channel)){
-    return;
-  }
   
-  const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-
-  if (!command)
-    return
- 
-
-    if ( await utils.isBanned(message.author.id, message.guild.id)) {
+  if ( await utils.isBanned(message.author.id, message.guild.id)) {
       await utils.logMessageIgnore(message);
       return;
     }
  
+  const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+
+  if (!command)
+    return
+  
   if (command.master && ! await utils.isMaster(message.author.id)) {
         await utils.logMessageIgnore(message);
         return;
+  }  
+  
+  if( await utils.isGuildIgnored(message.guild)){
+    return;
+  }
+
+  if( await utils.isChannelIgnored(message.channel)){
+    return;
+  }
+
+  //let prefix = await utils.getConfig(sequelize, Config, 'prefix', true);
+
+  if( await utils.isCommandIgnoredInChannel(commandName, message.channel)){
+    return;
   }
 
   try{

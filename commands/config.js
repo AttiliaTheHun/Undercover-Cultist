@@ -36,9 +36,9 @@ module.exports = {
         if (filter == "-important") {
           important = true;
         } else if (filter == "-prohibitions") {
-          query += "WHERE name LIKE '%_prohibited'";
+          query += " WHERE name LIKE '%_prohibited';";
         } else if (filter == "-ignores") {
-          query += "WHERE name LIKE 'ignored_%'";
+          query += " WHERE name LIKE 'ignored_%';";
         }
         const config = await utils.query(`${query};`);
         if (config) {

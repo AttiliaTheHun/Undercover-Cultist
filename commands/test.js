@@ -1,4 +1,4 @@
-const utils = require("../util/utils.js");
+const configDotJSON = require("../config.json");
 module.exports = {
   name: "test",
   syntax: "no stable syntax",
@@ -10,6 +10,13 @@ module.exports = {
   legend: "",
   category: "administrative",
   async execute(message, args, utils) {
-
+    let name = "complete_log_channel";
+    let value = "";
+    if(configDotJSON[name]){
+      value = configDotJSON[name];
+    }else{
+      value = false;
+    }
+    message.channel.send(value);
   },
 };
