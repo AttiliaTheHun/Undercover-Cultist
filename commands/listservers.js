@@ -9,7 +9,8 @@ module.exports = {
   aliases: [],
   legend: "",
   category: "informative",
-  execute(message, args, client) {
+  execute(message, args) {
+    let client = message.client;
     const servers = client.guilds.cache.array();
     for (const server of servers) {
       const embed = new Discord.MessageEmbed()

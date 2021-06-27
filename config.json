@@ -3,11 +3,10 @@
   "prefix": "!b ",
   "version": "2.1",
   "default_master": "651459267718545489",
-  "log_guild": "714932914089099335",
   "complete_log_channel": "806437144653856789",
   "event_log_channel": "806437179999780924",
   "dm_dump_channel": "819890681773948939",
-  "repo_link": "",
-  "support_server_invite": "",
-  "bot_invite_code": ""
+  "source_code_link": "https://github.com/AttiliaTheHun/Undercover-Cultist",
+  "support_server_invite_link": "https://discord.gg/PcS56ck",
+  "bot_invite_link": "https://discord.com/api/oauth2/authorize?client_id=672748100007362561&permissions=469892166&scope=bot"
 }

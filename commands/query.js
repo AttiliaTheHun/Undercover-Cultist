@@ -5,13 +5,14 @@ module.exports = {
   note: "It is recommended not to use this command if not necessary",
   permissions: "",
   master: true,
-  aliases: [],
-  legend: "rawquery",
+  aliases: ["rawquery"],
+  legend: "",
   category: "utility",
-  async execute(message, args, client, Config, Masters, Bans, Notes, sequelize) {
+  async execute(message, args, utils) {
     try {
-      await sequelize.query(args.join(" "));
-      message.channel.send("Query executed");
+      let result = await utils.query(args.join(" "));
+      message.channel.send("Result length: " + result.length);
+      console.log(result);
     } catch (err) {
       console.log(err);
       return err;

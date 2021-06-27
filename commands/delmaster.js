@@ -8,24 +8,17 @@ module.exports = {
   aliases: ["deletemaster", "remmaster", "removemaster"],
   legend: "mention, id",
   category: "administrative",
-  async execute(message, args, client, Config, Masters, Bans, Notes, sequelize) {
+  async execute(message, args, utils) {
 
-    let id
-    let member;
-    if (!isNaN(args[0])) {
-      id = args[0];
-      member = await message.guild.members.fetch(id);
-      if (member == undefined) {
-        message.reply("This ID does not seem to belong to any member of this guild");
-      }
-    } else {
-      if (!message.content.includes("<@")) {
-        message.reply("I can't identify the user from this, sorry");
-      }
-      member = message.mentions.members.first();
-      id = member.id;
+
+    let member = await utils.resolveUser(message, args);
+
+    if (!member || member.id == message.member.id) {
+      message.channel.send("Could not find the user.");
+      return 
     }
-    const [result, metadata] = await sequelize.query(`DELETE FROM Masters WHERE user = '${id}'`);
+    
+    const result = await utils.query(`DELETE FROM Masters WHERE user = '${member.id}'`);
     if (!result) {
       message.reply("That user was not a bot Master.");
       return;

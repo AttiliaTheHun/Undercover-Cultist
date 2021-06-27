@@ -10,8 +10,9 @@ module.exports = {
   aliases: ["profile", "userinfo", "member", "memberinfo", "whois", "stalk"],
   legend: "mention, id, username",
   category: "informative",
-  async execute(message, args, client) {
-
+  async execute(message, args, utils) {
+    
+    let client = message.client;
     const user = await utils.resolveUser(message, args);
     if (user == undefined) {
       return message.channel.send("Could not find the user.")

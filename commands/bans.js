@@ -1,4 +1,3 @@
-const Discord = require("discord.js");
 module.exports = {
   name: "bans",
   syntax: "bans",
@@ -9,7 +8,7 @@ module.exports = {
   aliases: ["botbans"],
   legend: "",
   category: "informative",
-  async execute(message, args, client, Config, Masters, Bans, Notes, sequelize) {
+  async execute(message, args, utils) {
     let where = "";
     try {
       if (args[0] == "-global") {
@@ -17,15 +16,16 @@ module.exports = {
       } else if (args[0] == "-local") {
         where = `WHERE server = ${message.guild.id} AND global = false`;
       } else {
-        where = `WHERE  (server = ${message.guild.id} AND global = false) OR (global = true)`;
+        where = `WHERE (server = ${message.guild.id} AND global = false) OR (global = true)`;
       }
-      const [bans, metadata] = await sequelize.query(`SELECT * FROM Bans ${where};`)
-      console.log(bans);
+      const bans = await utils.query(`SELECT * FROM Bans ${where};`);
       if (bans) {
         if (bans.length > 0) {
-          const embed = new Discord.MessageEmbed()
-            .setColor("#ffbc03")
-            .setTitle("Bot Bans");
+          let embed = {
+            title: "Bot Bans",
+            color: "#FFBC03",
+            fields: []
+          }
 
           let member;
           let username;
@@ -36,18 +36,23 @@ module.exports = {
           for (let i = 0; i < bans.length; i++) {
             id = bans[i].user;
             member = message.guild.members.cache.get(id);
-            username = member.user.username + "#" + member.user.discriminator;
-
+            username = utils.getUserNameStringFromMember(member);
             username += (bans[i].global) ? " Global" : " Local";
             banned_by_id = bans[i].banned_by;
             banned_by_member = message.guild.members.cache.get(banned_by_id);
-            banned_by_username = banned_by_member.user.username + "#" + banned_by_member.user.discriminator;
-            embed.addField(username, `**Banned By:** ${banned_by_username}\n**Reason:** ${bans[i].reason}`, false);
+            banned_by_username = utils.getUserNameStringFromMember(banned_by_member);
+            embed.fields.push({
+              name: username,
+              value: `**Banned By:** ${banned_by_username}\n**Reason:** ${bans[i].reason}`,
+              inline: false
+            });
           }
-          embed.setFooter("Undercover Cultist#5057", "");
-          message.channel.send(embed);
-          return undefined;
-
+          embed.footer = {
+            text:"Undercover Cultist#5057"
+          };
+          
+          message.channel.send(utils.buildEmbed(embed));
+          return;
         }
       }
       message.reply("No banned users found");
@@ -57,7 +62,6 @@ module.exports = {
     } catch (err) {
       console.log(err);
       return err;
-
     }
 
   },

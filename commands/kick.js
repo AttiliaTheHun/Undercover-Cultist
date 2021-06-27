@@ -1,4 +1,3 @@
-const utils = require("../util/utils.js");
 module.exports = {
   name: "kick",
   syntax: "kick [mention]/[id]",
@@ -6,30 +5,28 @@ module.exports = {
   note: "",
   permissions: "`KICK_MEMBERS`",
   master: false,
-  aliases: ["kickuser"],
+  aliases: ["kickuser", "kickmember"],
   legend: "mention, id",
   category: "utility",
-  async execute(message, args) {
+  async execute(message, args, {resolveUser}) {
     //try{
-    if (!message.member.hasPermission("KICK_MEMBERS")) {
-      message.reply("SecurityException: `Missing permission`");
+if (!message.member.hasPermission("BAN_MEMBERS")) {
+      message.reply("You are not allowed to do this.");
       return;
     }
-    if (args[0] == null) {
-      message.channel.send("NullPointerException: `You must provide an argument`");
-      return;
+
+    const member = await resolveUser(message, args);
+    if (!member || member.id == message.member.id) {
+      message.channel.send("Could not find the user.");
+      return 
     }
-    const user = await utils.resolveUser(message, args);
-    if (user == undefined) {
-      return message.channel.send("Could not find the user.")
-    }
-    if (!user.kickable) {
-      message.reply("This member is above my might, I can't ban him");
+    if (!member.kickable) {
+      message.reply("This member is above my might, I can't kick him");
       return;
     }
     args.shift();
-    user.kick(args.join(" "));
-    message.reply(`The fake cultist <@${user.id}> was banished from this sacred place.`);
+    member.kick(args.join(" "));
+    message.reply(`The fake cultist <@${member.user.id}> was banished from this sacred place.`);
     /*}catch(err){
       console.log(err);
       message.reply("WTF gimme me permissions bruh");

@@ -9,7 +9,9 @@ module.exports = {
   aliases: ["serverinfo", "guild", "guildinfo"],
   legend: "",
   category: "informative",
-  execute(message, args, client) {
+  execute(message, args, utils) {
+    
+    let client = message.client;
     const owner = message.guild.owner.user.tag;
     let description = "";
     if (message.guild.description != null) {

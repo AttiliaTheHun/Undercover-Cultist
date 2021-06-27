@@ -1,4 +1,3 @@
-const utils = require("../util/utils.js");
 module.exports = {
   name: "unban",
   syntax: "unban [mention]/[id]",
@@ -9,25 +8,26 @@ module.exports = {
   aliases: [],
   legend: "mention, id",
   category: "utility",
-  async execute(message, args) {
+  async execute(message, args, utils) {
     //   try{
-    if (!message.member.hasPermission("BAN_MEMBERS")) {
-      message.reply("SecurityException: `Missing permission`");
-      return;
-    }
-    if (args[0] == null) {
-      message.channel.send("NullPointerException: `You must provide an argument`");
+if (!message.member.hasPermission("BAN_MEMBERS")) {
+      message.reply("You are not allowed to do this.");
       return;
     }
 
-    const user = await utils.resolveUser(message, args);
-    if (user == undefined) {
-      return message.channel.send("Could not find the user.")
+    const member = await utils.resolveUser(message, args);
+    if (!member || member.id == message.member.id) {
+      message.channel.send("Could not find the user.");
+      return 
+    }
+    if (!member.bannable) {
+      message.reply("This member is above my might, I can't ban him");
+      return;
     }
     args.shift();
-    message.guild.members.unban(user.id, args.join(" "));
+    message.guild.members.unban(member.user.id, args.join(" "));
 
-    message.reply(`The cultist <@${user.id}> was allowed to come back to this sacred place.`);
+    message.reply(`The cultist <@${member.user.id}> was allowed to come back to this sacred place.`);
     /*	}catch(err){
           console.log(err);
           message.reply("WTF gimme me permissions bruh");

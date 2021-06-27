@@ -12,7 +12,7 @@ module.exports = {
   legend: "number",
 
   category: "underhand",
-  async execute(message, args) {
+  async execute(message, args, utils) {
     if (args[0] == null) {
       message.channel.send("NullPointerException: `You must provide an argument`");
 
