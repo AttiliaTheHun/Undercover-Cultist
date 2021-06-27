@@ -22,9 +22,14 @@ module.exports = {
     let embedData = {};
     
     lines.forEach(line => {
-      let property_name = line.substring(line.indexOf('#') + 1, line.indexOf(' '));
+      let property_name = (line.includes(" ")) ? line.substring(line.indexOf('#') + 1, line.indexOf(' ')) : line.substring(line.indexOf('#') + 1, line.indexOf('\n'));
       let emdLine = line.substring(line.indexOf(' ')).trim();
+      console.log("property_name: " + property_name);
+      console.log("emdLine: " + emdLine);
       if(DIRECT_PROPERTIES.includes(property_name)){
+        if(property_name == "url"){
+           property_name = property_name.replace(">", "").replace("<", "");
+        }
         embedData[property_name] = emdLine;
       }else{
         switch(property_name){
@@ -49,7 +54,7 @@ module.exports = {
             break;
           case "thumbnail":
           case "image":
-            embedData[property_name].url = emdLine;
+            embedData[property_name].url = emdLine.replace(">", "").replace("<", "");
             break;
           case "footer":
             embedData.footer = parseFooter(emdLine);
@@ -67,9 +72,9 @@ module.exports = {
       #url [link] -done
       #author [value] -done
       #timestamp -done
-      #footer [text]
+      #footer [text] (icon_url)
       #thumbnail [text] -done
-      #image [text]
+      #image [url]
     */
 
     function parseField(emdLine){  
@@ -99,7 +104,7 @@ module.exports = {
     
     function parseFooter(emdLine){  
       let text = emdLine.substring(emdLine.indexOf('[')  + 1, emdLine.lastIndexOf(']'));
-      let icon_url = emdLine.substring(emdLine.indexOf('(')  + 1, emdLine.lastIndexOf(')'));
+      let icon_url = emdLine.substring(emdLine.indexOf('(')  + 1, emdLine.lastIndexOf(')')).replace(">", "").replace("<", "");
       let footer = {
         text: text,
         icon_url: icon_url

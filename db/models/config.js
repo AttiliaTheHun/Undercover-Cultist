@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes, Model) => {
     sequelize, 
     modelName: 'Config',
     tableName: 'Configs',
-    timestamps: true
+    timestamps: false
   });
   
   return Configs;

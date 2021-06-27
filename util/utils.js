@@ -104,7 +104,7 @@ module.exports = {
   
   async log(embed, logAsEvent){
 
-    let is_logging_disabled = await module.exports.getConfig('log_disabled');
+    const is_logging_disabled = await module.exports.getConfig('log_disabled');
     // Unset config values return false and logging is enabled by default
     if(is_logging_disabled){
       return;
@@ -112,15 +112,15 @@ module.exports = {
     let client = embed.client;
     embed.client = undefined;
 
-    let complete_log_channel_id = await module.exports.getConfig('complete_log_channel');
+    const complete_log_channel_id = await module.exports.getConfig('complete_log_channel');
   
-    let complete_log_channel = await client.channels.cache.get(complete_log_channel_id);
-    complete_log_channel.send({embed : embed});
+    const complete_log_channel = await client.channels.cache.get(complete_log_channel_id);
+    await complete_log_channel.send({embed : embed});
 
 
     if(logAsEvent){
-      let event_log_channel_id = await module.exports.getConfig('event_log_channel');
-      let event_log_channel = await client.channels.cache.get(event_log_channel_id);
+      const event_log_channel_id = await module.exports.getConfig('event_log_channel');
+      const event_log_channel = await client.channels.cache.get(event_log_channel_id);
       event_log_channel.send({embed : embed});
     }
   },
@@ -355,7 +355,7 @@ module.exports = {
       embed.setAuthor(embedContent.author.name, embedContent.author.icon_url, embedContent.author.url);
     }
     if(embedContent.url){
-      embed.setUrl(embedContent.url)
+      embed.setURL(embedContent.url)
     }
     if(embedContent.image){
       embed.setImage(embedContent.image.url)

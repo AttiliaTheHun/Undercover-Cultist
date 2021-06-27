@@ -5,9 +5,10 @@ const path = require("path");
 const basename = path.basename(__filename);
 const sequelize = new Sequelize(process.env.db_name, process.env.db_user, process.env.db_password, {
   host: process.env.db_server,
-  port: process.env.db_port,
-  dialect: "mysql",
-  logging: console.log
+  //port: process.env.db_port,
+  dialect: "sqlite",
+  //logging: console.log
+  storage: "database.sqlite"
 });
 
 fs.readdirSync(__dirname)
