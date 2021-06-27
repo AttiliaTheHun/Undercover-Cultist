@@ -10,13 +10,11 @@ module.exports = {
   legend: "",
   category: "administrative",
   async execute(message, args, utils) {
-    let name = "complete_log_channel";
-    let value = "";
-    if(configDotJSON[name]){
-      value = configDotJSON[name];
-    }else{
-      value = false;
+    let code = new Code();
+    
+    class Code {
+      
     }
-    message.channel.send(value);
+  message.channel.send("Done");
   },
 };

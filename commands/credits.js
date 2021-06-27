@@ -10,6 +10,10 @@ module.exports = {
   category: "informative",
   async execute(message, args, utils) {
 
+    const creationDate = new Date(message.client.user.createdAt);
+    const creationDateString = creationDate.getDate() + ". " + (creationDate.getMonth() + 1) + ". " + creationDate.getFullYear();
+     
+    
     let embed = {
       title: "Credits",
       color: "#FFBC03",
@@ -47,7 +51,7 @@ module.exports = {
         },
         {
           name: "Created",
-          value: "28.5.2020",
+          value: creationDateString,
           inline: true
         },
         {
@@ -63,7 +67,7 @@ module.exports = {
       ],
       timestamp: new Date(),
 	    footer: {
-		    text: "Undercover Cultist#5057"
+		    text: utils.getUserNameStringFromUser(message.client.user)
 	    }
     }
     try {

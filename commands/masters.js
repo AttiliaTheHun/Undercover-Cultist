@@ -30,10 +30,10 @@ module.exports = {
 
           for (let i = 0; i < masters.length; i++) {
             master_id = masters[i].user;
-            master_member = message.guild.members.cache.get(master_id);
+            master_member = await message.guild.members.cache.get(master_id);
             master_username = utils.getUserNameStringFromMember(master_member);
             promoted_by_id = masters[i].promoted_by;
-            promoted_by_member = message.guild.members.cache.get(promoted_by_id);
+            promoted_by_member = await message.guild.members.cache.get(promoted_by_id);
             promoted_by_username = utils.getUserNameStringFromMember(promoted_by_member);
 
             embed.fields.push({

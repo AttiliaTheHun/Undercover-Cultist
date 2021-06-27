@@ -3,6 +3,11 @@ module.exports = (sequelize, DataTypes, Model) => {
   class Config extends Model {}
 
   const Configs = Config.init({
+    id : {
+	    type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+	  },
     name: {
       type: DataTypes.STRING,
       unique: false

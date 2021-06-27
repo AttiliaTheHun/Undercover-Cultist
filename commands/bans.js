@@ -18,7 +18,7 @@ module.exports = {
       } else {
         where = `WHERE (server = ${message.guild.id} AND global = false) OR (global = true)`;
       }
-      const [bans, metadata] = await utils.query(`SELECT * FROM Bans ${where};`);
+      const bans = await utils.query(`SELECT * FROM Bans ${where};`);
       if (bans) {
         if (bans.length > 0) {
           let embed = {

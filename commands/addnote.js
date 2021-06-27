@@ -15,7 +15,7 @@ module.exports = {
         return;
       }
       
-      const note = args.join(" ");
+      const note = utils.sanitize(args.join(" "));
       
       if (note.length > 600) {
         message.reply("The note is too long, please fix it under 600 characters.");
@@ -25,8 +25,7 @@ module.exports = {
         return;
       }
       
-      utils.sanitize(note);
-      
+
       let query = `INSERT INTO Notes (server, author, note) VALUES ('${message.guild.id}', '${message.author.id}', '${note}');`;
 
       let result = await utils.query(query);

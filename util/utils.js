@@ -381,7 +381,18 @@ module.exports = {
   },
   
   async getSystemChannel(guild){
-    
+    let channelID;
+    const channels = guild.channels.cache.get;
+    channelLoop:
+    for (const c of Object.keys(channels)) {
+      const channelType = c[1].type;
+      if (channelType === "text") {
+        channelID = c[0];
+        break channelLoop;
+      }
+    }
+    const channel = guild.channels.cache.get(guild.systemChannelID || channelID);
+    return channel;
   },
   
   getUserNameStringFromUser(user){
@@ -422,6 +433,36 @@ module.exports = {
       return true;
     }
     return false;
+  },
+  
+  shuffleArray(array) {
+    let currentIndex = array.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (currentIndex !== 0) {
+
+      // Pick a remaining element...
+      const randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+    return array;
+  },
+  
+  summarizeArray(array) {
+    let sum = 0;
+    for (const item of array) {
+      sum += item;
+    }
+    return sum;
+  },
+  
+  randomNumber(min, max) { 
+    return Math.random() * (max - min) + min;
   }
   
 }

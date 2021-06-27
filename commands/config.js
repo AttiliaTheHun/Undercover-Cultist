@@ -27,6 +27,8 @@ module.exports = {
         break;
       case "delete":
       case "del":
+      case "remove":
+      case "rem":
         module.exports.delete(message, args, utils);
         break;
       default:

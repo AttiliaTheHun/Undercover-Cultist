@@ -3,6 +3,11 @@ module.exports = (sequelize, DataTypes, Model) => {
   class Ban extends Model {}
 
   const Bans = Ban.init({
+    id : {
+	    type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+	  },
     server: {
       type: DataTypes.STRING(20),
       unique: false

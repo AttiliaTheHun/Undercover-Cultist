@@ -15,7 +15,7 @@ for (const file of commandFiles) {
 }
 
 /*
-* Usuallz for debug purposes
+* Usually for debug purposes
 client.on("debug", () => {
   console.log
 });

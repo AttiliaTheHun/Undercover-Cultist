@@ -14,7 +14,7 @@ module.exports = {
       message.reply("Haha, this is admin-only command.");
       return;
     }
-    const [result, metadata] = await utils.query(`DELETE FROM Notes WHERE server = '${message.guild.id}';`);
+    const result = await utils.query(`DELETE FROM Notes WHERE server = '${message.guild.id}';`);
     if (!result) {
       message.reply("No notes to clear.");
       return;

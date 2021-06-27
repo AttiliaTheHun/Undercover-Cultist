@@ -13,10 +13,11 @@ module.exports = {
 
     const user = await utils.resolveUser(message, args);
     if (!user || user.id == message.member.id) {
-      return message.channel.send("Could not find the user.")
+      message.channel.send("Could not find the user.");
+      return 
     }
 
-    const [result, metadata] = await utils.query(`DELETE FROM Bans WHERE user = '${user.id}' AND global = true;`);
+    const result = await utils.query(`DELETE FROM Bans WHERE user = '${user.id}' AND global = true;`);
     if (!result) {
       message.reply("That user was not globally banned.");
       return;

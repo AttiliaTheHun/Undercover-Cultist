@@ -12,7 +12,7 @@ module.exports = {
   aliases: ["p", "underhand", "u"],
   legend: "blessings",
   category: "underhand",
-  async execute(message, args) {
+  async execute(message, args, utils) {
 
     if (message.guild.id == 643706781427695616 && (message.channel.id != 721735042682060853 && message.channel.id != 766993942242787369)) {
       message.channel.send("Not in this channel please");
@@ -59,7 +59,7 @@ module.exports = {
       } else {
 
         new_game();
-        base_deck = module.exports.shuffle(base_deck);
+        base_deck = utils.shuffle(base_deck);
       }
 
       //cheat variables
@@ -404,7 +404,7 @@ module.exports = {
               base_deck = discard_deck;
               discard_deck = [];
               await setTimeout(() => { message.channel.send("Reshuffling deck from discard..."); }, 500);
-              base_deck = module.exports.shuffle(base_deck);
+              base_deck = utils.shuffle(base_deck);
             }
             let punishment = false;
             if (resources[3] == 0 && punishment == false) {
@@ -435,58 +435,8 @@ module.exports = {
             return err;
           });
       }
-    } catch (err) {
-      console.log(err);
-      return err;
-    }
-  },
-  create_hand(resources_discord_emojis, resources) {
-    let string = "";
-    for_type:
-    for (let resource_number = 0; resource_number < 6; resource_number++) {
-      for (let resource_count = 0; resource_count < resources[resource_number]; resource_count++) {
-        if (resources[resource_number] > 4) {
-          string += ` ${resources[resource_number]}x ${resources_discord_emojis[resource_number]}`;
-          continue for_type;
-        }
-        string += " " + resources_discord_emojis[resource_number];
-      }
-    }
-    const total_resources = module.exports.summarizeArray(resources);
-    string += ` (${total_resources})`;
-    const embed = new Discord.MessageEmbed()
-      .setDescription(string);
-    return embed;
-  },
-  summarizeArray(array) {
-    let sum = 0;
-    for (const item of array) {
-      sum += item;
-    }
-    return sum;
-  },
-  shuffle(array) {
-    let currentIndex = array.length, temporaryValue, randomIndex;
-
-    // While there remain elements to shuffle...
-    while (currentIndex !== 0) {
-
-      // Pick a remaining element...
-      const randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      // And swap it with the current element.
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
-    }
-
-    return array;
-  }
-};
-
-//  message.channel.send('Game Terminated');
-function new_game() {
+      
+      function newGame() {
   resources = [0, 2, 2, 2, 2, 0];
   // base_deck.push(110);
   base_deck.push(29); //Rhybaax
@@ -535,4 +485,39 @@ if(cardwip[i].isinitial == 1){
     base_deck.push(initial_events[random]);
     initial_events = initial_events.filter(function (value, index, arr) { return value != initial_events[random]; });
   }
+}
+      
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+  },
+  create_hand(resources_discord_emojis, resources) {
+    let string = "";
+    for_type:
+    for (let resource_number = 0; resource_number < 6; resource_number++) {
+      for (let resource_count = 0; resource_count < resources[resource_number]; resource_count++) {
+        if (resources[resource_number] > 4) {
+          string += ` ${resources[resource_number]}x ${resources_discord_emojis[resource_number]}`;
+          continue for_type;
+        }
+        string += " " + resources_discord_emojis[resource_number];
+      }
+    }
+    const total_resources = module.exports.summarizeArray(resources);
+    string += ` (${total_resources})`;
+    const embed = new Discord.MessageEmbed()
+      .setDescription(string);
+    return embed;
+  },
+  summarizeArray(array) {
+    let sum = 0;
+    for (const item of array) {
+      sum += item;
+    }
+    return sum;
+  },
+
+//  message.channel.send('Game Terminated');
+ 
 }

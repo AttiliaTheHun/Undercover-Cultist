@@ -1,4 +1,3 @@
-const utils = require("../util/utils.js");
 module.exports = {
   name: "localunban",
   syntax: "localunban [mention]/[id]",
@@ -12,11 +11,11 @@ module.exports = {
   async execute(message, args, utils) {
 
     const user = await utils.resolveUser(message, args);
-    if (!user || user.id == message.user.id) {
+    if (!user || user.id == message.author.id) {
       return message.channel.send("Could not find the user.")
     }
 
-    const [result, metadata] = await utils.query(`DELETE FROM Bans WHERE user = '${user.id}' AND global = false;`);
+    const result = await utils.query(`DELETE FROM Bans WHERE user = '${user.id}' AND server = '${message.guild.id}' AND global = false;`);
     if (!result) {
       message.reply("That user was not locally banned.");
       return;

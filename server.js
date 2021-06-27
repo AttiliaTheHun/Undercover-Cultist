@@ -44,7 +44,6 @@ client.once("ready", () => {
 });
 
 
-
 client.on("message", async message => {
   let args;
 
@@ -89,7 +88,7 @@ client.on("message", async message => {
   if ( await utils.isBanned(message.author.id, message.guild.id)) {
       await utils.logMessageIgnore(message);
       return;
-    }
+  }
  
   const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
@@ -112,6 +111,7 @@ client.on("message", async message => {
   //let prefix = await utils.getConfig(sequelize, Config, 'prefix', true);
 
   if( await utils.isCommandIgnoredInChannel(commandName, message.channel)){
+    message.channel.send("Not in this channel please");
     return;
   }
 
@@ -136,26 +136,9 @@ client.on("message", async message => {
 * When the bot is added to a new server, send a "welcome"
 * message and log the event
 */
-
 client.on("guildCreate", async guild => {
-  console.log("Joined a new guild: " + guild.name);
-
-  let channelID;
-
-  const channels = guild.channels.cache.get;
-  channelLoop:
-  for (const c of Object.keys(channels)) {
-    const channelType = c[1].type;
-    if (channelType === "text") {
-      channelID = c[0];
-      break channelLoop;
-    }
-  }
-
-  const channel = guild.channels.cache.get(guild.systemChannelID || channelID);
+  const channel = utils.getSystemChannel(guild);
   channel.send("Don't mind me, I am not here. Really.");
-  /* const role = guild.roles.cache.find(role => role.name === 'Undercover Cultist');
-     role.setColor("#005e1f");*/
   await utils.logGuildCreate(guild);
 });
 
@@ -171,10 +154,7 @@ process.on("uncaughtException", async (err) => {
   await utils.logError(err);
 });
 
-
-
 client.login(token);
-
 
 /**
 * Create an express router to make the app
@@ -186,4 +166,3 @@ app.use(express.static("public"));
 const listener = app.listen(process.env.PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
-//module.exports = client;

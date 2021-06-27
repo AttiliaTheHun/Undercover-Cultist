@@ -21,7 +21,7 @@ module.exports = {
       return 
     }
     if (!member.bannable) {
-      message.reply("This member is above my might, I can't ban him");
+      message.reply("This member is above my might, I can not ban him");
       return;
     }
     args.shift();

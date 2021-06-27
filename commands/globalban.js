@@ -11,20 +11,17 @@ module.exports = {
   category: "administrative",
   async execute(message, args, utils) {
     try {
-      let today = new Date();
-      const dd = String(today.getDate()).padStart(2, "0");
-      const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-      const yyyy = today.getFullYear();
-      today = mm + "/" + dd + "/" + yyyy;
 
       const user = await utils.resolveUser(message, args);
       if (!user || user.id == message.member.id) {
         return message.channel.send("Could not find the user.")
       }
       const id = user.user.id;
-
+      
+      let reason = utils.sanitize(args.join(" "));
+      
       args.shift();
-      await utils.query(`INSERT INTO bans (server, global, user, banned_by, date, reason) VALUES ('${message.guild.id}', true, '${id}', '${message.author.id}', '${today}', '${args.join(" ")}');`);
+      let result = await utils.query(`INSERT INTO bans (server, global, user, banned_by, reason) VALUES ('${message.guild.id}', true, '${id}', '${message.author.id}', '${result}');`);
 
       message.reply(`<@${id}> is globally banned from the bot usage.`);
       return;
