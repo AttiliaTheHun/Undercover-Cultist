@@ -371,13 +371,20 @@ module.exports = {
   },
   
   async query(query){
-    try{
-      const [results, metadata] = await sequelize.query(query);
-      return results;
-    }catch(err){
-      console.log(err);
-      return [];
-    }
+	  try{
+	  	const res = await axios.post(process.env.DB_API_PATH, {
+			api_token: `${process.env.API_TOKEN}`,
+			query: `${query}`
+	 	 });
+		  if(res.data["error] = 0) {
+			return res.data["result"];	      
+		  }
+		  console.log(res.data["error"]);
+		  return [];
+	  }catch(err){
+		  console.log(err);
+		return []
+	  }
   },
   
   async getSystemChannel(guild){
