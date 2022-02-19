@@ -39,20 +39,20 @@
         
         if($data["api_token"] != $api_token){
              http_response_code(403);
-             response("Access Denied", "null");
+             response("Access Denied", "");
         }
         $query = $data["query"];
 
          $db = new Database();
          if(!$db) {
             $error = $db->lastErrorMsg();
-            response($error, "You wish");
+            response($error, "");
          }
          
          $result = $db->query($query);
          if(!$result) {
              $error = $db->lastErrorMsg();
-             $result = "";
+             response($error, "");
          }
          
          response($error, json_encode($result->fetchArray()));
