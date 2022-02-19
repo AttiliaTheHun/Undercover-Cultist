@@ -4,7 +4,9 @@
    * I am only doing this shit because Heroku does not support SQLite databases.
    */
 
-   $api_token = "Not so fast";  
+   $api_token = "RWx2aXMgaXMgS2luZywgbm9vbmUgYmVmb3JlIGhpbSwgbm9vbmUgYWZ0ZXIgaGltLg==";  
+    
+    $db = null;
     
    class Database extends SQLite3 {
       function __construct() {
@@ -22,6 +24,9 @@
    
    function response(string $error, string $result) {
        echo create_response_body($error, $result);
+       if(!is_null($db)){
+            $db->close();
+       }
        die();
    }
    
@@ -39,7 +44,11 @@
         
         if($data["api_token"] != $api_token){
              http_response_code(403);
-             response("Access Denied", "");
+             //response("Access Denied", "");
+             if(is_null($data["api_token"])){
+                 response("Null Token", "");
+             }
+             response($data["api_token"], "Token Denied");
         }
         $query = $data["query"];
 
@@ -55,8 +64,20 @@
              response($error, "");
          }
          
-         response($error, json_encode($result->fetchArray()));
-         $db->close();
+        $row = array();
+
+        $i = 0;
+
+         while($res = $result->fetchArray(SQLITE3_ASSOC)){
+                
+              foreach($res as $key => $value){
+                  $row[$i][$key] = $value;
+              }    
+              $i++;
+
+          } 
+         
+         response($error, json_encode($row));
          
     /**
     * We accept only POST requests, sorry
