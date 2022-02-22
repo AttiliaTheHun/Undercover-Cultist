@@ -4,7 +4,7 @@
    * I am only doing this shit because Heroku does not support SQLite databases.
    */
 
-   $api_token = "RWx2aXMgaXMgS2luZywgbm9vbmUgYmVmb3JlIGhpbSwgbm9vbmUgYWZ0ZXIgaGltLg==";  
+   $api_token = "Not so fast";  
     
     $db = null;
     
