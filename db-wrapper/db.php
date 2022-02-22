@@ -53,10 +53,15 @@
          $result = $db->query($query);
          if(!$result) {
              $error = $db->lastErrorMsg();
-             $result = "";
+             response($error, "");
          }
          
-         response($error, json_encode($result->fetchArray(SQLITE3_ASSOC)));
+         $final_result = array();
+         while($row = $result->fetchArray(SQLITE3_ASSOC)) {
+             array_push($final_result, $row);
+         }
+         
+         response($error, json_encode($final_result));
          $db->close();
          
     /**
