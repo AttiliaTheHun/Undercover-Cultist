@@ -22,9 +22,7 @@
    }
    
    function response(string $error, string $result) {
-      // echo create_response_body($error, $result);
-       var_dump($result);
-       echo $result;
+       echo create_response_body($error, $result);
        die();
    }
    
