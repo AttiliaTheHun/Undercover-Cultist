@@ -18,10 +18,13 @@
            'result' => $result
            );
        return json_encode($body);
+      
    }
    
    function response(string $error, string $result) {
-       echo create_response_body($error, $result);
+      // echo create_response_body($error, $result);
+       var_dump($result);
+       echo $result;
        die();
    }
    
@@ -55,7 +58,7 @@
              $result = "";
          }
          
-         response($error, json_encode($result->fetchArray()));
+         response($error, json_encode($result->fetchArray(SQLITE3_ASSOC)));
          $db->close();
          
     /**
