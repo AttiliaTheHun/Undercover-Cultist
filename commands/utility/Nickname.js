@@ -1,14 +1,21 @@
-module.exports = {
-  name: "nickname",
-  syntax: "nickname [mention]/[id] [nickname]",
-  description: "Changes the nickname of the target member",
-  note: "",
-  permissions: "`MANAGE_NICKNAMES`",
-  master: false,
-  aliases: ["nick", "setnick", "setnickname"],
-  legend: "mention, id",
-  category: "utility",
-  async execute(message, args, utils) {
+const Command = require("../Command.js");
+
+module.exports = class Nickname extends Command {
+  
+  constructor(client) {
+    super(client, {
+      name: 'nickname',
+      aliases: ['setnickname', 'setnick', 'nick'],
+      usage: 'defaultcommand <username/ID> <nickname>',
+      description: `Changes the nickname of the target member`,
+      type: client.types.UTILITY,
+      userPermissions: ['MANAGE_NICKNAMES'],
+      examples: ['setnickname 608673444061773827 snoodle'],
+      master: true
+    });
+  }
+  
+  async execute(message, args) {
     //  try{
     if (!message.member.hasPermission("MANAGE_NICKNAMES")) {
       message.reply("SecurityException: `Missing permission`");
@@ -19,7 +26,7 @@ module.exports = {
       return;
     }
 
-    let member = await utils.resolveUser(message, args);
+    let member = await this.client.utils.resolveUser(message, args);
     
     if (!member || member.id == message.member.id) {
       message.channel.send("Could not find the user.");
@@ -38,6 +45,6 @@ module.exports = {
        console.log(err);
        message.reply("dead");
      }*/
-
-  },
-};
+  }
+   
+}

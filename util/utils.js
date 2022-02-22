@@ -80,7 +80,6 @@ module.exports = {
     const result = await module.exports.query(query);
 
     if(result){
-
       if(result.length > 0){
         return true;
       }  
@@ -157,7 +156,7 @@ module.exports = {
         if(response["result"] == "false"){
           return false;
         }
-			  return response["result"];	      
+			  return JSON.parse(response["result"]);	      
 		  }
 		  console.log(response["error"]);
 		  return [];

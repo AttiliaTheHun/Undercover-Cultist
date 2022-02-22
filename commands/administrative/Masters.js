@@ -1,17 +1,24 @@
-module.exports = {
-  name: "masters",
-  syntax: "masters",
-  description: "Shows the list of bot Masters",
-  note: "",
-  permissions: "",
-  master: true,
-  aliases: ["listmasters", "botmasters"],
-  legend: "",
-  category: "informative",
-  async execute(message, args, utils) {
+const Command = require("../Command.js");
+
+module.exports = class Masters extends Command {
+  
+  constructor(client) {
+    super(client, {
+      name: 'masters',
+      aliases: ['botmasters', 'listmasters'],
+      usage: 'masters',
+      description: `Shows the list of the bot Masters`,
+      type: client.types.ADMINISTRATIVE,
+      userPermissions: [],
+      examples: ['masters'],
+      master: true
+    });
+  }
+  
+  async execute(message, args) {
     try {
 
-      const masters = await utils.query(`SELECT * FROM Masters;`);
+      const masters = await this.client.utils.query(`SELECT * FROM Masters;`);
       console.log(masters)
       if (masters) {
         if (masters.length > 0) {
@@ -46,7 +53,7 @@ module.exports = {
           embed.footer = {
             text: "Undercover Cultist#5057"
           };
-          message.channel.send({embeds: [utils.buildEmbed(embed)]});
+          message.channel.send({embeds: [this.client.utils.buildEmbed(embed)]});
           return;
         }
         message.reply("Nothing to display");
@@ -59,5 +66,6 @@ module.exports = {
       return err;
 
     }
-  },
-};
+  }
+   
+}

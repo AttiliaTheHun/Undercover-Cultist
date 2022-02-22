@@ -1,18 +1,26 @@
+const Command = require("../Command.js");
 const cardwipfile = require("../../cardwip.json"); //import data file
 const event_data_file = JSON.parse(JSON.stringify(cardwipfile)); //initialize data file
 
-module.exports = {
-  name: "play",
-  syntax: "play [\"load\"]/[blessings]",
-  description: "Starts a game of Underhand right here in dicord",
-  note: "Complete guide can be found in <#767455245382320138> in the [Underhand server](https://discord.gg/invite/Rb5kUzE)\nThis can produce tons of spam so please, use it in designated channels or bot commands channels",
-  permissions: "",
-  master: false,
-  aliases: ["p", "underhand", "u"],
-  legend: "blessings",
-  category: "underhand",
-  async execute(message, args, utils) {
-    
+
+module.exports = class Play extends Command {
+  
+  constructor(client) {
+    super(client, {
+      name: 'play',
+      aliases: ['underhand', 'p', 'u'],
+      usage: 'defaultcommand <load><blessings>',
+      description: `Starts a game of Underhand right here in dicord,
+                    Complete guide can be found in <#767455245382320138> in the [Underhand server](https://discord.gg/invite/Rb5kUzE)\nThis can produce tons of spam so please, use it in designated channels or bot commands channels",`,
+      type: client.types.UNDERHAND,
+      userPermissions: [],
+      examples: ['play kyj', 'play load ...'],
+      master: false
+    });
+  }
+  
+  async execute(message, args) {
+        const utils = this.client.utils;
     
 /**
 * The main and central class, responsible for everything
@@ -679,6 +687,6 @@ class Game {
     * The loop is interrupted within the Game#handleUserInput() method on user's behalf
     * or by TimeoutError
     */
-    
   }
+   
 }

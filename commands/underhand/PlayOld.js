@@ -1,20 +1,26 @@
-const Discord = require("discord.js");
+const Command = require("../Command.js");
+const Discord = require('discord.js');
 const cardwipfile = require("../../cardwip.json"); //import data file
 const event_data_file = JSON.parse(JSON.stringify(cardwipfile)); //initialize data file
 
-module.exports = {
-  name: "playold",
-  syntax: "play [\"load\"]/[blessings]",
-  description: "Starts a game of Underhand right here in dicord",
-  note: "Complete guide can be found in <#767455245382320138> in the [Underhand server](https://discord.gg/invite/Rb5kUzE)\nThis can produce tons of spam so please, use it in designated channels or bot commands channels",
-  permissions: "",
-  master: false,
-  aliases: ["p", "underhand", "u"],
-  legend: "blessings",
-  category: "underhand",
-  async execute(message, args, utils) {
 
-    if (message.guild.id == 643706781427695616 && (message.channel.id != 721735042682060853 && message.channel.id != 766993942242787369)) {
+module.exports = class PlayOld extends Command {
+  
+  constructor(client) {
+    super(client, {
+      name: 'playold',
+      aliases: ['defcmd', 'cmddef'],
+      usage: 'playold <load><blessings>',
+      description: `Starts a game of Underhand right here in dicord (Deprecated)`,
+      type: client.types.UNDERHAND,
+      userPermissions: [],
+      examples: ['playold load ...', 'playold kyr'],
+      master: false
+    });
+  }
+  
+  async execute(message, args) {
+     if (message.guild.id == 643706781427695616 && (message.channel.id != 721735042682060853 && message.channel.id != 766993942242787369)) {
       message.channel.send("Not in this channel please");
       return;
     }
@@ -59,7 +65,7 @@ module.exports = {
       } else {
 
         new_game();
-        base_deck = utils.shuffle(base_deck);
+        base_deck = this.client.utils.shuffle(base_deck);
       }
 
       //cheat variables
@@ -181,7 +187,7 @@ module.exports = {
             files: [`http://underhand.clanweb.eu/res/Card${base_deck[0]}.png`]
           });
           await message.channel.send(embed);
-          await message.channel.send(module.exports.create_hand(resources_discord_emojis, resources));
+          await message.channel.send(this.create_hand(resources_discord_emojis, resources));
         }
         /*console.log(options[option_number].consume_values)
       console.log(options[option_number].provide_values)*/
@@ -404,7 +410,7 @@ module.exports = {
               base_deck = discard_deck;
               discard_deck = [];
               await setTimeout(() => { message.channel.send("Reshuffling deck from discard..."); }, 500);
-              base_deck = utils.shuffle(base_deck);
+              base_deck = this.client.utils.shuffle(base_deck);
             }
             let punishment = false;
             if (resources[3] == 0 && punishment == false) {
@@ -422,7 +428,7 @@ module.exports = {
               }
             }
             //check card count for greed
-            if (module.exports.summarizeArray(resources) > 15 && punishment == false && greedprotect == false) {
+            if (this.client.utils.summarizeArray(resources) > 15 && punishment == false && greedprotect == false) {
               const random = Math.floor(Math.random() * 2);
               if (random == 0) {
                 base_deck.unshift(56);
@@ -491,7 +497,8 @@ if(cardwip[i].isinitial == 1){
       console.log(err);
       return err;
     }
-  },
+  }
+  
   create_hand(resources_discord_emojis, resources) {
     let string = "";
     for_type:
@@ -504,20 +511,11 @@ if(cardwip[i].isinitial == 1){
         string += " " + resources_discord_emojis[resource_number];
       }
     }
-    const total_resources = module.exports.summarizeArray(resources);
+    const total_resources = this.client.utils.summarizeArray(resources);
     string += ` (${total_resources})`;
     const embed = new Discord.MessageEmbed()
       .setDescription(string);
     return embed;
-  },
-  summarizeArray(array) {
-    let sum = 0;
-    for (const item of array) {
-      sum += item;
-    }
-    return sum;
-  },
-
-//  message.channel.send('Game Terminated');
- 
+  }
+   
 }

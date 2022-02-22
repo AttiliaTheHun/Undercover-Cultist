@@ -1,15 +1,22 @@
-module.exports = {
-  name: "help",
-  syntax: "help \"\"/[command]",
-  description: "Shows help message",
-  note: "",
-  permissions: "",
-  master: false,
-  aliases: ["commands"],
-  legend: "",
-  category: "informative",
-  async execute(message, args, utils) {
-    
+const Command = require("../Command.js");
+
+module.exports = class Help extends Command {
+  
+  constructor(client) {
+    super(client, {
+      name: 'help',
+      aliases: ['commands'],
+      usage: 'help <command>',
+      description: `Shows help message`,
+      type: client.types.INFORMATIVE,
+      userPermissions: [],
+      examples: ['help', 'help generate'],
+      master: false
+    });
+  }
+  
+  async execute(message, args) {
+      
     let client = message.client;
     
     let embed = {
@@ -21,9 +28,9 @@ module.exports = {
       }
       
     };
-  let prefix = await utils.getConfig('prefix');
+  let prefix = await this.client.utils.getConfig('prefix');
   let command;
-    const allowMaster = await utils.isMaster(message.author.id);
+    const allowMaster = await this.client.utils.isMaster(message.author.id);
     if (args[0]) {
       const commandName = args.shift().toLowerCase();
 
@@ -139,9 +146,9 @@ module.exports = {
 
     }
 
-    message.channel.send({embed : utils.buildEmbed(embed)});
+    message.channel.send({embeds: [this.client.utils.buildEmbed(embed)]});
+
 
   }
-
-
-};
+   
+}

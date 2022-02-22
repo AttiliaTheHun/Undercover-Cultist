@@ -1,18 +1,24 @@
-const Discord = require("discord.js");
+const Command = require("../Command.js");
 const cardwipfile = require("../../cardwip.json");
 const cardwip = JSON.parse(JSON.stringify(cardwipfile));
-module.exports = {
-  name: "event",
-  syntax: "event [number(0-119)]",
-  description: "Shows target event sample",
-  note: "",
-  permissions: "",
-  master: false,
-  aliases: [],
-  legend: "number",
+const Discord = require('discord.js');
 
-  category: "underhand",
-  async execute(message, args, utils) {
+module.exports = class Event extends Command {
+  
+  constructor(client) {
+    super(client, {
+      name: 'event',
+      aliases: ['defcmd', 'cmddef'],
+      usage: 'event <0-118> <raw>',
+      description: `Shows target event sample`,
+      type: client.types.UNDERHAND,
+      userPermissions: [],
+      examples: ['event 69'],
+      master: false
+    });
+  }
+  
+  async execute(message, args) {
     if (args[0] == null) {
       message.channel.send("NullPointerException: `You must provide an argument`");
 
@@ -134,7 +140,6 @@ module.exports = {
     .setDescription("There's now an opportunity to play Underhand right here on Discord. Just go in one of the gaming channels\n<#721735042682060853>\n<#766993942242787369>\nand type\n**!c underhand play**\nto start a new game.\n\nIf the bot is not online, you can go at http://undercover-cultist.glitch.me and wait until the page loads, then the bot should be online for you :heart:\nYou should react on this message with <:exchange_cultist:644175421755097098> to get the cultist role, othewise you are considered a prisoner, food or suspicion.\nReact with <:eye_of_sacrifice:719878415850799205> to get access to the game channels.");
     message.channel.send(embed);
     */
-
-
-  },
-};
+  }
+   
+}

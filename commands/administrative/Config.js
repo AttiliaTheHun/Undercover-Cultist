@@ -7,7 +7,7 @@ module.exports = class Config extends Command {
     super(client, {
       name: 'config',
       aliases: ['cfg', 'env', 'conf'],
-      usage: 'config (<add/set/del><key><value) OR (<-filter>)',
+      usage: 'config (<add/set/del><key><value>) OR (<-filter>)',
       description: `Manage bot's configuration variables (DANGER ZONE)`,
       type: client.types.ADMINISTRATIVE,
       userPermissions: [],
@@ -69,9 +69,7 @@ module.exports = class Config extends Command {
               }
               value = config[i].value;
               id = config[i].last_updated_by;
-              console.log(id);
               member = await message.guild.members.cache.get(id);
-              console.log(member)
               username = member.user.tag;
               embed.fields.push({
                 name: `${name}:${value}`,

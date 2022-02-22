@@ -1,21 +1,28 @@
-module.exports = {
-  name: "ban",
-  syntax: "ban [mention]/[id]",
-  description: "Bans the target user from the server",
-  note: "",
-  permissions: "`BAN_MEMBERS`",
-  master: false,
-  aliases: ["banuser", "banmember"],
-  legend: "mention, id",
-  category: "utility",
-  async execute(message, args, utils) {
+const Command = require("../Command.js");
+
+module.exports = class Ban extends Command {
+  
+  constructor(client) {
+    super(client, {
+      name: 'ban',
+      aliases: [],
+      usage: 'ban <username/ID>',
+      description: `Bans target user from the server`,
+      type: client.types.UTILITY,
+      userPermissions: ['BAN_MEMBERS'],
+      examples: ['ban 608673444061773827'],
+      master: false
+    });
+  }
+  
+  async execute(message, args) {
     //  try{
     if (!message.member.hasPermission("BAN_MEMBERS")) {
       message.reply("You are not allowed to do this.");
       return;
     }
 
-    const member = await utils.resolveUser(message, args);
+    const member = await this.client.utils.resolveUser(message, args);
     if (!member || member.id == message.member.id) {
       message.channel.send("Could not find the user.");
       return 
@@ -31,5 +38,6 @@ module.exports = {
         console.log(err);
         message.reply("WTF gimme me permissions bruh");
       }*/
-  },
-};
+  }
+   
+}
