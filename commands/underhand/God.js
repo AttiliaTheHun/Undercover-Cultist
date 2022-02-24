@@ -16,29 +16,40 @@ module.exports = class God extends Command {
   }
   
   async execute(message, args) {
-    if (args[0] == null) {
-      message.channel.send("List of Gods:\n`1.The God of Beginnings\n2.Rhybaax\n3.Wiindigoo\n4.Jhai'Ti\n5.Kekujira\n6.Yacare\n7.Uhl'Uht'C`");
+     if ((args[0] < 1 || args[0] > 7) && !isNaN(args[0])) {
+      message.channel.send("IllegalArgumentException: `only integers in range from 1 to 7 included or Strings are accepted `");
       return;
     }
-    if (args[0] < 1 || args[0] > 7 || isNaN(args[0])) {
 
-      message.channel.send("IllegalArgumentException: `only integers in range from 1 to 7 included are accepted `");
-      return;
-    }
-    const gods = [null, "God of Beginnings", "Rhybaax", "Wiindigoo", "Jhat'Ti", "Kekujira", "Yacare", "Uhl'Uht'C"];
-    let name = gods[args[0]];
-    let url = null;
-
-    if (args[0] == 4) {
-      url = "Jhai'lungr";
-    } else if (args[0] == 7) {
-      url = "Uhl'uht'c";
+    const gods = [null,
+                  "God of Beginnings",
+                  "Rhybaax",
+                  "Wiindigoo",
+                  "Jhai'Ti",
+                  "Kekujira",
+                  "Yacare",
+                  "Uhl'Uht'C"
+                 ];
+    let god = null;
+    if (!isNaN(args[0])) {
+      god = gods[args[0]];
     } else {
-      url = name;
+      for (let i = 1; i < gods.length; i++) {
+        if (args[0].toLowerCase() == gods[i].toLowerCase()) {
+          god = gods[i];
+          break;
+        }
+      }
+    }
+    let url = god, name = god;
+    if(god == "Jhai'Ti") {
+      url = "Jhai'lungr";
+    }else if(god == "Uhl'Uht'C") {
+      url = "Uhl'uht'c";
     }
     if (args[1] != null) {
-      name = name + " Thumbnail";
-      url = url + "Thumbnail";
+      name += " Thumbnail";
+      url += "Thumbnail";
     }
     message.channel.send({ 
       content: `${name}`,

@@ -27,7 +27,7 @@ module.exports = class GlobalBan extends Command {
       let reason = this.client.utils.sanitize(args.join(" "));
       
       args.shift();
-      let result = await this.client.utils.query(`INSERT INTO bans (server, global, user, banned_by, reason) VALUES ('${message.guild.id}', true, '${id}', '${message.author.id}', '${result}');`);
+      let result = await this.client.utils.query(`INSERT INTO Bans (server, global, user, banned_by, reason) VALUES ('${message.guild.id}', true, '${id}', '${message.author.id}', '${reason}');`);
 
       message.reply(`<@${id}> is globally banned from the bot usage.`);
       return;

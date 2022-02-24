@@ -10,14 +10,14 @@ module.exports = class AddMaster extends Command {
       description: `Puts target user into the bot Masters group`,
       type: client.types.ADMINISTRATIVE,
       userPermissions: [],
-      examples: ['addmaster 608673444061773827', 'addmaster AttilaThehUN'],
+      examples: ['addmaster 608673444061773827', 'addmaster AttilaTheHun'],
       master: true
     });
   }
   
   async execute(message, args) {
     
-     let member = await this.clientutils.resolveUser(message, args);
+     let member = await this.client.utils.resolveUser(message, args);
       if(!member || member.id == message.member.id){
         message.channel.send("Couldn't identify the user.");
         return;

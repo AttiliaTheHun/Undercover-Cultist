@@ -17,7 +17,7 @@ module.exports = class Unban extends Command {
   
   async execute(message, args) {
      //   try{
-if (!message.member.hasPermission("BAN_MEMBERS")) {
+if (!message.member.permissions.has("BAN_MEMBERS")) {
       message.reply("You are not allowed to do this.");
       return;
     }

@@ -33,6 +33,6 @@ const listener = app.listen(process.env.PORT, function () {
 });
 
 process.on("uncaughtException", async (err) => {
-  await client.utils.logError(err, {client: client});
+  await client.logger.error(err, {client: client});
   console.error(err);
 });

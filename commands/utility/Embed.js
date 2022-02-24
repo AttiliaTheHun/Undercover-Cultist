@@ -122,7 +122,7 @@ module.exports = class Embed extends Command {
     console.log(embedData);
     let embed = this.client.utils.buildEmbed(embedData);
     console.log(embed);
-    message.channel.send(embed);
+    message.channel.send({embeds: [embed]});
   }
    
 }

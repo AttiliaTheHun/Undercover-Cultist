@@ -42,7 +42,7 @@ module.exports = class Blessing extends Command {
     } else {
       console.log(args[0])
       for (let i = 1; i < gods.length; i++) {
-        if (args[0] == gods[i].toLowerCase()) {
+        if (args[0].toLowerCase() == gods[i].toLowerCase()) {
           god = i;
           break;
         }

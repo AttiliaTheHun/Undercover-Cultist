@@ -156,7 +156,8 @@ module.exports = {
         if(response["result"] == "false"){
           return false;
         }
-			  return JSON.parse(response["result"]);	      
+        console.log(response["result"])
+			  return JSON.parse(response["result"]) || response["result"];	      
 		  }
 		  console.log(response["error"]);
 		  return [];

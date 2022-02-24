@@ -19,6 +19,8 @@ class Client extends Discord.Client {
     
     this.commands = new Discord.Collection();
     
+    this.aliases = new Discord.Collection();
+    
     this.types = {
       ADMINISTRATIVE: 0,
       INFORMATIVE: 1,
@@ -49,6 +51,9 @@ class Client extends Discord.Client {
         const Command = require(resolve(/*__basedir,*/ join(path, dir, file)));
         const command = new Command(this);
         this.commands.set(command.name, command);
+        command.aliases.forEach(alias => {
+          this.aliases.set(alias, command);
+        });
       })
     });
     return this;

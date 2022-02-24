@@ -19,7 +19,7 @@ const {prefix} = require("../config.json");
   * role-play instead ;)
   */
   if(message.channel.type == "DM"){
-    client.utils.handleDM(message);
+    client.logger.dm(message);
     return;
   }
   
@@ -48,22 +48,28 @@ const {prefix} = require("../config.json");
       return;
   }
   
-  const command = await client.commands.get(commandName) //|| await client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+  const command = await client.commands.get(commandName) || await client.aliases.get(commandName);
 
   if (!command)
     return
   
-  if (command.master && ! await client.utils.isMaster(message.author.id)) {
+  let result = await client.utils.isMaster(message.author.id);
+  console.log(result);
+  if (command.master) {
+    if(!result){
         await client.logger.messageIgnore(message);
         return;
+    }
   }  
   
   if( await client.utils.isGuildIgnored(message.guild)){
-    return;
+        await client.logger.messageIgnore(message);
+        return;
   }
 
   if( await client.utils.isChannelIgnored(message.channel)){
-    return;
+        await client.logger.messageIgnore(message);
+        return;
   }
 
   //let prefix = await utils.getConfig(sequelize, Config, 'prefix', true);

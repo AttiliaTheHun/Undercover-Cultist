@@ -16,7 +16,7 @@ module.exports = class Test extends Command {
   }
   
   async execute(message, args) {
-    
+    throw new Error("Expected Expection, found Error");
   }
    
 }

@@ -80,7 +80,7 @@ class Logger {
   }
   
   async guildRemoved(guild) {
-    this.guildEvent(guild);
+    this.guildEvent(guild, {created: false});
   }
   
   async messageIgnored(message) {
@@ -145,13 +145,14 @@ class Logger {
   }
   
   async error(error, {metadata}) {
+    console.log(error);
     let embed = this.client.utils.buildEmbed({
       title: this.signatures.ERROR,
       color: this.colors.ERROR,
       fields: [
         {
           name: "Error",
-          value: error
+          value: `${error.name}: ${error.message}`
         }
       ]
     });
@@ -159,7 +160,7 @@ class Logger {
     await this.log(embed, {isEvent: true});
   }
   
-  async commandError(message, error, {commandName}) {
+  async commandError(message, error, commandName) {
     let embed = this.client.utils.buildEmbed({
       title: this.signatures.ERROR,
       color: this.colors.ERROR,
@@ -186,7 +187,7 @@ class Logger {
         },
         {
           name: "Error",
-          value: error
+          value: `${error.name}: ${error.message}`
         }
       ]
     });

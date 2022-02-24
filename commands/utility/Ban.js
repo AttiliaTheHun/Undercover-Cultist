@@ -17,11 +17,15 @@ module.exports = class Ban extends Command {
   
   async execute(message, args) {
     //  try{
-    if (!message.member.hasPermission("BAN_MEMBERS")) {
+    if (!message.member.permissions.has("BAN_MEMBERS")) {
       message.reply("You are not allowed to do this.");
       return;
     }
 
+    let id;
+    if(!isNaN(args[0])){
+      id = args[0];
+    }else{
     const member = await this.client.utils.resolveUser(message, args);
     if (!member || member.id == message.member.id) {
       message.channel.send("Could not find the user.");
@@ -31,9 +35,11 @@ module.exports = class Ban extends Command {
       message.reply("This member is above my might, I can not ban him");
       return;
     }
+    }
     args.shift();
-    member.ban(args.join(" "));
-    message.reply(`The fake cultist <@${member.user.id}> was banned from this sacred place.`);
+
+    message.guild.members.ban(id,{days: 0, reason: args.join(" ")}).catch(_ => message.channel.send("Could not do the action"));
+    message.reply(`The fake cultist <@${id}> was banned from this sacred place.`);
     /*  }catch(err){
         console.log(err);
         message.reply("WTF gimme me permissions bruh");

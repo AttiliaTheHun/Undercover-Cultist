@@ -16,7 +16,7 @@ module.exports = class Kick extends Command {
   }
   
   async execute(message, args) {
-  if (!message.member.hasPermission("KICK_MEMBERS")) {
+  if (!message.member.permissions.has("KICK_MEMBERS")) {
       message.reply("You are not allowed to do this.");
       return;
     }

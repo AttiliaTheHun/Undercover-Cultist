@@ -38,21 +38,22 @@ module.exports = class Masters extends Command {
           for (let i = 0; i < masters.length; i++) {
             master_id = masters[i].user;
             console.log(master_id)
-            master = await message.guild.members.fetch(master_id);
+            master = await message.guild.members.cache.get(master_id);
            // master_username = utils.getUserNameStringFromMember(master_member);
             promoted_by_id = masters[i].promoted_by;
             promoter= await message.guild.members.cache.get(promoted_by_id);
            // promoted_by_username = utils.getUserNameStringFromMember(promoted_by_member);
 
             embed.fields.push({
-              name: master.tag, 
-              value: `Promoted by: ${promoter.tag}`,
+              name: master.user.tag, 
+              value: `Promoted by: ${promoter.user.tag}`,
               inline: false
             });
           }
           embed.footer = {
             text: "Undercover Cultist#5057"
           };
+          console.log(embed);
           message.channel.send({embeds: [this.client.utils.buildEmbed(embed)]});
           return;
         }
