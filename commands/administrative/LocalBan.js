@@ -1,0 +1,45 @@
+const Command = require("../Command.js");
+
+module.exports = class LocalBan extends Command {
+  
+  constructor(client) {
+    super(client, {
+      name: 'localban',
+      aliases: ['lban', 'locban'],
+      usage: 'localban <username/ID>',
+      description: `Prohibits the user from the use of the bot inside this server`,
+      type: client.types.ADMINISTRATIVE,
+      userPermissions: [],
+      examples: ['localban 608673444061773827'],
+      master: true
+    });
+  }
+  
+  async execute(message, args) {
+    try {
+
+      const user = await this.client.utils.resolveUser(message, args);
+      if (!user || user.id == message.member.id) {
+        return message.channel.send("Could not find the user.")
+      }
+      const id = user.user.id;
+      
+      let reason = this.client.utils.sanitize(args.join(" "));
+      
+      args.shift();
+      let result = await this.client.utils.query(`INSERT INTO Bans (server, global, user, banned_by, reason) VALUES ('${message.guild.id}', false, '${id}', '${message.author.id}', '${reason}');`);
+
+      message.reply(`<@${id}> is locally banned from the bot usage.`);
+      return;
+
+    } catch (e) {
+      console.log(e);
+      if (e.name === "SequelizeUniqueConstraintError") {
+        message.reply("That user already is locally banned from the bot usage.");
+        return;
+      }
+      return e;
+    }
+  }
+   
+}

@@ -4,6 +4,7 @@
 const configDotJSON = require('../config.json');
 const Discord = require("discord.js");
 const sequelize = require('../db/models/index.js');
+const axios = require("axios");
 
 module.exports = {
   
@@ -75,8 +76,9 @@ module.exports = {
   },
   
   async isBanned(user_id, guild_id){
-    let query = `SELECT * FROM Bans WHERE (server = '${guild_id}' AND user = '${user_id}' AND global = false) OR (user = '${user_id}' AND global = true);`;
+    let query = `SELECT * FROM Bans WHERE (server = '${guild_id}' AND user = '${user_id}' AND global = 'false') OR (user = '${user_id}' AND global = 'true');`;
     const result = await module.exports.query(query);
+
     if(result){
       if(result.length > 0){
         return true;
@@ -102,235 +104,6 @@ module.exports = {
         .replace("\'", "\\\'");
   },
   
-  async log(embed, logAsEvent){
-
-    const is_logging_disabled = await module.exports.getConfig('log_disabled');
-    // Unset config values return false and logging is enabled by default
-    if(is_logging_disabled){
-      return;
-    }
-    let client = embed.client;
-    embed.client = undefined;
-
-    const complete_log_channel_id = await module.exports.getConfig('complete_log_channel');
-  
-    const complete_log_channel = await client.channels.cache.get(complete_log_channel_id);
-    await complete_log_channel.send({embed : embed});
-
-
-    if(logAsEvent){
-      const event_log_channel_id = await module.exports.getConfig('event_log_channel');
-      const event_log_channel = await client.channels.cache.get(event_log_channel_id);
-      event_log_channel.send({embed : embed});
-    }
-  },
-  
-  async logGuildCreate(guild){
-    let guild_create_signature = {
-      title: "Guild Added",
-      color: "#FFBC03",
-    }
-    await module.exports.logGuildEvent(guild, guild_create_signature);
-  },
-  
-  async logGuildRemove(guild){
-    let guild_remove_signature = {
-      title: "Guild Removed",
-      color: "#000000"
-    }
-    await module.exports.logGuildEvent(guild, guild_remove_signature);
-  },
-  
-  async logGuildEvent(guild, {event_signature, client}){
-     let embed = module.exports.buildEmbed({
-      title: event_signature.title,
-      color: event_signature.color,
-      fields: [
-        {
-			    name: 'Guild',
-			    value: guild.name,
-		    	inline: false,
-		    },
-        {
-			    name: 'GuildID',
-			    value: guild.id,
-			    inline: false,
-		    },
-        {
-			    name: 'Owner',
-			    value: module.exports.getUserNameStringFromUser(guild.owner),
-			    inline: false,
-		    },
-        {
-			    name: 'GuildMemberCount',
-			    value: guild.memberCount,
-			    inline: false,
-		    },
-      ],
-      client: guild.client
-    });
-    await module.exports.log(embed, true);  
-  },
-  
-  async logMessageIgnore(message){
-    let embed = module.exports.buildEmbed({
-      title: "Ignored Message",
-      color: "#F7F7F7",
-      fields: [
-        {
-          name: "Message",
-          value: message.content
-        },
-        {
-          name: "User",
-          value: module.exports.getUserNameStringFromUser(message.author)
-        },
-        {
-          name: "Server",
-          value: message.guild.name
-        },
-        {
-          name: "ServerID",
-          value: message.guild.id
-        }
-      ],
-      client: message.client
-    });
-    await module.exports.log(embed, false);
-  },
-  
-  async logCommandError(message, error, {commandName} ){
-    let embed = module.exports.buildEmbed({
-      title: "Error",
-      color: "#A83436",
-      fields: [
-        {
-          name: "Message",
-          value: message.content
-        },
-        {
-          name: "Command",
-          value: commandName
-        },
-        {
-          name: "Server",
-          value: message.guild.name
-        },
-        {
-          name: "ServerID",
-          value: message.guild.id
-        },
-        {
-          name: "User",
-          value: module.exports.getUserNameStringFromUser(message.author)
-        },
-        {
-          name: "Error",
-          value: error
-        }
-      ],
-      client: message.client
-    });
-
-    await module.exports.log(embed, true);
-  },
-  
-  async logError(error, {client}){
-    let embed = module.exports.buildEmbed({
-      title: "Error",
-      color: "#A83436",
-      fields: [
-        {
-          name: "Error",
-          value: error
-        }
-      ],
-      client: client
-    });
-    
-    await module.exports.log(embed, true);
-  },
-  
-  async logNA(data, {client}){
-    let embed = module.exports.buildEmbed({
-      title: "N/A",
-      color: "#48CECE",
-      fields: [
-        {
-          name: "Data",
-          value: data
-        }
-      ],
-      client: client
-    });
-    await module.exports.log(embed, true);
-  },
-  
-  async logDM(message){
-    let embed = module.exports.buildEmbed({
-      title: "Direct Message",
-      color: "",
-      fields: [
-        {
-          name: "User",
-          value: module.exports.getUserNameStringFromUser(message.author)
-        },
-        {
-          name: "Message",
-          value: message.content
-        }
-      ],
-      client: message.client
-    });
-    await module.exports.dumpDM(embed);
-  },
-  
-  async dumpDM(embed){
-    let client = embed.client;
-    embed.client = undefined;  
-    let dm_dump_channel_id = await module.exports.getConfig('dm_dump_channel');
-
-    const dm_dump_channel = await client.channels.cache.get(dm_dump_channel_id);
-
-    dm_dump_channel.send(embed);
-  },
-  
-  async logCommand(message, args, commandName){
-    let embed = module.exports.buildEmbed({
-      title: "Command",
-      color: "#005E1F",
-      fields: [
-        {
-        name: "Message",
-        value: message.content
-        },
-        {
-        name: "User",
-        value: module.exports.getUserNameStringFromUser(message.author)
-        },
-        {
-        name: "Server",
-        value: message.guild.name
-        },
-        {
-        name: "ServerID",
-        value: message.guild.id
-        },
-        {
-        name: "Args",
-        value: args.join(' ')
-        },
-        {
-        name: "Command",
-        value: commandName
-        },       
-      ],
-      client: message.client
-    });
-
-    await module.exports.log(embed, false);
-  },
-  
   buildEmbed(embedContent){
     let embed = new Discord.MessageEmbed()
     if(embedContent.title){
@@ -343,16 +116,16 @@ module.exports = {
       embed.setDescription(embedContent.description);
     }
     if(embedContent.fields){
-      embed.addFields(embedContent.fields.filter(field => field.value != ""));
+      embed.addFields(embedContent.fields.filter(field =>  field.value));
     }
     if(embedContent.footer){
-      embed.setFooter(embedContent.footer.text, embedContent.footer.icon_url);
+      embed.setFooter({text: embedContent.footer.text, iconURL: embedContent.footer.icon_url});
     }
     if(embed.timestamp){
-      embed.setTimestamp();
+      embed.setTimestamp(embedContent.timestamp | new Date());
     }
     if(embed.author){
-      embed.setAuthor(embedContent.author.name, embedContent.author.icon_url, embedContent.author.url);
+      embed.setAuthor({name: embedContent.author.name, url: embedContent.author.url, iconURL: embedContent.author.icon_url});
     }
     if(embedContent.url){
       embed.setURL(embedContent.url)
@@ -371,13 +144,27 @@ module.exports = {
   },
   
   async query(query){
-    try{
-      const [results, metadata] = await sequelize.query(query);
-      return results;
-    }catch(err){
-      console.log(err);
-      return [];
-    }
+    console.log(`Executing: ${query}`);
+	  try{
+	  	const res = await axios.post(process.env.DB_API_PATH, {
+			api_token: `${process.env.API_TOKEN}`,
+			query: `${query}`
+	 	 });
+     // console.log(res.data);
+      const response = res.data;
+		  if(response["error"] = '0') {
+        if(response["result"] == "false"){
+          return false;
+        }
+        console.log(response["result"])
+			  return JSON.parse(response["result"]) || response["result"];	      
+		  }
+		  console.log(response["error"]);
+		  return [];
+	  }catch(err){
+		  console.log(err);
+		return [];
+	  }
   },
   
   async getSystemChannel(guild){
@@ -386,7 +173,7 @@ module.exports = {
     channelLoop:
     for (const c of Object.keys(channels)) {
       const channelType = c[1].type;
-      if (channelType === "text") {
+      if (channelType === "GUILD_TEXT") {
         channelID = c[0];
         break channelLoop;
       }
@@ -395,7 +182,7 @@ module.exports = {
     return channel;
   },
   
-  getUserNameStringFromUser(user){
+ /* getUserNameStringFromUser(user){
     let username = user.username;
     let discriminator = user.discriminator;
     return username + "#" + discriminator;
@@ -405,7 +192,7 @@ module.exports = {
     let username = member.user.username;
     let discriminator = member.user.discriminator;
     return username + "#" + discriminator;
-  },
+  },*/
   
   async isGuildIgnored(guild){
     let does_ignore_record_exists = await module.exports.getConfig('ignored_guild', guild.id);
@@ -436,21 +223,11 @@ module.exports = {
   },
   
   shuffleArray(array) {
-    let currentIndex = array.length, temporaryValue, randomIndex;
-
-    // While there remain elements to shuffle...
-    while (currentIndex !== 0) {
-
-      // Pick a remaining element...
-      const randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-
-      // And swap it with the current element.
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
-    }
-    return array;
+    let shuffled = array
+    .map(value => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value)
+    return shuffled;
   },
   
   summarizeArray(array) {
@@ -464,5 +241,6 @@ module.exports = {
   randomNumber(min, max) { 
     return Math.random() * (max - min) + min;
   }
+  
   
 }
