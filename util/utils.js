@@ -70,7 +70,7 @@ module.exports = {
     if(result){
       if(result.length > 0){
         return true;
-      }  
+      }  
     }
     return false;
   },
