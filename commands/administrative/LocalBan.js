@@ -27,7 +27,7 @@ module.exports = class LocalBan extends Command {
       let reason = this.client.utils.sanitize(args.join(" "));
       
       args.shift();
-      let result = await this.client.utils.query(`INSERT INTO Bans (server, global, user, banned_by, reason) VALUES ('${message.guild.id}', false, '${id}', '${message.author.id}', '${reason}');`);
+      let result = await this.client.utils.query(`INSERT INTO Bans (server, global, user, banned_by, reason) VALUES ('${message.guild.id}', 0, '${id}', '${message.author.id}', '${reason}');`);
 
       message.reply(`<@${id}> is locally banned from the bot usage.`);
       return;

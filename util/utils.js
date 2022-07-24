@@ -76,7 +76,7 @@ module.exports = {
   },
   
   async isBanned(user_id, guild_id){
-    let query = `SELECT * FROM Bans WHERE (server = '${guild_id}' AND user = '${user_id}' AND global = 'false') OR (user = '${user_id}' AND global = 'true');`;
+    let query = `SELECT * FROM Bans WHERE (server = '${guild_id}' AND user = '${user_id}' AND global = 0) OR (user = '${user_id}' AND global = 1);`;
     const result = await module.exports.query(query);
 
     if(result){
@@ -140,23 +140,24 @@ module.exports = {
       embed.client = embedContent.client;
     }
     
-    return embed
+    return embed;
   },
   
-  async query(query){
+   async query(query){
     console.log(`Executing: ${query}`);
 	  try{
 	  	const res = await axios.post(process.env.DB_API_PATH, {
 			api_token: `${process.env.API_TOKEN}`,
 			query: `${query}`
 	 	 });
-     // console.log(res.data);
+      //console.log(res.data);
       const response = res.data;
-		  if(response["error"] = '0') {
+		  if(response["error"] == '0') {
         if(response["result"] == "false"){
           return false;
         }
         console.log(response["result"])
+
 			  return JSON.parse(response["result"]) || response["result"];	      
 		  }
 		  console.log(response["error"]);
@@ -181,6 +182,8 @@ module.exports = {
     const channel = guild.channels.cache.get(guild.systemChannelID || channelID);
     return channel;
   },
+
+// when you don't read the docs...
   
  /* getUserNameStringFromUser(user){
     let username = user.username;

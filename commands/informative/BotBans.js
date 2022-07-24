@@ -19,11 +19,17 @@ module.exports = class Botbans extends Command {
     let where = "";
     try {
       if (args[0] == "-global") {
-        where = "WHERE global = true";
+        where = "WHERE global = 1";
       } else if (args[0] == "-local") {
-        where = `WHERE server = ${message.guild.id} AND global = false`;
+        where = `WHERE server = ${message.guild.id} AND global = 0`;
+      } else if (args[0] == "clear"){
+        const query = await this.client.utils.query(`DELETE FROM Bans;`);
+        if(query){
+message.channel.send("Amnesty completed")
+        }
+        return;
       } else {
-        where = `WHERE (server = ${message.guild.id} AND global = false) OR (global = true)`;
+        where = `WHERE (server = ${message.guild.id} AND global = 0) OR (global = 1)`;
       }
       const bans = await this.client.utils.query(`SELECT * FROM Bans ${where};`);
       if (bans) {
@@ -43,11 +49,11 @@ module.exports = class Botbans extends Command {
           for (let i = 0; i < bans.length; i++) {
             id = bans[i].user;
             member = message.guild.members.cache.get(id);
-            username = this.client.utils.getUserNameStringFromMember(member);
+            username = member.user.tag;
             username += (bans[i].global) ? " Global" : " Local";
             banned_by_id = bans[i].banned_by;
             banned_by_member = message.guild.members.cache.get(banned_by_id);
-            banned_by_username = this.client.utils.getUserNameStringFromMember(banned_by_member);
+            banned_by_username = banned_by_member.user.tag;
             embed.fields.push({
               name: username,
               value: `**Banned By:** ${banned_by_username}\n**Reason:** ${bans[i].reason}`,
@@ -58,7 +64,7 @@ module.exports = class Botbans extends Command {
             text:"Undercover Cultist#5057"
           };
           
-          message.channel.send(this.client.utils.buildEmbed(embed));
+          message.channel.send({embeds: [this.client.utils.buildEmbed(embed)]});
           return;
         }
       }

@@ -21,7 +21,7 @@ const user = await this.client.utils.resolveUser(message, args);
       return message.channel.send("Could not find the user.")
     }
 
-    const result = await this.client.utils.query(`DELETE FROM Bans WHERE user = '${user.id}' AND server = '${message.guild.id}' AND global = false;`);
+    const result = await this.client.utils.query(`DELETE FROM Bans WHERE user = '${user.id}' AND server = '${message.guild.id}' AND global = 0;`);
     if (!result) {
       message.reply("That user was not locally banned.");
       return;

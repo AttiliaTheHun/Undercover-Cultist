@@ -22,7 +22,7 @@ module.exports = class GlobalUnban extends Command {
       return 
     }
 
-    const result = await this.client.utils.query(`DELETE FROM Bans WHERE user = '${user.id}' AND global = true;`);
+    const result = await this.client.utils.query(`DELETE FROM Bans WHERE user = '${user.id}' AND global = 1;`);
     if (!result) {
       message.reply("That user was not globally banned.");
       return;

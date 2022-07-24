@@ -44,7 +44,7 @@ const {prefix} = require("../config.json");
   const commandName = args.shift().toLowerCase();
 
  if (await client.utils.isBanned(message.author.id, message.guild.id)) {
-      await client.logger.messageIgnore(message);
+      await client.logger.messageIgnored(message);
       return;
   }
   
@@ -57,18 +57,18 @@ const {prefix} = require("../config.json");
   console.log(result);
   if (command.master) {
     if(!result){
-        await client.logger.messageIgnore(message);
+        await client.logger.messageIgnored(message);
         return;
     }
   }  
   
   if( await client.utils.isGuildIgnored(message.guild)){
-        await client.logger.messageIgnore(message);
+        await client.logger.messageIgnored(message);
         return;
   }
 
   if( await client.utils.isChannelIgnored(message.channel)){
-        await client.logger.messageIgnore(message);
+        await client.logger.messageIgnored(message);
         return;
   }
 
