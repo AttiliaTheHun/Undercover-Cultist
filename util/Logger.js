@@ -196,17 +196,17 @@ class Logger {
   }
   
   async dm(message) {
-    let embed = module.exports.buildEmbed({
+    let embed = this.client.utils.buildEmbed({
       title: this.signatures.DM,
       color: this.colors.DM,
       fields: [
         {
-          name: "User",
-          value: message.author.tag
-        },
-        {
           name: "Message",
           value: message.content
+        },
+        {
+          name: "User",
+          value: message.author.tag
         }
       ]
     });

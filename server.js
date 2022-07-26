@@ -11,11 +11,16 @@ const intents = new Intents()
 .add( 'GUILDS',
       'GUILD_MESSAGES',
       'DIRECT_MESSAGES',
+      'DIRECT_MESSAGE_REACTIONS',
       'GUILD_MEMBERS',
       'GUILD_PRESENCES'
     );
 
-const client = new Client({intents: intents})
+const client = new Client({
+  intents: intents,
+   partials: [
+        'CHANNEL', // Required to receive DMs
+    ]})
       .loadEvents("./events")
       .loadCommands("./commands");
 
