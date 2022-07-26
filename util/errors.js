@@ -1,11 +1,11 @@
 const utils = require('../util/utils.js');
 
 module.exports = {
-  CommandError: class CommandError extends Error {
+  CommandExecutionError: class CommandExecutionError extends Error {
     
     constructor(message) {
       super(message);
-      this.name = 'CommandError';
+      this.name = 'CommandExecutionError';
     }
     
   },
@@ -19,6 +19,33 @@ module.exports = {
     
   },
 
+  UserPermissionError: class UserPermissionError extends Error {
+  
+    constructor(message) {
+      super(message);
+      this.name = 'UserPermissionError';
+    }
+    
+  },
+
+  UserInputError: class UserInputError extends Error {
+  
+    constructor(message) {
+      super(message);
+      this.name = 'UserInputError';
+    }
+    
+  },
+
+   SilentError: class SilentError extends Error {
+  
+    constructor(message) {
+      super(message);
+      this.name = 'SilentError';
+    }
+    
+  },
+  
   RandomError: class RandomError extends Error {
   
     constructor(message) {

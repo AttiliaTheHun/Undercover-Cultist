@@ -6,9 +6,10 @@ module.exports = class GlobalBan extends Command {
     super(client, {
       name: 'globalban',
       aliases: ['gban', 'globan'],
-      usage: 'globalban <username/ID>',
+      syntax: 'globalban <username/ID>',
       description: `Prohibits the user from the use of the bot globally`,
-      type: client.types.ADMINISTRATIVE,
+      category: client.categories.ADMINISTRATIVE,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['globalban 608673444061773827'],
       master: true
@@ -20,7 +21,7 @@ module.exports = class GlobalBan extends Command {
 
       const user = await this.client.utils.resolveUser(message, args);
       if (!user || user.id == message.member.id) {
-        return message.channel.send("Could not find the user.")
+        throw new message.client.errors.UserInputError("Could not find the user.");
       }
       const id = user.user.id;
       

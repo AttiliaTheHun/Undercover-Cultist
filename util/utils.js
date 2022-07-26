@@ -243,7 +243,23 @@ module.exports = {
   
   randomNumber(min, max) { 
     return Math.random() * (max - min) + min;
-  }
-  
+  },
+
+  checkUserPermissions(member, permissions) {
+    if(!member.permissions.has(permissions)) {
+      throw new member.client.errors.UserPermissionError("You are not allowed to do this.");
+    }
+  },
+
+  checkClientPermissions(message, permissions, {member: member}) {
+    if(!message.guild.me.permissions.has(permissions)) {
+      throw new message.client.errors.SilentError("I do not have the necessary perms.");
+    }
+    if(member) {
+      if(!member.managable) {
+              throw new message.client.errors.SilentError("I do not have the permissions necessary.");
+        }
+    }
+  } 
   
 }

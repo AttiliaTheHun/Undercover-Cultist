@@ -6,9 +6,10 @@ module.exports = class LocalBan extends Command {
     super(client, {
       name: 'localban',
       aliases: ['lban', 'locban'],
-      usage: 'localban <username/ID>',
+      syntax: 'localban <username/ID>',
       description: `Prohibits the user from the use of the bot inside this server`,
-      type: client.types.ADMINISTRATIVE,
+      category: client.categories.ADMINISTRATIVE,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['localban 608673444061773827'],
       master: true
@@ -20,7 +21,7 @@ module.exports = class LocalBan extends Command {
 
       const user = await this.client.utils.resolveUser(message, args);
       if (!user || user.id == message.member.id) {
-        return message.channel.send("Could not find the user.")
+        throw new message.client.errors.UserInputError("Could not find the user.");
       }
       const id = user.user.id;
       

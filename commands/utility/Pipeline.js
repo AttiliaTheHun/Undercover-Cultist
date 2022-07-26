@@ -6,9 +6,10 @@ module.exports = class Pipeline extends Command {
     super(client, {
       name: 'pipeline',
       aliases: ['pip'],
-      usage: 'pipeline <command1> | <command2>',
+      syntax: 'pipeline <command1> | <command2>',
       description: `Allows bash-like command pipelining`,
-      type: client.types.UTILITY,
+      category: client.categories.UTILITY,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['pipeline gen 1 | setnick'],
       master: true

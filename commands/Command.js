@@ -1,7 +1,7 @@
 module.exports = class Command {
   constructor(client, options) {
     if(!this.validateOptions(options)){
-      throw new client.errors.CommandError("Corrupted command options");
+      throw new client.errors.ConfigError("Corrupted command options");
     }
     
     
@@ -9,7 +9,7 @@ module.exports = class Command {
     
     this.name = options.name;
     
-    this.aliases = options.aliases || [];
+    this.aliases = options.aliases;
     
     this.syntax = options.syntax;
     
@@ -20,6 +20,8 @@ module.exports = class Command {
     this.clientPermissions = options.clientPermissions;
     
     this.userPermissions = options.userPermissions;
+
+    this.examples = options.examples;
     
     this.master = options.master;
     
@@ -28,7 +30,7 @@ module.exports = class Command {
   }
   
   execute(message, args) {
-    throw new this.client.errors.CommandError("Empty command, stop wasting my computing powers");
+    throw new this.client.errors.CommandExecutionError("Empty command, stop wasting my computing powers");
   }
   
   validateOptions(options) {

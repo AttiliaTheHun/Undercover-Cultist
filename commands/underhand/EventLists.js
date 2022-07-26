@@ -8,9 +8,10 @@ module.exports = class EventList extends Command {
     super(client, {
       name: 'eventlist',
       aliases: ['events', 'listevents'],
-      usage: 'eventlist',
+      syntax: 'eventlist',
       description: `Lists all the events in the Game`,
-      type: client.types.UNDERHAND,
+      category: client.categories.UNDERHAND,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['eventlist'],
       master: false

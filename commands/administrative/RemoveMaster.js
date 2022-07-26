@@ -6,9 +6,10 @@ module.exports = class RemoveMaster extends Command {
     super(client, {
       name: 'removemaster',
       aliases: ['remmaster', 'delmaster', 'unmaster', 'deletemaster'],
-      usage: 'removemaster <username/ID>',
+      syntax: 'removemaster <username/ID>',
       description: `Removes target user from the bot Masters group`,
-      type: client.types.ADMINISTRATIVE,
+      category: client.categories.ADMINISTRATIVE,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['removemaster 608673444061773827', 'removemaster AttilaThehUN'],
       master: true
@@ -20,8 +21,7 @@ module.exports = class RemoveMaster extends Command {
      let member = await this.client.utils.resolveUser(message, args);
     
     if (!member || member.id == message.member.id) {
-      message.channel.send("Could not find the user.");
-      return 
+      throw new message.client.errors.UserInputError("Could not find the user.");
     }
     
     const result = await this.client.utils.query(`DELETE FROM Masters WHERE user = '${member.id}'`);

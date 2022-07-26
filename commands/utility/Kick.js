@@ -6,9 +6,10 @@ module.exports = class Kick extends Command {
     super(client, {
       name: 'kick',
       aliases: [],
-      usage: 'kick <username/ID>',
+      syntax: 'kick <username/ID>',
       description: `Kicks target user from the server`,
-      type: client.types.UTILITY,
+      category: client.categories.UTILITY,
+      clientPermissions: ['KICK_MEMBERS'],
       userPermissions: ['KICK_MEMBERS'],
       examples: ['kick 608673444061773827'],
       master: false
@@ -17,14 +18,12 @@ module.exports = class Kick extends Command {
   
   async execute(message, args) {
   if (!message.member.permissions.has("KICK_MEMBERS")) {
-      message.reply("You are not allowed to do this.");
-      return;
+      throw new message.client.errors.UserPermissionError("You are not allowed to do this.");
     }
 
     const member = await this.client.utils.resolveUser(message, args);
     if (!member || member.id == message.member.id) {
-      message.channel.send("Could not find the user.");
-      return 
+     throw new message.client.errors.UserInputError("Could not find the user.");
     }
     if (!member.kickable) {
       message.reply("This member is above my might, I can't kick him");

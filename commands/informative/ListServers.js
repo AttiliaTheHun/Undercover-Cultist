@@ -6,9 +6,10 @@ module.exports = class ListServers extends Command {
     super(client, {
       name: 'listservers',
       aliases: ['servers', 'srvrs'],
-      usage: 'listservers',
+      syntax: 'listservers',
       description: `Shows all the servers the bot is in, can produce a great many of messages`,
-      type: client.types.INFORMATIVE,
+      category: client.categories.INFORMATIVE,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['listservers'],
       master: true

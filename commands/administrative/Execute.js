@@ -6,9 +6,10 @@ module.exports = class Execute extends Command {
     super(client, {
       name: 'execute',
       aliases: ['exec', 'eval', 'run', 'rce'],
-      usage: 'exec <js-code>',
+      syntax: 'exec <js-code>',
       description: `Remote Code Execution, it is not recommended to use this`,
-      type: client.types.ADMINISTRATIVE,
+      category: client.categories.ADMINISTRATIVE,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['execute message.channel.send("Remote Code Execution is real");'],
       master: true

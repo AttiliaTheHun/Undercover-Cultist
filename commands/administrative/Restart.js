@@ -6,9 +6,10 @@ module.exports = class restart extends Command {
     super(client, {
       name: 'restart',
       aliases: ['reboot', 'kill'],
-      usage: 'restart',
+      syntax: 'restart',
       description: `Restarts the bot, can cancel the execution of other commands`,
-      type: client.types.ADMINISTRATIVE,
+      category: client.categories.ADMINISTRATIVE,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['restart'],
       master: true

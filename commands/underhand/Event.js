@@ -9,9 +9,10 @@ module.exports = class Event extends Command {
     super(client, {
       name: 'event',
       aliases: ['defcmd', 'cmddef'],
-      usage: 'event <0-118> <raw>',
+      syntax: 'event <0-118> <raw>',
       description: `Shows target event sample`,
-      type: client.types.UNDERHAND,
+      category: client.categories.UNDERHAND,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['event 69'],
       master: false
@@ -20,9 +21,8 @@ module.exports = class Event extends Command {
   
   async execute(message, args) {
     if (args[0] == null) {
-      message.channel.send("NullPointerException: `You must provide an argument`");
+      throw new message.client.errors.UserInputError("You must provide an argument");
 
-      return;
     }
 
     if (!isNaN(args[0]) && args[0] > 0 && args[0] < 119) {
@@ -130,8 +130,7 @@ module.exports = class Event extends Command {
 
 
     } else {
-      message.channel.send("IllegalArgumentException: `Number range should be in between 0-119 excluded`");
-      return;
+      throw new message.client.errors.UserInputError("Number range should be in between 0-119 excluded");
 
     }
 

@@ -21,7 +21,7 @@ class Client extends Discord.Client {
     
     this.aliases = new Discord.Collection();
     
-    this.types = {
+    this.categories = {
       ADMINISTRATIVE: 0,
       INFORMATIVE: 1,
       UNDERHAND: 2,

@@ -6,9 +6,10 @@ module.exports = class Query extends Command {
     super(client, {
       name: 'query',
       aliases: ['rawquery', 'sql'],
-      usage: 'quer <sql-code>',
+      syntax: 'quer <sql-code>',
       description: `Directly execute SQL on the database, it is not recommended to use`,
-      type: client.types.ADMINISTRATIVE,
+      category: client.categories.ADMINISTRATIVE,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['query SELECT * FROM Configs;'],
       master: true

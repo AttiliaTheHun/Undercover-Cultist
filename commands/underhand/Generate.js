@@ -6,9 +6,10 @@ module.exports = class Generate extends Command {
     super(client, {
       name: 'generate',
       aliases: ['gen'],
-      usage: 'generate <0-21>',
+      syntax: 'generate <0-21>',
       description: `Generates target number of Underhand-themed nicknames, used with \"change\" will change your nickname to Underhand-themed one`,
-      type: client.types.UNDERHAND,
+      category: client.categories.UNDERHAND,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['generate 21', 'generate 1 ch'],
       master: false
@@ -18,8 +19,7 @@ module.exports = class Generate extends Command {
   async execute(message, args) {
      try {
       if (args[0] == null) {
-        message.channel.send("NullPointerException: `You must provide an argument`");
-        return;
+        throw new message.client.errors.UserInputError("You must provide an argument");
       }
       if (!isNaN(args[0]) && args[0] > 0 && args[0] < 21 || args[0] == "change" || args[0] == "set" || args[0] == "ch" || args[0] == "s") {
         if (isNaN(args[0])) {
@@ -34,7 +34,7 @@ module.exports = class Generate extends Command {
           message.channel.send(response);
         }
       } else {
-        message.channel.send("IllegalArgumentException: `Number range should be in between 0-21excluded`");
+        throw new message.client.errors.UserInputError("Number range should be in between 0-21excluded");
       }
     } catch (err) {
       console.log(err);

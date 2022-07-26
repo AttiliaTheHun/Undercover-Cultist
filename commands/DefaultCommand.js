@@ -6,9 +6,10 @@ module.exports = class DefaultCommand extends Command {
     super(client, {
       name: 'defaultcommand',
       aliases: ['defcmd', 'cmddef'],
-      usage: 'defaultcommand <args>',
+      syntax: 'defaultcommand <args>',
       description: `Default description`,
-      type: client.types.ADMINISTRATIVE,
+      category: client.categories.ADMINISTRATIVE,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['defaultcommand hmm'],
       master: true
@@ -16,6 +17,8 @@ module.exports = class DefaultCommand extends Command {
   }
   
   async execute(message, args) {
+    message.client.utils.checkClientPermissions(message, this.clientPermissions, {});
+    message.client.utils.checkUserPermissions(message.member, this.userPermissions);
     
   }
    

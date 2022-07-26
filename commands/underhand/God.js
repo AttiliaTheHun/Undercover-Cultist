@@ -6,9 +6,10 @@ module.exports = class God extends Command {
     super(client, {
       name: 'god',
       aliases: [],
-      usage: 'god <0-7><thumbnail>',
+      syntax: 'god <0-7><thumbnail>',
       description: `Sends god texture or thumbnail`,
-      type: client.types.UNDERHAND,
+      category: client.categories.UNDERHAND,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['god 0', 'god 2 thumbnail'],
       master: false
@@ -17,8 +18,7 @@ module.exports = class God extends Command {
   
   async execute(message, args) {
      if ((args[0] < 1 || args[0] > 7) && !isNaN(args[0])) {
-      message.channel.send("IllegalArgumentException: `only integers in range from 1 to 7 included or Strings are accepted `");
-      return;
+      throw new message.client.errors.UserInputError("Only integers in range from 1 to 7 included or Strings are accepted.");
     }
 
     const gods = [null,

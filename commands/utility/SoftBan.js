@@ -6,9 +6,10 @@ module.exports = class Softban extends Command {
     super(client, {
       name: 'softban',
       aliases: ['sban'],
-      usage: 'softban <username/ID>',
+      syntax: 'softban <username/ID>',
       description: `Bans and subsequently unbans a user, resulting in removing the user and all his messages from the server`,
-      type: client.types.UTILITY,
+      category: client.categories.UTILITY,
+      clientPermissions: ['BAN_MEMBERS'],
       userPermissions: ['BAN_MEMBERS'],
       examples: ['softban 608673444061773827'],
       master: false

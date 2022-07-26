@@ -6,9 +6,10 @@ module.exports = class Credits extends Command {
     super(client, {
       name: 'credits',
       aliases: ['about', 'info', 'botinfo'],
-      usage: 'credits',
+      syntax: 'credits',
       description: `Shows info about the bot`,
-      type: client.types.INFORMATIVE,
+      category: client.categories.INFORMATIVE,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['credits'],
       master: false

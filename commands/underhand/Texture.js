@@ -6,9 +6,10 @@ module.exports = class Texture extends Command {
     super(client, {
       name: 'texture',
       aliases: [],
-      usage: 'texture <WinScreen/LoseScreen/Cardback>',
+      syntax: 'texture <WinScreen/LoseScreen/Cardback>',
       description: `Sends back target texure`,
-      type: client.types.UNDERHAND,
+      category: client.categories.UNDERHAND,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['texture WinScreen'],
       master: false

@@ -6,9 +6,10 @@ module.exports = class Blessing extends Command {
     super(client, {
       name: 'blessing',
       aliases: [],
-      usage: 'blessing <0-7>',
+      syntax: 'blessing <0-7>',
       description: `Shows blessings that belong to the target god`,
-      type: client.types.ADMINISTRATIVE,
+      category: client.categories.ADMINISTRATIVE,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['blessing 5', 'blessing kekujira'],
       master: false
@@ -22,8 +23,7 @@ module.exports = class Blessing extends Command {
     }
 
     if ((args[0] < 1 || args[0] > 7) && !isNaN(args[0])) {
-      message.channel.send("IllegalArgumentException: `only integers in range from 1 to 7 included or Strings are accepted `");
-      return;
+      throw new message.client.errors.UserInputError("IllegalArgumentException: `only integers in range from 1 to 7 included or Strings are accepted `");
     }
 
     const gods = [null,

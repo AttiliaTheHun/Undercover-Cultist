@@ -10,9 +10,10 @@ module.exports = class PlayOld extends Command {
     super(client, {
       name: 'playold',
       aliases: ['defcmd', 'cmddef'],
-      usage: 'playold <load><blessings>',
+      syntax: 'playold <load><blessings>',
       description: `Starts a game of Underhand right here in dicord (Deprecated)`,
-      type: client.types.UNDERHAND,
+      category: client.categories.UNDERHAND,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['playold load ...', 'playold kyr'],
       master: false

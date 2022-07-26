@@ -6,9 +6,10 @@ module.exports = class Masters extends Command {
     super(client, {
       name: 'masters',
       aliases: ['botmasters', 'listmasters'],
-      usage: 'masters',
+      syntax: 'masters',
       description: `Shows the list of the bot Masters`,
-      type: client.types.ADMINISTRATIVE,
+      category: client.categories.ADMINISTRATIVE,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['masters'],
       master: true

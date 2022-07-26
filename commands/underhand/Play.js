@@ -9,10 +9,11 @@ module.exports = class Play extends Command {
     super(client, {
       name: 'play',
       aliases: ['underhand', 'p', 'u'],
-      usage: 'defaultcommand <load><blessings>',
+      syntax: 'defaultcommand <load><blessings>',
       description: `Starts a game of Underhand right here in dicord,
                     Complete guide can be found in <#767455245382320138> in the [Underhand server](https://discord.gg/invite/Rb5kUzE)\nThis can produce tons of spam so please, use it in designated channels or bot commands channels",`,
-      type: client.types.UNDERHAND,
+      category: client.categories.UNDERHAND,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['play kyj', 'play load ...'],
       master: false
@@ -42,8 +43,7 @@ class Game {
   init(){
     if(["load", "l"].includes(args[0])){
       if (args[1] == null || !args[1].startsWith("{\"base\"}:[")) {
-          message.channel.send("Could not load the data string.")
-          this.terminate();
+         throw new message.client.errors.UserInputError("Could not load the data string.")
         } else {
           const gameData = JSON.parse(args[1]);
           this.load(gameData);

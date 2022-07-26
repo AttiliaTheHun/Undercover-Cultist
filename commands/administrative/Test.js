@@ -6,9 +6,10 @@ module.exports = class Test extends Command {
     super(client, {
       name: 'test',
       aliases: ['tst'],
-      usage: 'test <args>',
+      syntax: 'test <args>',
       description: `Testing command`,
-      type: client.types.ADMINISTRATIVE,
+      category: client.categories.ADMINISTRATIVE,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['test test test test'],
       master: true
@@ -16,7 +17,7 @@ module.exports = class Test extends Command {
   }
   
   async execute(message, args) {
-    throw new Error("Expected Expection, found Error");
+    throw new message.client.errors.UserInputError("Use only numbers please");
   }
    
 }

@@ -6,9 +6,10 @@ module.exports = class Botbans extends Command {
     super(client, {
       name: 'botbans',
       aliases: ['bans', ''],
-      usage: 'botbans <-local/-global>',
+      syntax: 'botbans <-local/-global>',
       description: `Shows users prohibited from the use of the bot`,
-      type: client.types.INFORMATIVE,
+      category: client.categories.INFORMATIVE,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['botbans', 'botbans -local', 'botbans -global'],
       master: true

@@ -1,5 +1,5 @@
 const Command = require("../Command.js");
-const Colors = require("../../util/colors.js");
+const Colors = require("../../constants/colors.js");
 
 module.exports = class Embed extends Command {
   
@@ -7,9 +7,10 @@ module.exports = class Embed extends Command {
     super(client, {
       name: 'embed',
       aliases: ['defcmd', 'cmddef'],
-      usage: 'embed <embed-pseudo-code>',
+      syntax: 'embed <embed-pseudo-code>',
       description: `Sends a cool embed`,
-      type: client.types.UTILITY,
+      category: client.categories.UTILITY,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['embed #title I like Rainbow\\n#color Black'],
       master: false

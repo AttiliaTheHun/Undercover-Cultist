@@ -6,9 +6,10 @@ module.exports = class User extends Command {
     super(client, {
       name: 'user',
       aliases: ['usr', 'member', 'mmbr', 'profile', 'userinfo', 'stalk'],
-      usage: 'user <username/ID>',
+      syntax: 'user <username/ID>',
       description: `Shows information about target user`,
-      type: client.types.INFORMATIVE,
+      category: client.categories.INFORMATIVE,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['user 608673444061773827', 'user AttilaTheHun'],
       master: false

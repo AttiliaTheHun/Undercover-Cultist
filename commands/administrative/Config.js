@@ -1,5 +1,5 @@
 const Command = require("../Command.js");
-const important_variables = require('../../util/config_variables.js').important_variables;
+const important_variables = require('../../constants/config_variables.js').important_variables;
 
 module.exports = class Config extends Command {
   
@@ -7,9 +7,10 @@ module.exports = class Config extends Command {
     super(client, {
       name: 'config',
       aliases: ['cfg', 'env', 'conf'],
-      usage: 'config (<add/set/del><key><value>) OR (<-filter>)',
+      syntax: 'config (<add/set/del><key><value>) OR (<-filter>)',
       description: `Manage bot's configuration variables (DANGER ZONE)`,
-      type: client.types.ADMINISTRATIVE,
+      category: client.categories.ADMINISTRATIVE,
+      clientPermissions: [],
       userPermissions: [],
       examples: [
         'config add channel_ignored 98598866548912', 
@@ -116,8 +117,7 @@ module.exports = class Config extends Command {
       query = `UPDATE Configs SET value = '${input}', last_updated_by = '${message.author.id}' WHERE name='${name}'`;
       const rowCount = await this.client.utils.query(`${query};`);
       if (!rowCount) {
-        message.reply("That record cannot be found.");
-        return;
+        throw new message.client.errors.UserInputError("That record cannot be found.");
       }
     }
     message.reply("Record Updated.");
@@ -134,8 +134,7 @@ module.exports = class Config extends Command {
     }
     const rowCount= await this.client.utils.query(`${query};`);
     if (!rowCount) {
-      message.reply("That record cannot be found.");
-      return;
+      throw new message.client.errors.UserInputError("That record cannot be found.");
     }
     message.reply("Record deleted.");
   }

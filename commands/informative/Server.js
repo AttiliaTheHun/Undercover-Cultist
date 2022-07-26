@@ -6,9 +6,10 @@ module.exports = class Server extends Command {
     super(client, {
       name: 'server',
       aliases: ['srvr', 'guild', 'gld'],
-      usage: 'server',
+      syntax: 'server',
       description: `Default description`,
-      type: client.types.INFORMATIVE,
+      category: client.categories.INFORMATIVE,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['server'],
       master: false

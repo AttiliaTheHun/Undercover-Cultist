@@ -2,7 +2,7 @@
 module.exports = async (client, message) => {
 let args;
 const {prefix} = require("../config.json");
-  
+const {silent_errors} = require("../constants/silent_errors.js");
  
   // ignore bots
   if (message.author.bot) {
@@ -80,17 +80,16 @@ const {prefix} = require("../config.json");
   }
 
   try{
-    let execution_status = await command.execute(message, args, client.utils );
-     if (execution_status) {
-      await client.logger.commandError(message, execution_status, commandName);
-      message.channel.send("Something went wrong");
-    } else {
-      await client.logger.command(message, args, commandName);
-    }
-      
+    await command.execute(message, args, client.utils );
+    await client.logger.command(message, args, commandName);
+
     }catch(err){
         console.log(err);
+        if (silent_errors.includes(err.name)){
+             await client.logger.command(message, args, commandName);
+             return message.channel.send(err.message);
+        }
         await client.logger.commandError(message, err, commandName);
-        message.channel.send("Something went very wrong");  
+        message.channel.send("Something went wrong");  
     }
 }

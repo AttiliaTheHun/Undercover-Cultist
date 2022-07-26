@@ -6,9 +6,10 @@ module.exports = class Nickname extends Command {
     super(client, {
       name: 'nickname',
       aliases: ['setnickname', 'setnick', 'nick'],
-      usage: 'defaultcommand <username/ID> <nickname>',
+      syntax: 'defaultcommand <username/ID> <nickname>',
       description: `Changes the nickname of the target member`,
-      type: client.types.UTILITY,
+      category: client.categories.UTILITY,
+      clientPermissions: ['MANAGE_NICKNAMES'],
       userPermissions: ['MANAGE_NICKNAMES'],
       examples: ['setnickname 608673444061773827 snoodle'],
       master: true
@@ -18,19 +19,17 @@ module.exports = class Nickname extends Command {
   async execute(message, args) {
     //  try{
     if (!message.member.hasPermission("MANAGE_NICKNAMES")) {
-      message.reply("SecurityException: `Missing permission`");
+      throw new message.client.errors.UserPermissionError("You cannot do that");
       return;
     }
     if (args[0] == null) {
-      message.channel.send("NullPointerException: `You must provide an argument`");
-      return;
+      throw new message.client.errors.UserInputError("You must provide an argument");
     }
 
     let member = await this.client.utils.resolveUser(message, args);
     
     if (!member || member.id == message.member.id) {
-      message.channel.send("Could not find the user.");
-      return 
+     throw new message.client.errors.UserInputError("Could not find the user.");
     }
     
     if (!member.managable) {

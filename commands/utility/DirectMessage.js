@@ -6,9 +6,10 @@ module.exports = class DirectMessage extends Command {
     super(client, {
       name: 'directmessage',
       aliases: ['dm', 'pm'],
-      usage: 'directmessage <username/ID><message>',
+      syntax: 'directmessage <username/ID><message>',
       description: `DMs the target user the given message`,
-      type: client.types.UTILITY,
+      category: client.categories.UTILITY,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['directmessage 608673444061773827 Be watching you'],
       master: true
@@ -18,8 +19,7 @@ module.exports = class DirectMessage extends Command {
   async execute(message, args) {
     let member = await this.client.utils.resolveUser(message, args);
       if(!member){
-        message.channel.send("Couldn't identify the user.");
-        return;
+        throw new message.client.errors.UserInputError("Couldn't identify the user.");
       }
     args.shift();
     member.user.send({content: args.join(' ')});

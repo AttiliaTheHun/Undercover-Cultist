@@ -6,9 +6,10 @@ module.exports = class Help extends Command {
     super(client, {
       name: 'help',
       aliases: ['commands'],
-      usage: 'help <command>',
+      syntax: 'help <command>',
       description: `Shows help message`,
-      type: client.types.INFORMATIVE,
+      category: client.categories.INFORMATIVE,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['help', 'help generate'],
       master: false
@@ -45,14 +46,14 @@ module.exports = class Help extends Command {
       let underhand_commands, informative_commands, utility_commands, administrative_commands;
       if(allowMaster){
         
-        underhand_commands = client.commands.filter(cmd => cmd.category == "underhand").map(cmd => cmd.name);
-        informative_commands = client.commands.filter(cmd => cmd.category == "informative").map(cmd => cmd.name);
-        utility_commands = client.commands.filter(cmd => cmd.category == "utility").map(cmd => cmd.name);
-        administrative_commands = client.commands.filter(cmd => cmd.category == "administrative").map(cmd => cmd.name);
+        underhand_commands = client.commands.filter(cmd => cmd.category == client.categories.UNDERHAND).map(cmd => cmd.name);
+        informative_commands = client.commands.filter(cmd => cmd.category == client.categories.INFORMATIVE).map(cmd => cmd.name);
+        utility_commands = client.commands.filter(cmd => cmd.category == client.categories.UTILITY).map(cmd => cmd.name);
+        administrative_commands = client.commands.filter(cmd => cmd.category == client.categories.ADMINISTRATIVE).map(cmd => cmd.name);
       } else {
-        underhand_commands = client.commands.filter(cmd => cmd.category == "underhand" && cmd.master == false).map(cmd => cmd.name);
-        informative_commands = client.commands.filter(cmd => cmd.category == "informative" && cmd.master == false).map(cmd => cmd.name);
-        utility_commands = client.commands.filter(cmd => cmd.category == "utility" && cmd.master == false).map(cmd => cmd.name);
+        underhand_commands = client.commands.filter(cmd => cmd.category == client.categories.UNDERHAND && cmd.master == false).map(cmd => cmd.name);
+        informative_commands = client.commands.filter(cmd => cmd.category == client.categories.INFORMATIVE && cmd.master == false).map(cmd => cmd.name);
+        utility_commands = client.commands.filter(cmd => cmd.category == client.categories.UTILITY && cmd.master == false).map(cmd => cmd.name);
 
       }
       embed.title = "My Commands";
@@ -88,19 +89,9 @@ module.exports = class Help extends Command {
       const name = command.name;
       const syntax = prefix + command.syntax;
       const description = command.description;
-      const note = command.note;
-      const permissions = command.permissions;
+      const permissions = command.userPermissions;
       const aliases = command.aliases;
-      let legend = command.legend;
-
-
-      legend = legend.replace("god", "[god] god name or it's number");
-      legend = legend.replace("number", "[number] an integer in range of the numbers in parenthesis");
-      legend = legend.replace("id", "[id] user id, for example 672748100007362561");
-      legend = legend.replace("mention", "[mention] user mention, for example <@672748100007362561>")
-      legend = legend.replace("username", "[username] user name and his tag, for example Undercover Cultist#5057");
-      legend = legend.replace("emd-formatted-text", "[emd-formatted-text] a text that is processed by special formatting");
-      legend = legend.replace("blessings", "[blessings] string containing first letters of target gods names, for example ykj");
+      const examples = command.examples;
 
       embed.fields = [{
         name: name,
@@ -112,36 +103,30 @@ module.exports = class Help extends Command {
         value: description, 
         inline: false
       }];               
-                     
-                     
-      if (note != "") {
-        embed.fields.push({
-        name: "Note",
-        value: note, 
-        inline: false
-      });
-      }
-      if (permissions != "") {
+                                        
+      if (permissions != []) {
         embed.fields.push({
         name: "Permissions needed",
-        value: permissions, 
+        value: permissions.join(", "), 
         inline: false
       });
       }
-      if (aliases != "") {
+      if (aliases != []) {
         embed.fields.push({
         name: "Aliases",
         value: aliases.join(", "), 
         inline: false
       });
       }
-      if (legend != "") {
+
+      if (examples != []) {
         embed.fields.push({
-        name: "Legend",
-        value: legend, 
+        name: "Examples",
+        value: examples.join(", "), 
         inline: false
       });
       }
+
 
 
     }

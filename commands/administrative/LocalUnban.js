@@ -6,9 +6,10 @@ module.exports = class LocalUnban extends Command {
     super(client, {
       name: 'localunban',
       aliases: ['lunban'],
-      usage: 'localunban <username/ID>',
+      syntax: 'localunban <username/ID>',
       description: `Removes the local ban status from the user`,
-      type: client.types.ADMINISTRATIVE,
+      category: client.categories.ADMINISTRATIVE,
+      clientPermissions: [],
       userPermissions: [],
       examples: ['localunban 608673444061773827'],
       master: true
@@ -18,7 +19,7 @@ module.exports = class LocalUnban extends Command {
   async execute(message, args) {
 const user = await this.client.utils.resolveUser(message, args);
     if (!user || user.id == message.author.id) {
-      return message.channel.send("Could not find the user.")
+      throw new message.client.errors.UserInputError("Could not find the user.");
     }
 
     const result = await this.client.utils.query(`DELETE FROM Bans WHERE user = '${user.id}' AND server = '${message.guild.id}' AND global = 0;`);
