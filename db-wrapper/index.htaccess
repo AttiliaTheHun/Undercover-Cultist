@@ -1,0 +1,11 @@
+DirectoryIndex db.php
+
+<Files "config.json">  
+  Require all denied
+</Files>
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(events|gods|archive)($|/) - [L]
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+RewriteRule ^([^\.]+)$ $1.html [NC,L]

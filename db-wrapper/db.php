@@ -5,7 +5,9 @@
    */
 
    $api_token = json_decode(file_get_contents('config.json'), true)["api_token"];  
-
+   $db_log = fopen("db_log.txt", "a");
+    
+    
    class Database extends SQLite3 {
       function __construct() {
          $this->open('database.sqlite');
@@ -45,24 +47,35 @@
         $query = $data["query"];
 
          $db = new Database();
+         $db->busyTimeout(1000);
+         // WAL mode has better control over concurrency.
+         // Source: https://www.sqlite.org/wal.html
+         $db->exec('PRAGMA journal_mode = wal;');
+         
          if(!$db) {
             $error = $db->lastErrorMsg();
             response($error, "You wish");
          }
          
          $result = $db->query($query);
+         fwrite($db_log, $query . "\n");
          if(!$result) {
              $error = $db->lastErrorMsg();
              response($error, "");
          }
          
-         $final_result = array();
-         while($row = $result->fetchArray(SQLITE3_ASSOC)) {
-             array_push($final_result, $row);
+         $final_result = [];
+         $is_insert_statement = stripos($query, "INSERT");
+         
+         if ($is_insert_statement === false) {
+            while($row = $result->fetchArray(SQLITE3_ASSOC)) {
+               array_push($final_result, $row);
+            }
          }
          
          response($error, json_encode($final_result));
          $db->close();
+         unset($db);
          
     /**
     * We accept only POST requests, sorry
