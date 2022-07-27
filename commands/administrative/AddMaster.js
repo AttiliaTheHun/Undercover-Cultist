@@ -17,7 +17,6 @@ module.exports = class AddMaster extends Command {
   }
   
   async execute(message, args) {
-    
      let member = await this.client.utils.resolveUser(message, args);
       if(!member || member.id == message.member.id){
         throw new message.client.errors.UserInputError

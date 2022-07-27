@@ -18,9 +18,6 @@ module.exports = class Ban extends Command {
   
   async execute(message, args) {
     //  try{
-    if (!message.member.permissions.has("BAN_MEMBERS")) {
-      throw new message.client.errors.UserPermissionError("You are not allowed to do this.");
-    }
 
     let id;
     if(!isNaN(args[0])){

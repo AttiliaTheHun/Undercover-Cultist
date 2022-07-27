@@ -24,6 +24,7 @@ module.exports = class Config extends Command {
   }
   
   async execute(message, args) {
+
     try {
       switch (args[0]) {
       case "add":

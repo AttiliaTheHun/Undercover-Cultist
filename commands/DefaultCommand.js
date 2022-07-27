@@ -17,8 +17,6 @@ module.exports = class DefaultCommand extends Command {
   }
   
   async execute(message, args) {
-    message.client.utils.checkClientPermissions(message, this.clientPermissions, {});
-    message.client.utils.checkUserPermissions(message.member, this.userPermissions);
     
   }
    

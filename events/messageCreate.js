@@ -20,6 +20,9 @@ const {silent_errors} = require("../constants/silent_errors.js");
   */
   if(message.channel.type == "DM"){
     client.logger.dm(message);
+    if (await client.utils.getConfig("dm_engine_enabled")) {
+      client.talkEngine.dm(message);
+    }
     return;
   }
   
@@ -80,6 +83,9 @@ const {silent_errors} = require("../constants/silent_errors.js");
   }
 
   try{
+    message.client.utils.checkClientPermissions(message, command.clientPermissions, {});
+    message.client.utils.checkUserPermissions(message.member, command.userPermissions);
+    
     await command.execute(message, args, client.utils );
     await client.logger.command(message, args, commandName);
 

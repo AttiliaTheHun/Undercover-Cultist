@@ -17,6 +17,7 @@ module.exports = class GlobalUnban extends Command {
   }
   
   async execute(message, args) {
+
     const user = await this.client.utils.resolveUser(message, args);
     if (!user || user.id == message.member.id) {
       throw new message.client.errors.UserInputError("Could not find the user.");

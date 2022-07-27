@@ -17,6 +17,7 @@ module.exports = class GlobalBan extends Command {
   }
   
   async execute(message, args) {
+
     try {
 
       const user = await this.client.utils.resolveUser(message, args);

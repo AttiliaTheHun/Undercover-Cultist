@@ -4,6 +4,7 @@ const utils = require("./utils.js");
 const Logger = require("./Logger.js");
 const {resolve, join} = require("path");
 const errors = require("./errors.js")
+const TalkEngine = require("./TalkEngine.js");
 
 class Client extends Discord.Client {
   
@@ -27,6 +28,8 @@ class Client extends Discord.Client {
       UNDERHAND: 2,
       UTILITY: 3
     }
+
+    this.talkEngine = new TalkEngine();
     
   }
   

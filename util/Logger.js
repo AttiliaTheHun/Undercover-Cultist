@@ -214,6 +214,13 @@ class Logger {
   }
   
   async dumpDM(embed) {
+
+     const is_logging_disabled = await this.client.utils.getConfig('log_disabled');
+    // Unset config values return false and logging is enabled by default
+    if(is_logging_disabled){
+      return;
+    }
+    
     let dm_dump_channel_id = await this.client.utils.getConfig('dm_dump_channel');
 
     const dm_dump_channel = await this.client.channels.cache.get(dm_dump_channel_id);

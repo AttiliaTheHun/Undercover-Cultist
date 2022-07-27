@@ -18,10 +18,6 @@ module.exports = class Nickname extends Command {
   
   async execute(message, args) {
     //  try{
-    if (!message.member.hasPermission("MANAGE_NICKNAMES")) {
-      throw new message.client.errors.UserPermissionError("You cannot do that");
-      return;
-    }
     if (args[0] == null) {
       throw new message.client.errors.UserInputError("You must provide an argument");
     }

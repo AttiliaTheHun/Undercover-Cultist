@@ -10,14 +10,14 @@ module.exports = class Test extends Command {
       description: `Testing command`,
       category: client.categories.ADMINISTRATIVE,
       clientPermissions: [],
-      userPermissions: [],
+      userPermissions: ['ADMINISTRATOR'],
       examples: ['test test test test'],
       master: true
     });
   }
   
   async execute(message, args) {
-    throw new message.client.errors.UserInputError("Use only numbers please");
+      message.channel.send("Success")
   }
-   
+
 }
