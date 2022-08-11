@@ -1,5 +1,4 @@
 const Command = require("../Command.js");
-const Colors = require("../../constants/colors.js");
 
 module.exports = class Embed extends Command {
   
@@ -55,7 +54,7 @@ module.exports = class Embed extends Command {
             if(emdLine.includes('#')){
               embedData.color = emdLine;
             }else{
-              embedData.color = Colors[emdLine];
+              embedData.color = this.client.colors[emdLine.toUpperCase()];
             }
             break;
           case "author":
@@ -90,7 +89,7 @@ module.exports = class Embed extends Command {
       let name = emdLine.substring(emdLine.indexOf('[')  + 1, emdLine.lastIndexOf(']'));
       let value = emdLine.substring(emdLine.indexOf('(')  + 1, emdLine.lastIndexOf(')'));
       let inline = emdLine.substring(emdLine.indexOf('{')  + 1, emdLine.lastIndexOf('}'));
-      (inline == "true") ? inline == true : inline == false;
+      (inline == "true") ? inline = true : inline = false;
       let field = {
         name: name,
         value: value,

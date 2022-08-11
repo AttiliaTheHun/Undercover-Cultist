@@ -260,6 +260,12 @@ module.exports = {
               throw new message.client.errors.SilentError("I do not have the permissions necessary.");
         }
     }
-  } 
+  },
+  /**
+  * Checks if client has permissions to send the message before sending
+  */
+  safeSend(channel, message) {
+    
+  }
   
 }
