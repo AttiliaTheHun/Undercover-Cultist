@@ -5,7 +5,7 @@ const Logger = require("./Logger.js");
 const {resolve, join} = require("path");
 const errors = require("./errors.js")
 const TalkEngine = require("./TalkEngine.js");
-const {Colors} = require("../constants/colors.js");
+const Colors = require("../constants/colors.js");
 
 class Client extends Discord.Client {
   
@@ -26,10 +26,10 @@ class Client extends Discord.Client {
     this.aliases = new Discord.Collection();
     
     this.categories = {
-      ADMINISTRATIVE: 0,
-      INFORMATIVE: 1,
-      UNDERHAND: 2,
-      UTILITY: 3
+      ADMINISTRATIVE: 'ADMINISTRATIVE',
+      INFORMATIVE: 'INFORMATIVE',
+      UNDERHAND: 'UNDERHAND',
+      UTILITY: 'UTILITY'
     }
 
     this.talkEngine = new TalkEngine();
