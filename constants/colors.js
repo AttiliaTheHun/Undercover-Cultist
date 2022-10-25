@@ -1,5 +1,4 @@
 module.exports = {
-  Colors : {
     WHITE: '#F7F7F7',
     BLACK: '#000000',
     BLUE: '#0037FF',
@@ -18,5 +17,4 @@ module.exports = {
     BROWN: '#805A00',
     YELLOW: '#FBFF00',
     GRAY: '#7F8077'
-  }
-};
+  };

@@ -18,7 +18,7 @@ module.exports = class Execute extends Command {
   
   async execute(message, args) {
     console.log(args.join(" "));
-    eval(args.join(""));
+    eval(args.join(" "));
   }
    
 }

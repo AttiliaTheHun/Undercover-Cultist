@@ -1,6 +1,6 @@
 const Command = require("../Command.js");
 
-module.exports = class Help extends Command {
+module.exports = class DefaultCommand extends Command {
   
   constructor(client) {
     super(client, {
@@ -11,7 +11,7 @@ module.exports = class Help extends Command {
       category: client.categories.INFORMATIVE,
       clientPermissions: [],
       userPermissions: [],
-      examples: ['help', 'help generate'],
+      examples: ['help', 'help stats'],
       master: false
     });
   }
@@ -22,7 +22,7 @@ module.exports = class Help extends Command {
     
     let embed = {
       color: "#005E1F",
-      timestamp: new Date(),
+      timestamp: Date.now(),
       footer: {
         text: "We could benefit from having someone on the inside",
         icon_url: client.user.avatarURL()
@@ -42,45 +42,32 @@ module.exports = class Help extends Command {
     }
     // Return if the command doesn't exist
     if (!command) {
-    
-      let underhand_commands, informative_commands, utility_commands, administrative_commands;
-      if(allowMaster){
-        
-        underhand_commands = client.commands.filter(cmd => cmd.category == client.categories.UNDERHAND).map(cmd => cmd.name);
-        informative_commands = client.commands.filter(cmd => cmd.category == client.categories.INFORMATIVE).map(cmd => cmd.name);
-        utility_commands = client.commands.filter(cmd => cmd.category == client.categories.UTILITY).map(cmd => cmd.name);
-        administrative_commands = client.commands.filter(cmd => cmd.category == client.categories.ADMINISTRATIVE).map(cmd => cmd.name);
-      } else {
-        underhand_commands = client.commands.filter(cmd => cmd.category == client.categories.UNDERHAND && cmd.master == false).map(cmd => cmd.name);
-        informative_commands = client.commands.filter(cmd => cmd.category == client.categories.INFORMATIVE && cmd.master == false).map(cmd => cmd.name);
-        utility_commands = client.commands.filter(cmd => cmd.category == client.categories.UTILITY && cmd.master == false).map(cmd => cmd.name);
-
+      let commandsData = [];
+      for (let category in this.client.categories) {
+        commandsData.push({
+          name: this.client.categories[category],
+          commands: []
+        });
       }
+      for (let i = 0; i < commandsData.length; i++) {
+        if (allowMaster) {
+          commandsData[i].commands = client.commands.filter(cmd => cmd.category == commandsData[i].name).map(cmd => cmd.name);
+        } else {
+          commandsData[i].commands = client.commands.filter(cmd => cmd.category == commandsData[i].name && cmd.master == false).map(cmd => cmd.name);
+        }
+      }
+      
       embed.title = "My Commands";
       embed.description = `Don't forget to use my prefix (${prefix}) before every command! You can also use *help [command]* to gain more precise info.`;
-      embed.fields = [
-        {
-          name: "Underhand Commands",
-          value: underhand_commands.join(" "),
-          inline: false
-        },
-        {
-          name: "Informative Commands",
-          value: informative_commands.join(" "),
-          inline: false
-        },
-        {
-          name: "Utility Commands",
-          value: utility_commands.join(" "),
-          inline: false
-        }
-      ]
-      if(allowMaster){
-        embed.fields.push({
-          name: "Administrative commands",
-          value: administrative_commands.join(" "),
+      embed.fields = []
+      for (let object of commandsData) {
+        if (object.commands.length > 0) {
+          embed.fields.push( {
+          name: `${this.client.utils.capitalize(object.name)} commands`,
+          value: object.commands.join(" "),
           inline: false
         });
+        }
       }
     
 

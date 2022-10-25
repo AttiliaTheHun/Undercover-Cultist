@@ -24,7 +24,9 @@ const client = new Client({
       .loadEvents("./events")
       .loadCommands("./commands");
 
-client.login(token);
+client.login(token).catch( err => {
+  console.log(err)
+});
 
 /**
 * Create an express router to make the app

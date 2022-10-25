@@ -27,21 +27,6 @@ module.exports = class Credits extends Command {
       description: "The bot was made by AttilaTheHun#9489 for the Underhand server",
       fields: [
         {
-          name: "Language",
-          value: "Node.js",
-          inline: true
-        },
-        {
-          name: "Library",
-          value: "Discord.js",
-          inline: true
-        },
-        {
-          name: "Version",
-          value: await this.client.utils.getConfig('version'),
-          inline: true
-        },
-        {
           name: "Invite",
           value: `[link](${await this.client.utils.getConfig('bot_invite_link')})`,
           inline: true

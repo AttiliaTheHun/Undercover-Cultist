@@ -14,6 +14,8 @@ class Client extends Discord.Client {
     super(options);
     
     this.utils = utils;
+
+    this.colors = Colors;
     
     this.logger = new Logger(this);
     
@@ -32,7 +34,7 @@ class Client extends Discord.Client {
 
     this.talkEngine = new TalkEngine();
 
-    this.colors = Colors;
+    
     
   }
   
