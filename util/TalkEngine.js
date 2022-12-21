@@ -1,18 +1,19 @@
-const {responses, includes, randoms} = require('../constants/dm_lines.js');
+const { responses, includes, randoms } = require('../constants/dm_lines.js');
 
 class TalkEngine {
-  dm (message) {
+  dm(message) {
+    console.log(responses)
     message.channel.send(this.proccess(message));
   }
 
-  proccess (message) {
+  proccess(message) {
     for (let response of Object.keys(responses)) {
-      if (message.content.toLowerCase() == response) {
+      if (message.content.toLowerCase().startsWith(response)) {
         return responses[response];
       }
     }
-     for (let include of Object.keys(includes)) {
-      if (message.content.toLowerCase() == include) {
+    for (let include of Object.keys(includes)) {
+      if (message.content.toLowerCase().includes(include)) {
         return includes[include];
       }
     }
@@ -20,7 +21,7 @@ class TalkEngine {
       return message.client.utils.randomArrayItem(randoms);
     }
   }
-  
+
 }
 
 module.exports = TalkEngine;

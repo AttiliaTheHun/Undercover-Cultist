@@ -207,7 +207,7 @@ class Logger {
           value: message.content
         },
         {
-          name: "User",
+          name: `User (${message.user.id})`,
           value: message.author.tag
         }
       ]
