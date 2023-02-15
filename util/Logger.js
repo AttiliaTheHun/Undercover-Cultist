@@ -154,7 +154,7 @@ class Logger {
       fields: [
         {
           name: "Error",
-          value: `${error.name}: ${error.message}`
+          value: `${(error.stack.length > 900) ? error.name + ":" + error.message + "\n..." +  error.stack.substring(error.name.length + error.message.length + 1, 900) : error.stack}`
         }
       ]
     });
@@ -189,7 +189,7 @@ class Logger {
         },
         {
           name: "Error",
-          value: `${error.name}: ${error.message}`
+          value: `${(error.stack.length > 900) ? error.name + ":" + error.message + "\n..." +  error.stack.substring(error.name.length + error.message.length + 1, 900) : error.stack}`
         }
       ]
     });
@@ -207,7 +207,7 @@ class Logger {
           value: message.content
         },
         {
-          name: `User (${message.user.id})`,
+          name: `User (${message.author.id})`,
           value: message.author.tag
         }
       ]

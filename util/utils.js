@@ -147,7 +147,7 @@ module.exports = {
     return embed;
   },
 
-  async query(query) {
+ /* async query(query) {
     console.log(`Executing: ${query}`);
     try {
       const res = await axios.post(process.env.DB_API_PATH, {
@@ -170,12 +170,17 @@ module.exports = {
       console.log(err);
       return [];
     }
+  },*/
+
+  async query (query) {
+    const [result, metadata] = await sequelize.query(query);
+    return result;
   },
 
   /**
   * For the Query command so it can print the erorrs, do not use
   */
-  async queryPowerTwo(query) {
+  /*async queryPowerTwo(query) {
     console.log(`Executing: ${query}`);
     try {
       const res = await axios.post(process.env.DB_API_PATH, {
@@ -198,6 +203,11 @@ module.exports = {
       console.log(err);
       return [];
     }
+  },*/
+
+  async queryPowerTwo(query) {
+    const [result, metadata] = await sequelize.query(query);
+    return [result, metadata];
   },
 
   async getSystemChannel(guild) {
@@ -287,8 +297,8 @@ module.exports = {
     return sum;
   },
 
-  randomNumber(min, max) {
-    return Math.random() * (max - min) + min;
+  randomNumber(min, max) { 
+    return Math.floor(Math.random() * (max - min) ) + min;
   },
 
   checkUserPermissions(member, permissions) {

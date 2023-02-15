@@ -2,8 +2,10 @@ const { responses, includes, randoms } = require('../constants/dm_lines.js');
 
 class TalkEngine {
   dm(message) {
-    console.log(responses)
-    message.channel.send(this.proccess(message));
+    const response = this.proccess(message);
+    if (response) {
+      message.channel.send(response);
+    }
   }
 
   proccess(message) {

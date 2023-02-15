@@ -6,6 +6,7 @@ const {resolve, join} = require("path");
 const errors = require("./errors.js")
 const TalkEngine = require("./TalkEngine.js");
 const Colors = require("../constants/colors.js");
+const sequelize = require("../db/models/index.js")
 
 class Client extends Discord.Client {
   
@@ -14,6 +15,8 @@ class Client extends Discord.Client {
     super(options);
     
     this.utils = utils;
+
+    //this.db = sequelize;
 
     this.colors = Colors;
     
