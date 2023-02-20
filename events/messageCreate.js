@@ -32,7 +32,7 @@ const {silent_errors} = require("../constants/silent_errors.js");
   */
   const cases = [prefix, prefix.trim(), `<@${client.user.id}>`, `<@!${client.user.id}>`];
   let match = false;
-  console.log(message.content);
+
   for (const type of cases) {
     if (message.content.toLowerCase().startsWith(type)) {
       args = message.content.slice(type.length).trim().split(/ +/);

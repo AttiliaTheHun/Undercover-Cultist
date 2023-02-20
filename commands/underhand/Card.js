@@ -1,4 +1,5 @@
 const Command = require("../Command.js");
+const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = class Card extends Command {
   
@@ -28,6 +29,27 @@ module.exports = class Card extends Command {
     } else {
       throw new message.client.errors.UserInputError("Number range should be in between 0-119 excluded");
     }
+  }
+
+  async backslash(interaction) {
+    const number = interaction.options.getInteger("card");
+    interaction.reply({
+        content: "Card " + number, 
+        files: ["http://underhand.clanweb.eu/res/Card" + number + ".png"]
+      });
+  }
+
+  createDefinition() {
+    return new SlashCommandBuilder()
+                  .setName(this.name)
+                  .setDescription("Sends card texture.")
+                  .addIntegerOption(option => 
+                            option.setName("card")
+                            .setDescription("Number of the card (use /events to find out).")
+                    .setMinValue(1)
+                    .setMaxValue(118)
+                    .setRequired(true)
+                  );
   }
    
 }

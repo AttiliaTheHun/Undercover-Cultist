@@ -1,3 +1,4 @@
+const { SlashCommandBuilder } = require('discord.js');
 const Command = require("../Command.js");
 
 module.exports = class Generate extends Command {
@@ -34,7 +35,7 @@ module.exports = class Generate extends Command {
           message.channel.send(response);
         }
       } else {
-        throw new message.client.errors.UserInputError("Number range should be in between 0-21excluded");
+        throw new message.client.errors.UserInputError("Number range should be in between 0-21 excluded");
       }
     } catch (err) {
       console.log(err);
@@ -53,6 +54,37 @@ module.exports = class Generate extends Command {
     template = template.replace("[action]", utils.randomArrayItem(action));
     template = template.replace("[location]", utils.randomArrayItem(location));
     return template;
+  }
+
+  backslash(interaction) {
+    let count = interaction.options.getInteger('result-count');
+    const changeNickname = interaction.options.getBoolean('change-nickname');
+    if (changeNickname) {
+          message.member.setNickname(this.generate(this.client.utils)).catch(() => {
+            interaction.reply("I'm gonna need some perms in order to do that...");
+          });
+        } else {
+          let response = "";
+          for (let i = count; i > 0; i--) {
+            response += this.generate(this.client.utils) + "\n";
+          }
+          interaction.reply(response);
+        }
+    
+  }
+
+  createDefinition() {
+    return new SlashCommandBuilder()
+                  .setName(this.name)
+                  .setDescription('Generate Underhand-themed nicknames.')
+                  .addIntegerOption(option =>
+		                      option.setName('result-count')
+			                    .setDescription('How many nicknames do you want to generate? (1 - 20)')
+                          .setRequired(true))
+                  .addBooleanOption(option =>
+		option.setName('change-nickname')
+			.setDescription('Whether or not should the bot set your nickname to the generated result.'));
+                  
   }
    
 }

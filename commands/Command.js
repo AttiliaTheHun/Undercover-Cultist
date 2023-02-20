@@ -1,5 +1,5 @@
 module.exports = class Command {
-  constructor(client, options) {
+  constructor (client, options) {
     if(!this.validateOptions(options)){
       throw new client.errors.ConfigError("Corrupted command options");
     }
@@ -25,15 +25,32 @@ module.exports = class Command {
     
     this.master = options.master;
     
-    
-    
   }
-  
-  execute(message, args) {
+
+  /** 
+  * Executed in the console mode (command initiated via text message).
+  */
+  execute (message, args) {
     throw new this.client.errors.CommandExecutionError("Empty command, stop wasting my computing powers");
   }
+
+  /** 
+  * Executed when running as a slash command.
+  */
+  backslash (interaction) {
+    throw new this.client.errors.CommandExecutionError("No slash command execution definition, maybe implement?");
+  }
+
+  /** 
+  * Generates the slash command definition for command registration purposes.
+  */
+  createDefinition() {
+    return false;
+    //throw new this.client.errors.CommandExecutionError("No slash command definition available.");
+  }
   
-  validateOptions(options) {
+  //TODO
+  validateOptions (options) {
     return true;
   }
 };

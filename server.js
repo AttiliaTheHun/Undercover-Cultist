@@ -1,30 +1,26 @@
-require('dotenv').config();
+require("dotenv").config();
 const express = require("express");
-const sequelize = require("./db/models/index.js");
-const Client = require('./util/Client.js');
-const { Intents } = require("discord.js");
+const Client = require("./util/Client.js");
+const { GatewayIntentBits } = require("discord.js");
 
 const app = express();
 const token = process.env.TOKEN;
 
-const intents = new Intents()
-.add( 'GUILDS',
-      'GUILD_MESSAGES',
-      'DIRECT_MESSAGES',
-      'DIRECT_MESSAGE_REACTIONS',
-      'GUILD_MEMBERS',
-      'GUILD_PRESENCES'
-    );
 
 const client = new Client({
-  intents: intents,
-   partials: [
-        'CHANNEL', // Required to receive DMs
+  intents: [GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.DirectMessageReactions,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildPresences],
+  partials: [
+        "CHANNEL", // Required to receive DMs
     ]})
       .loadEvents("./events")
       .loadCommands("./commands");
 
-client.login(token).catch( err => {
+client.login(token).catch(err => {
   console.log(err)
 });
 

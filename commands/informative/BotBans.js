@@ -78,5 +78,16 @@ message.channel.send("Amnesty completed")
       return err;
     }
   }
+
+  async backslash(interaction) {
+    
+  }
+
+  createDefinition() {
+    return false;
+    return new SlashCommandBuilder()
+                  .setName(this.name)
+                  .setDescription(this.description)
+  }
    
 }

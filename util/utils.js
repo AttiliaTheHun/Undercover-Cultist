@@ -105,7 +105,7 @@ module.exports = {
   },
 
   buildEmbed(embedContent) {
-    let embed = new Discord.MessageEmbed()
+    let embed = new Discord.EmbedBuilder()
     if (embedContent.title) {
       embed.setTitle(embedContent.title);
     }

@@ -1,3 +1,4 @@
+const { SlashCommandBuilder } = require('discord.js');
 const Command = require("../Command.js");
 
 module.exports = class Option extends Command {
@@ -30,6 +31,32 @@ module.exports = class Option extends Command {
     } else {
      throw new message.client.errors.UserInputError("Unknown argument. Try to looks for mistypes or use `help` command.");
     }
+  }
+
+  async backslash(interaction) {
+
+    const option = interaction.options.getString('option');
+     interaction.reply({
+        content: "Option" + option,
+        files: ["http://underhand.clanweb.eu/res/Option" + option + ".png"]
+      });
+  }
+
+  createDefinition() {
+    return new SlashCommandBuilder()
+                  .setName(this.name)
+                  .setDescription("Sends event card option textures.")
+                  .addStringOption(option => 
+                          option.setName("option")
+                          .setDescription("Type of the option to send.")
+                          .setRequired(true)
+                          .addChoices(
+				{ name: 'Ready', value: 'Ready' },
+				{ name: 'Active', value: 'Active' },
+				{ name: 'Dormant', value: 'Dormant' },
+        { name: 'Down', value: 'Down' },
+				{ name: 'Back', value: 'Back' }
+			));
   }
    
 }

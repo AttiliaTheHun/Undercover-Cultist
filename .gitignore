@@ -1,3 +1,9 @@
 node_modules/
 .env
-//*.sqlite
+*.sqlite
+.replit
+*.sqlite-shm
+*.sqlite-wal
+package-lock.json
+replit.nix
+shrinkwrap.yaml
