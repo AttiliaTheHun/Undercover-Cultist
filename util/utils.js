@@ -264,7 +264,7 @@ module.exports = {
   },
 
   async isChannelIgnored(channel) {
-    let does_ignore_record_exists = await module.exports.getConfig('ignored_channel', channel.id);
+    const does_ignore_record_exists = await module.exports.getConfig('ignored_channel', channel.id);
     //in case of absence of such record false is returned which does not pass the if statement
     if (does_ignore_record_exists) {
       return true;
@@ -273,7 +273,7 @@ module.exports = {
   },
 
   async isCommandIgnoredInChannel(commandName, channel) {
-    let does_ignore_record_exists = await module.exports.getConfig(`${commandName}_prohibited`, channel.id);
+    const does_ignore_record_exists = await module.exports.getConfig(`${commandName}_prohibited`, channel.id);
     //in case of absence of such record false is returned which does not pass the if statement
     if (does_ignore_record_exists) {
       return true;
@@ -282,7 +282,7 @@ module.exports = {
   },
 
   shuffleArray(array) {
-    let shuffled = array
+    const shuffled = array
       .map(value => ({ value, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
       .map(({ value }) => value)
@@ -307,9 +307,9 @@ module.exports = {
     }
   },
 
-  checkClientPermissions(message, permissions, { member: member }) {
-    if (!message.guild.me.permissions.has(permissions)) {
-      throw new message.client.errors.SilentError("I do not have the necessary perms.");
+  checkClientPermissions(entity, permissions, { member, channel }) {
+    if (!entity.guild.members.me.permissions.has(permissions)) {
+      throw new entity.client.errors.SilentError("I do not have the necessary perms.");
     }
     if (member) {
       if (!member.managable) {
@@ -333,6 +333,15 @@ module.exports = {
       array[i] = module.exports.capitalize(array[i]);
     }
     return array;
+  },
+
+  failedInteraction(interaction, message) {
+    const embed = {
+      title: "Failure",
+      color: interaction.client.colors.RED,
+      description: message
+    }
+    interaction.reply({ embeds: [interaction.client.utils.buildEmbed(embed)], ephemeral: true });
   }
 
 }

@@ -79,6 +79,7 @@ const {silent_errors} = require("../constants/silent_errors.js");
   //let prefix = await utils.getConfig(sequelize, Config, 'prefix', true);
 
   if( await client.utils.isCommandIgnoredInChannel(commandName, message.channel)){
+    await client.logger.messageIgnored(message);
     message.channel.send("Not in this channel please");
     return;
   }

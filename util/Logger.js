@@ -5,9 +5,11 @@ class Logger {
 
     this.signatures = {
       COMMAND: "Command",
+      SLASH_COMMAND: "Slash Command",
       GUILD_CREATED: "Guild Created",
       GUILD_REMOVED: "Guild Removed",
       MESSAGE_IGNORED: "Ignored Message",
+      INTERACTION_IGNORED: "Interaction Ignored",
       ERROR: "Error",
       NA: "N/A",
       DM: "Direct Message"
@@ -15,9 +17,11 @@ class Logger {
 
     this.colors = {
       COMMAND: this.client.colors.DARK_GREEN,
+      SLASH_COMMAND: this.client.colors.DARK_GREEN,
       GUILD_CREATED: this.client.colors.GOLD,
       GUILD_REMOVED: this.client.colors.BLACK,
       MESSAGE_IGNORED: this.client.colors.WHITE,
+      INTERACTION_IGNORED: this.client.colors.WHITE,
       ERROR: "#A83436",
       NA: "#48CECE",
       DM: ""
@@ -58,7 +62,7 @@ class Logger {
           inline: false,
         },
         {
-          name: 'GuildID',
+          name: 'Guild ID',
           value: guild.id,
           inline: false,
         },
@@ -103,8 +107,34 @@ class Logger {
           value: message.guild.name
         },
         {
-          name: "ServerID",
+          name: "Server ID",
           value: message.guild.id
+        }
+      ]
+    });
+    await this.log(embed, { isEvent: false });
+  }
+
+   async interactionIgnored(interaction) {
+    let embed = this.client.utils.buildEmbed({
+      title: this.signatures.INTERACTION_IGNORED,
+      color: this.colors.INTERACTION_IGNORED,
+      fields: [
+        {
+          name: "Input",
+          value: interaction.toString()
+        },
+        {
+          name: "User",
+          value: interaction.user.tag
+        },
+        {
+          name: "Server",
+          value: interaction.guild.name
+        },
+        {
+          name: "Server ID",
+          value: interaction.guild.id
         }
       ]
     });
@@ -129,7 +159,7 @@ class Logger {
           value: message.guild.name
         },
         {
-          name: "ServerID",
+          name: "Server ID",
           value: message.guild.id
         },
         {
@@ -146,11 +176,43 @@ class Logger {
     await this.log(embed, { isEvent: false });
   }
 
+   async slashCommand(interaction, commandName) {
+    let embed = this.client.utils.buildEmbed({
+      title: this.signatures.SLASH_COMMAND,
+      color: this.colors.SLASH_COMMAND,
+      fields: [
+        {
+          name: "Input",
+          value: interaction.toString()
+        },
+        {
+          name: "User",
+          value: interaction.user.tag
+        },
+        {
+          name: "Server",
+          value:interaction.guild.name
+        },
+        {
+          name: "Server ID",
+          value: interaction.guild.id
+        },
+        {
+          name: "Command",
+          value: commandName
+        }
+      ]
+    });
+
+    await this.log(embed, { isEvent: false });
+  }
+
   async error(error, { metadata }) {
     console.log(error);
     let embed = this.client.utils.buildEmbed({
       title: this.signatures.ERROR,
       color: this.colors.ERROR,
+      description: (metadata) ? `Metadata: ${metadata.toString()}` : undefined,
       fields: [
         {
           name: "Error",
@@ -186,6 +248,41 @@ class Logger {
         {
           name: "User",
           value: message.author.tag
+        },
+        {
+          name: "Error",
+          value: `${(error.stack.length > 900) ? error.name + ":" + error.message + "\n..." +  error.stack.substring(error.name.length + error.message.length + 2, 900) : error.stack}`
+        }
+      ]
+    });
+
+    await this.log(embed, { isEvent: true });
+  }
+
+  async slashCommandError(interaction, error, commandName) {
+    let embed = this.client.utils.buildEmbed({
+      title: this.signatures.ERROR,
+      color: this.colors.ERROR,
+      fields: [
+        {
+          name: "Input",
+          value: interaction.toString()
+        },
+        {
+          name: "Command",
+          value: commandName
+        },
+        {
+          name: "Server",
+          value: interaction.guild.name
+        },
+        {
+          name: "Server ID",
+          value: interaction.guild.id
+        },
+        {
+          name: "User",
+          value: interaction.user.tag
         },
         {
           name: "Error",

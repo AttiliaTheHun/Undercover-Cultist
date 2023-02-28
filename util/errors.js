@@ -1,11 +1,21 @@
 const utils = require('../util/utils.js');
 
 module.exports = {
+  
   CommandExecutionError: class CommandExecutionError extends Error {
     
     constructor(message) {
       super(message);
       this.name = 'CommandExecutionError';
+    }
+    
+  },
+
+  SlashCommandExecutionError: class SlashCommandExecutionError extends Error {
+    
+    constructor(message) {
+      super(message);
+      this.name = 'SlashCommandExecutionError';
     }
     
   },

@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "register": "node deploy-commands.js",
-    "launch": "npm register && npm start",
+    "launch": "npm run register && npm run start",
     "lint": "eslint ."
   },
   "author": "AttilaTheHun",
