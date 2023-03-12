@@ -19,12 +19,12 @@ module.exports = class Query extends Command {
   async execute(message, args) {
     try {
       let [result, error] = await this.client.utils.queryPowerTwo(args.join(" "));
-      if (error != 0) {
-        return message.channel.send(error);
+      if (error) {
+        return message.channel.send({ content: error.message});
       }
-      message.channel.send("Result length: " + result.length);
+      message.channel.send({ content: "Result length: " + result.length });
       if (result.length > 0) {
-        message.channel.send(JSON.stringify(result));
+        message.channel.send({ content: JSON.stringify(result) });
       }
       
       console.log(result);

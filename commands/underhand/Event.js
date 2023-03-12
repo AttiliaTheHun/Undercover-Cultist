@@ -1,7 +1,7 @@
 const Command = require("../Command.js");
 const cardwipfile = require("../../cardwip.json");
 const cardwip = JSON.parse(JSON.stringify(cardwipfile));
-const Discord = require('discord.js');
+const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = class Event extends Command {
   
@@ -27,7 +27,34 @@ module.exports = class Event extends Command {
 
     if (!isNaN(args[0]) && args[0] > 0 && args[0] < 119) {
 
-      class Option {
+      if (args[1] == "raw") {
+        message.channel.send(JSON.stringify(event));
+        return;
+      }
+
+
+      const embed = this.createEventEmbed(args[0]);
+
+      //sent event texture
+      await message.channel.send({
+        files: [`http://underhand.clanweb.eu/res/Card${args[0]}.png`]
+      });
+      //send embed with options
+      await message.channel.send({embeds: [embed]});
+
+
+    } else {
+      throw new message.client.errors.UserInputError("Number range should be in between 0-119 excluded");
+
+    }
+    
+  }
+
+  createEventEmbed(number) {
+    
+    const event = cardwip[number];
+    
+     class Option {
         constructor() {
           this.defined = false,
           this.consume_values = [],
@@ -39,14 +66,7 @@ module.exports = class Event extends Command {
         }
       }
 
-      const event = cardwip[args[0]];
-
-      if (args[1] == "raw") {
-        message.channel.send(JSON.stringify(event));
-        return;
-      }
-
-      const resources_discord_emojis = ["<:exchange_relic:644177849606995978>", "<:exchange_money:644177896575074323>", "<:exchange_cultist:644175421755097098>", "<:exchange_food:644178025809707157>", "<:exchange_prisoner:644177784876433408>", "<:exchange_suspicion:644177968536748032>"];
+          const resources_discord_emojis = ["<:exchange_relic:644177849606995978>", "<:exchange_money:644177896575074323>", "<:exchange_cultist:644175421755097098>", "<:exchange_food:644178025809707157>", "<:exchange_prisoner:644177784876433408>", "<:exchange_suspicion:644177968536748032>"];
       const cultist_equals_prisoner_emoji = "<:exchange_cultist_prisoner:766628698963050566>";
 
       const options = [new Option(), new Option(), new Option()]
@@ -112,33 +132,50 @@ module.exports = class Event extends Command {
 
 
       }
-      const embed = new Discord.MessageEmbed();
-      for (const option of options) {
-        if (!option.defined) {
-          break;
-        }
-        embed.addField(`${option.option_text}`, `:x: ${option.consume_emojis}\n:white_check_mark:${option.provide_emojis}\n${option.output_text}`);
-      }
+      const embed = { fields: []};
 
+    options.filter(option => option.defined).forEach(option => {
+      embed.fields.push({ name: `${option.option_text}`, value: `:x: ${option.consume_emojis}\n:white_check_mark:${option.provide_emojis}\n${option.output_text}`, inline: false});
+    });
+
+    return embed;
+  }
+
+  async backslash(interaction) {
+    
+    const number = interaction.options.getInteger("event");
+    const raw = interaction.options.getBoolean("raw");
+
+     if (raw) {
+        const event = cardwip[number];
+        interaction.reply({ content: JSON.stringify(event)});
+        return;
+      }
+    
+      const embed = this.createEventEmbed(number);
 
       //sent event texture
-      await message.channel.send({
-        files: [`http://underhand.clanweb.eu/res/Card${args[0]}.png`]
+      interaction.reply({
+        files: [`http://underhand.clanweb.eu/res/Card${number}.png`],
+        embeds: [embed]
       });
-      //send embed with options
-      await message.channel.send({embeds: [embed]});
+  }
 
-
-    } else {
-      throw new message.client.errors.UserInputError("Number range should be in between 0-119 excluded");
-
-    }
-
-    /*const embed = new Discord.MessageEmbed()
-    .setColor("#7a11ab")
-    .setDescription("There's now an opportunity to play Underhand right here on Discord. Just go in one of the gaming channels\n<#721735042682060853>\n<#766993942242787369>\nand type\n**!c underhand play**\nto start a new game.\n\nIf the bot is not online, you can go at http://undercover-cultist.glitch.me and wait until the page loads, then the bot should be online for you :heart:\nYou should react on this message with <:exchange_cultist:644175421755097098> to get the cultist role, othewise you are considered a prisoner, food or suspicion.\nReact with <:eye_of_sacrifice:719878415850799205> to get access to the game channels.");
-    message.channel.send(embed);
-    */
+  createDefinition() {
+    return new SlashCommandBuilder()
+                  .setName(this.name)
+                  .setDescription("Sends event information.")
+                  .addIntegerOption(option => 
+                            option.setName("event")
+                            .setDescription("Number of the event (use /events to find out).")
+                            .setMinValue(1)
+                            .setMaxValue(118)
+                            .setRequired(true)
+                  )
+                  .addBooleanOption(option => 
+                             option.setName("raw")
+                             .setDescription("Send event JSON representation instead.")
+                  );
   }
    
 }

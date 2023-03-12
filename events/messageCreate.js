@@ -32,7 +32,7 @@ const {silent_errors} = require("../constants/silent_errors.js");
   */
   const cases = [prefix, prefix.trim(), `<@${client.user.id}>`, `<@!${client.user.id}>`];
   let match = false;
-  console.log(message.content);
+
   for (const type of cases) {
     if (message.content.toLowerCase().startsWith(type)) {
       args = message.content.slice(type.length).trim().split(/ +/);
@@ -79,6 +79,7 @@ const {silent_errors} = require("../constants/silent_errors.js");
   //let prefix = await utils.getConfig(sequelize, Config, 'prefix', true);
 
   if( await client.utils.isCommandIgnoredInChannel(commandName, message.channel)){
+    await client.logger.messageIgnored(message);
     message.channel.send("Not in this channel please");
     return;
   }

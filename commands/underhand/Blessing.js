@@ -1,4 +1,5 @@
 const Command = require("../Command.js");
+const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = class Blessing extends Command {
   
@@ -8,7 +9,7 @@ module.exports = class Blessing extends Command {
       aliases: [],
       syntax: 'blessing <0-7>',
       description: `Shows blessings that belong to the target god`,
-      category: client.categories.ADMINISTRATIVE,
+      category: client.categories.UNDERHAND,
       clientPermissions: [],
       userPermissions: [],
       examples: ['blessing 5', 'blessing kekujira'],
@@ -61,5 +62,44 @@ module.exports = class Blessing extends Command {
     });
     
     }
+
+  async backslash(interaction) {
+    const gods = ["God of Beginnings",
+                  "Rhybaax",
+                  "Wiindigoo",
+                  "Jhai'Ti",
+                  "Kekujira",
+                  "Yacare",
+                  "Uhl'Uht'C"
+                 ];
+    const blessings = [[96, 98], [21, 70], [23, 97], [112, 114], [72, 113], [38, 111], [22, 25]];
+    const god = gods.indexOf(interaction.options.getString('god'));
+    interaction.reply({
+      content: `Blessings of ${gods[god]}`,
+      files: [
+        `http://underhand.clanweb.eu/res/Card${blessings[god][0]}.png`,
+        `http://underhand.clanweb.eu/res/Card${blessings[god][1]}.png`
+             ] 
+    });
+  }
+
+  createDefinition() {
+    return new SlashCommandBuilder()
+                  .setName(this.name)
+                  .setDescription("Sends blessings textures")
+                  .addStringOption(option => 
+                          option.setName("god")
+                          .setDescription("The god the blessings correspond to.")
+                          .setRequired(true)
+                          .addChoices(
+				{ name: 'God of Beginnings', value: 'God of Beginnings' },
+				{ name: 'Rhybaax', value: 'Rhybaax' },
+				{ name: 'Wiindigoo', value: 'Wiindigoo' },
+        { name: 'Jhai\'Ti', value: 'Jhai\'Ti' },
+				{ name: 'Kekujira', value: 'Kekujira' },
+				{ name: 'Yacare', value: 'Yacare' },
+        { name: 'Uhl\'Uht\'C', value: 'Uhl\'Uht\'C' }
+			));
+  }
    
 }

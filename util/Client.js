@@ -42,13 +42,18 @@ class Client extends Discord.Client {
   }
   
   loadEvents(path) {
+    const once = ["ready"];
     readdir(path, (err, files) => {
       if(err) this.logger.error(err);
       files = files.filter(file => file.endsWith(".js"));
       files.forEach(file => {
         const eventName = file.substring(0, file.indexOf("."));
         const event = require(resolve(/*__basedir,*/ join(path, file)));
-        super.on(eventName, event.bind(null, this));
+        if (once.includes(eventName)) {
+          super.once(eventName, event.bind(null, this));
+        } else {
+          super.on(eventName, event.bind(null, this));
+        } 
         delete require.cache[require.resolve(resolve(/*__basedir,*/ join(path, file)))]; 
       });
     });

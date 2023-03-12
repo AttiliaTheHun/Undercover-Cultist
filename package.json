@@ -1,6 +1,6 @@
 {
   "name": "undercover-cultist",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "engines": {
     "node": "16.x"
   },
@@ -8,16 +8,20 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "register": "node deploy-commands.js",
+    "launch": "npm run register && npm run start",
+    "lint": "eslint ."
   },
   "author": "AttilaTheHun",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^13.6.0",
-    "express": "^4.17.1",
+    "discord.js": "^14.7.1",
+    "express": "^4.18.2",
     "sequelize": "^6.3.4",
-    "sqlite3": "^5.0.2",
-    "dotenv": "^8.2.0",
-    "axios": "^0.26.0"
+    "sqlite3": "^5.1.4",
+    "dotenv": "^16.0.3",
+    "axios": "^1.3.3",
+    "eslint": "^8.34.0"
   }
 }

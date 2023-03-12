@@ -43,8 +43,14 @@ module.exports = {
     * This method resolves user input into a GuildMember object
     */
     let user;
-    if (message.mentions.members.first() != null) {
-      user = message.mentions.members.first();
+    if (message.mentions.members.size > 0) {
+      if (message.mentions.members.first().user.id == message.client.user.id) {
+        if (message.mentions.members.size >= 1) {
+          return message.mentions.members.at(1);
+        }
+      } else {
+        user = message.mentions.members.first();
+      }
     } else if (args[0] == null) {
       user = message.member;
     } else if (args.join(" ").includes("#")) {
@@ -52,7 +58,7 @@ module.exports = {
       let username = tag.substring(0, tag.indexOf("#"));
       let discriminator = tag.substring(tag.indexOf("#") + 1, tag.length);
       user = await message.guild.members.cache.find(user => user.user.username.includes(username) && user.user.discriminator == discriminator);
-    } else if (!isNaN(args[0])) {
+    } else if (!isNaN(parseInt(args[0]))) {
       user = await message.guild.members.cache.get(args[0]);
     } else {
       return;
@@ -105,7 +111,7 @@ module.exports = {
   },
 
   buildEmbed(embedContent) {
-    let embed = new Discord.MessageEmbed()
+    let embed = new Discord.EmbedBuilder()
     if (embedContent.title) {
       embed.setTitle(embedContent.title);
     }
@@ -264,7 +270,7 @@ module.exports = {
   },
 
   async isChannelIgnored(channel) {
-    let does_ignore_record_exists = await module.exports.getConfig('ignored_channel', channel.id);
+    const does_ignore_record_exists = await module.exports.getConfig('ignored_channel', channel.id);
     //in case of absence of such record false is returned which does not pass the if statement
     if (does_ignore_record_exists) {
       return true;
@@ -273,7 +279,7 @@ module.exports = {
   },
 
   async isCommandIgnoredInChannel(commandName, channel) {
-    let does_ignore_record_exists = await module.exports.getConfig(`${commandName}_prohibited`, channel.id);
+    const does_ignore_record_exists = await module.exports.getConfig(`${commandName}_prohibited`, channel.id);
     //in case of absence of such record false is returned which does not pass the if statement
     if (does_ignore_record_exists) {
       return true;
@@ -282,7 +288,7 @@ module.exports = {
   },
 
   shuffleArray(array) {
-    let shuffled = array
+    const shuffled = array
       .map(value => ({ value, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
       .map(({ value }) => value)
@@ -307,9 +313,9 @@ module.exports = {
     }
   },
 
-  checkClientPermissions(message, permissions, { member: member }) {
-    if (!message.guild.me.permissions.has(permissions)) {
-      throw new message.client.errors.SilentError("I do not have the necessary perms.");
+  checkClientPermissions(entity, permissions, { member, channel }) {
+    if (!entity.guild.members.me.permissions.has(permissions)) {
+      throw new entity.client.errors.SilentError("I do not have the necessary perms.");
     }
     if (member) {
       if (!member.managable) {
@@ -333,6 +339,24 @@ module.exports = {
       array[i] = module.exports.capitalize(array[i]);
     }
     return array;
+  },
+
+  async failedInteraction(interaction, message) {
+    const embed = {
+      title: "Failure",
+      color: interaction.client.colors.RED,
+      description: message
+    }
+    await interaction.reply({ embeds: [interaction.client.utils.buildEmbed(embed)], ephemeral: true });
+  },
+
+  async successfulInteraction(interaction, message) {
+    const embed = {
+      title: "Success",
+      color: interaction.client.colors.GREEN,
+      description: message
+    }
+    await interaction.reply({ embeds: [interaction.client.utils.buildEmbed(embed)], ephemeral: true });
   }
 
 }
