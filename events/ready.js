@@ -1,7 +1,6 @@
 const { ActivityType } = require('discord.js');
 
 module.exports = async (client) => {
-  console.log("ready loaded")
   const STATUS_CHANGE_INTERVAL = 15 * 1000;
   
   let status = 0;

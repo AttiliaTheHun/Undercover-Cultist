@@ -9,7 +9,7 @@ module.exports = class Blessing extends Command {
       aliases: [],
       syntax: 'blessing <0-7>',
       description: `Shows blessings that belong to the target god`,
-      category: client.categories.ADMINISTRATIVE,
+      category: client.categories.UNDERHAND,
       clientPermissions: [],
       userPermissions: [],
       examples: ['blessing 5', 'blessing kekujira'],

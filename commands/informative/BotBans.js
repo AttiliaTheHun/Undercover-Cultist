@@ -81,15 +81,13 @@ message.channel.send("Amnesty completed")
   }
 
   async backslash(interaction) {
-    const option = interaction.options.getString('option');
-    
-    
+    const option = interaction.options.getString('scope');
     
     let where = "";
     try {
-      if (option == "Global") {
+      if (option == "global") {
         where = "WHERE global = 1";
-      } else if (option == "Local") {
+      } else if (option == "local") {
         where = `WHERE server = ${interaction.guild.id} AND global = 0`;
       } else if (option == "clear"){
         const query = await this.client.utils.query(`DELETE FROM Bans;`);
@@ -154,11 +152,10 @@ message.channel.send("Amnesty completed")
                   .addStringOption(option => 
                           option.setName("scope")
                           .setDescription("Scope of the ban.")
-                          .setRequired(true)
                           .addChoices(
-				{ name: 'Local (Server)', value: 'Local' },
-				{ name: 'Global (Discord)', value: 'Global' },
-        { name: 'Clear bans', value: 'Clear' }
+				{ name: 'Local (Server)', value: 'local' },
+				{ name: 'Global (Discord)', value: 'global' },
+        { name: 'Clear bans', value: 'clear' }
 			));
   }
    

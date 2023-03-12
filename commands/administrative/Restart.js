@@ -1,4 +1,5 @@
 const Command = require("../Command.js");
+const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = class restart extends Command {
   
@@ -19,7 +20,19 @@ module.exports = class restart extends Command {
   async execute(message, args) {
       await message.channel.send("Restarting...");
       await console.log(`Restarted by ${message.author.tag}`);
-      process.exit();
+      process.exit(0);
+  }
+
+  async backslash(interaction) {
+    await interaction.client.utils.successfulInteraction(interaction, "Restarting");
+      await console.log(`Restarted by ${interaction.user.tag}`);
+      process.exit(0);
+  }
+
+  createDefinition() {
+    return new SlashCommandBuilder()
+                  .setName(this.name)
+                  .setDescription(this.description)
   }
    
 }

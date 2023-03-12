@@ -43,8 +43,14 @@ module.exports = {
     * This method resolves user input into a GuildMember object
     */
     let user;
-    if (message.mentions.members.first() != null) {
-      user = message.mentions.members.first();
+    if (message.mentions.members.size > 0) {
+      if (message.mentions.members.first().user.id == message.client.user.id) {
+        if (message.mentions.members.size >= 1) {
+          return message.mentions.members.at(1);
+        }
+      } else {
+        user = message.mentions.members.first();
+      }
     } else if (args[0] == null) {
       user = message.member;
     } else if (args.join(" ").includes("#")) {
@@ -52,7 +58,7 @@ module.exports = {
       let username = tag.substring(0, tag.indexOf("#"));
       let discriminator = tag.substring(tag.indexOf("#") + 1, tag.length);
       user = await message.guild.members.cache.find(user => user.user.username.includes(username) && user.user.discriminator == discriminator);
-    } else if (!isNaN(args[0])) {
+    } else if (!isNaN(parseInt(args[0]))) {
       user = await message.guild.members.cache.get(args[0]);
     } else {
       return;
@@ -335,13 +341,22 @@ module.exports = {
     return array;
   },
 
-  failedInteraction(interaction, message) {
+  async failedInteraction(interaction, message) {
     const embed = {
       title: "Failure",
       color: interaction.client.colors.RED,
       description: message
     }
-    interaction.reply({ embeds: [interaction.client.utils.buildEmbed(embed)], ephemeral: true });
+    await interaction.reply({ embeds: [interaction.client.utils.buildEmbed(embed)], ephemeral: true });
+  },
+
+  async successfulInteraction(interaction, message) {
+    const embed = {
+      title: "Success",
+      color: interaction.client.colors.GREEN,
+      description: message
+    }
+    await interaction.reply({ embeds: [interaction.client.utils.buildEmbed(embed)], ephemeral: true });
   }
 
 }
