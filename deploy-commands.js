@@ -14,7 +14,7 @@ const client = new Client({
         'CHANNEL', // Required to receive DMs
     ]});
 
-const clientId = '820435139335028757';
+const clientId = '672748100007362561';
 
 let commands = [];
 
