@@ -1,16 +1,17 @@
 const Command = require("../Command.js");
+const { SlashCommandBuilder,  PermissionFlagsBits } = require('discord.js');
 
 module.exports = class Kick extends Command {
   
   constructor(client) {
     super(client, {
       name: 'kick',
-      aliases: [],
+      aliases: ['lick'],
       syntax: 'kick <username/ID>',
       description: `Kicks target user from the server`,
       category: client.categories.UTILITY,
-      clientPermissions: ['KICK_MEMBERS'],
-      userPermissions: ['KICK_MEMBERS'],
+      clientPermissions: [PermissionFlagsBits.KickMembers],
+      userPermissions: [PermissionFlagsBits.KickMembers],
       examples: ['kick 608673444061773827'],
       master: false
     });

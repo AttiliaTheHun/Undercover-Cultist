@@ -16,7 +16,7 @@
   "author": "AttilaTheHun",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^14.7.1",
+    "discord.js": "^14.8.",
     "express": "^4.18.2",
     "sequelize": "^6.3.4",
     "sqlite3": "^5.1.4",

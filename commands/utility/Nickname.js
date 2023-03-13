@@ -1,4 +1,5 @@
 const Command = require("../Command.js");
+const { SlashCommandBuilder,  PermissionFlagsBits } = require('discord.js');
 
 module.exports = class Nickname extends Command {
   
@@ -9,10 +10,10 @@ module.exports = class Nickname extends Command {
       syntax: 'defaultcommand <username/ID> <nickname>',
       description: `Changes the nickname of the target member`,
       category: client.categories.UTILITY,
-      clientPermissions: ['MANAGE_NICKNAMES'],
-      userPermissions: ['MANAGE_NICKNAMES'],
+      clientPermissions: [PermissionFlagsBits.ManageNicknames],
+      userPermissions: [PermissionFlagsBits.ManageNicknames],
       examples: ['setnickname 608673444061773827 snoodle'],
-      master: true
+      master: false
     });
   }
   

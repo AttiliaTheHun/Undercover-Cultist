@@ -1,3 +1,4 @@
+const {ChannelType} = require('discord.js');
 
 module.exports = async (client, message) => {
 let args;
@@ -18,7 +19,7 @@ const {silent_errors} = require("../constants/silent_errors.js");
   * features may not work in the expected way. DM channels are used for some sort of 
   * role-play instead ;)
   */
-  if(message.channel.type == "DM"){
+  if(message.channel.type == ChannelType.DM){
     client.logger.dm(message);
     if (await client.utils.getConfig("dm_engine_enabled")) {
       client.talkEngine.dm(message);

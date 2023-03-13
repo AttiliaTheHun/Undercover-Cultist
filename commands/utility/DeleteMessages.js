@@ -1,4 +1,5 @@
 const Command = require("../Command.js");
+const { SlashCommandBuilder,  PermissionFlagsBits } = require('discord.js');
 
 module.exports = class DeleteMessages extends Command {
   
@@ -9,8 +10,8 @@ module.exports = class DeleteMessages extends Command {
       syntax: 'deletemessages <count>',
       description: `Delete the`,
       category: client.categories.UTILITY,
-      clientPermissions: ['MANAGE_MESSAGES'],
-      userPermissions: ['MANAGE_MESSAGES'],
+      clientPermissions: [PermissionFlagsBits.ManageMessages],
+      userPermissions: [PermissionFlagsBits.ManageMessages],
       examples: ['deletemessages 10'],
       master: false
     });

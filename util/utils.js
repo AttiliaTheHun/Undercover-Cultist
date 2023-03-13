@@ -50,8 +50,10 @@ module.exports = {
         }
       } else {
         user = message.mentions.members.first();
+        return user;
       }
-    } else if (args[0] == null) {
+    }
+    if (args[0] == null) {
       user = message.member;
     } else if (args.join(" ").includes("#")) {
       let tag = args.join(" ");
@@ -125,7 +127,7 @@ module.exports = {
       embed.addFields(embedContent.fields.filter(field => field.value));
     }
     if (embedContent.footer) {
-      embed.setFooter({ text: embedContent.footer.text, iconURL: embedContent.footer.iconURL });
+      embed.setFooter({ text: embedContent.footer.text, icon_url: embedContent.footer.iconURL });
     }
     if (embedContent.timestamp) {
       embed.setTimestamp(embedContent.timestamp || Date.now);
@@ -133,7 +135,7 @@ module.exports = {
     if (embedContent.author) {
       embed.setAuthor({
         name: embedContent.author.name,
-        iconURL: embedContent.author.iconURL,
+        icon_url: embedContent.author.iconURL,
         url: embedContent.author.url
       });
     }
@@ -149,36 +151,35 @@ module.exports = {
     if (embedContent.client) {
       embed.client = embedContent.client;
     }
-
     return embed;
   },
 
- /* async query(query) {
-    console.log(`Executing: ${query}`);
-    try {
-      const res = await axios.post(process.env.DB_API_PATH, {
-        api_token: `${process.env.API_TOKEN}`,
-        query: `${query}`
-      });
-      //console.log(res.data);
-      const response = res.data;
-      if (response["error"] == '0') {
-        if (response["result"] == "false") {
-          return false;
-        }
-        console.log(response["result"])
+  /* async query(query) {
+     console.log(`Executing: ${query}`);
+     try {
+       const res = await axios.post(process.env.DB_API_PATH, {
+         api_token: `${process.env.API_TOKEN}`,
+         query: `${query}`
+       });
+       //console.log(res.data);
+       const response = res.data;
+       if (response["error"] == '0') {
+         if (response["result"] == "false") {
+           return false;
+         }
+         console.log(response["result"])
+ 
+         return JSON.parse(response["result"]) || response["result"];
+       }
+       console.log(response["error"]);
+       return [];
+     } catch (err) {
+       console.log(err);
+       return [];
+     }
+   },*/
 
-        return JSON.parse(response["result"]) || response["result"];
-      }
-      console.log(response["error"]);
-      return [];
-    } catch (err) {
-      console.log(err);
-      return [];
-    }
-  },*/
-
-  async query (query) {
+  async query(query) {
     const [result, metadata] = await sequelize.query(query);
     return result;
   },
@@ -218,19 +219,19 @@ module.exports = {
 
   async getSystemChannel(guild) {
     const channel = guild.channels.cache.find(channel => {
-      if (channel.type === "GUILD_TEXT") {
-        if (guild.me.permissionsIn(channel).has('SEND_MESSAGES')) {
+      if (channel.type === Discord.ChannelType.GuildText) {
+        if (guild.me.permissionsIn(channel).has(Discord.PermissionFlagsBits.SendMessages)) {
           return true;
         }
       }
       return false;
     });
     if (guild.systemChannel) {
-      if (guild.me.permissionsIn(guild.systemChannel).has('SEND_MESSAGES')) {
+      if (guild.me.permissionsIn(guild.systemChannel).has(Discord.PermissionFlagsBits.SendMessages)) {
         return guild.systemChannel;
       }
     } else {
-      return channel
+      return channel;
     }
     /*while (true) {
       const channel = channels.next();
@@ -303,8 +304,8 @@ module.exports = {
     return sum;
   },
 
-  randomNumber(min, max) { 
-    return Math.floor(Math.random() * (max - min) ) + min;
+  randomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
   },
 
   checkUserPermissions(member, permissions) {
@@ -315,11 +316,11 @@ module.exports = {
 
   checkClientPermissions(entity, permissions, { member, channel }) {
     if (!entity.guild.members.me.permissions.has(permissions)) {
-      throw new entity.client.errors.SilentError("I do not have the necessary perms.");
+      throw new entity.client.errors.SilentError("I do not posses the necessary perms.");
     }
     if (member) {
       if (!member.managable) {
-        throw new message.client.errors.SilentError("I do not have the permissions neccesary.");
+        throw new message.client.errors.SilentError("I do not have the permissions necessary.");
       }
     }
   },
@@ -341,22 +342,22 @@ module.exports = {
     return array;
   },
 
-  async failedInteraction(interaction, message) {
+  async failedInteraction(interaction, message, ephemeral) {
     const embed = {
       title: "Failure",
       color: interaction.client.colors.RED,
       description: message
     }
-    await interaction.reply({ embeds: [interaction.client.utils.buildEmbed(embed)], ephemeral: true });
+    await interaction.reply({ embeds: [interaction.client.utils.buildEmbed(embed)], ephemeral: (ephemeral == false) ? false : true });
   },
 
-  async successfulInteraction(interaction, message) {
+  async successfulInteraction(interaction, message, ephemeral) {
     const embed = {
       title: "Success",
       color: interaction.client.colors.GREEN,
       description: message
     }
-    await interaction.reply({ embeds: [interaction.client.utils.buildEmbed(embed)], ephemeral: true });
+    await interaction.reply({ embeds: [interaction.client.utils.buildEmbed(embed)], ephemeral: (ephemeral == false) ? false : true });
   }
 
 }
