@@ -1,8 +1,8 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const Command = require("../Command.js");
 
 module.exports = class DefaultCommand extends Command {
-  
+
   constructor(client) {
     super(client, {
       name: 'defaultcommand',
@@ -16,19 +16,19 @@ module.exports = class DefaultCommand extends Command {
       master: true
     });
   }
-  
+
   async execute(message, args) {
-    
+
   }
 
   async backslash(interaction) {
-    
+
   }
 
   createDefinition() {
     return new SlashCommandBuilder()
-                  .setName(this.name)
-                  .setDescription(this.description)
+      .setName(this.name)
+      .setDescription(this.description)
   }
-   
+
 }

@@ -1,4 +1,5 @@
 const Command = require("../Command.js");
+const { SlashCommandBuilder,  PermissionFlagsBits } = require('discord.js');
 
 module.exports = class Unban extends Command {
   
@@ -9,8 +10,8 @@ module.exports = class Unban extends Command {
       syntax: 'unban <username/ID>',
       description: `Removes the ban from target user`,
       category: client.categories.UTILITY,
-      clientPermissions: ['BAN_MEMBERS'],
-      userPermissions: ['BAN_MEMBERS'],
+      clientPermissions: [PermissionFlagsBits.BanMembers],
+      userPermissions: [PermissionFlagsBits.BanMembers],
       examples: ['unban 608673444061773827'],
       master: false
     });

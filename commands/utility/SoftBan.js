@@ -1,4 +1,5 @@
 const Command = require("../Command.js");
+const { SlashCommandBuilder,  PermissionFlagsBits } = require('discord.js');
 
 module.exports = class Softban extends Command {
   
@@ -9,8 +10,8 @@ module.exports = class Softban extends Command {
       syntax: 'softban <username/ID>',
       description: `Bans and subsequently unbans a user, resulting in removing the user and all his messages from the server`,
       category: client.categories.UTILITY,
-      clientPermissions: ['BAN_MEMBERS'],
-      userPermissions: ['BAN_MEMBERS'],
+      clientPermissions: [PermissionFlagsBits.BanMembers],
+      userPermissions: [PermissionFlagsBits.BanMembers],
       examples: ['softban 608673444061773827'],
       master: false
     });

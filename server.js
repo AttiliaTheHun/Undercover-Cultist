@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const Client = require("./util/Client.js");
-const { GatewayIntentBits } = require("discord.js");
+const { GatewayIntentBits, Partials } = require("discord.js");
 
 const app = express();
 const token = process.env.TOKEN;
@@ -11,11 +11,13 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.MessageContent,
         GatewayIntentBits.DirectMessageReactions,
         GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildPresences],
   partials: [
-        "CHANNEL", // Required to receive DMs
+        Partials.Channel, // Required to receive DMs
+        Partials.Message
     ]})
       .loadEvents("./events")
       .loadCommands("./commands");

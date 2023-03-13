@@ -1,4 +1,5 @@
 const Command = require("../Command.js");
+const { SlashCommandBuilder,  PermissionFlagsBits } = require('discord.js');
 
 module.exports = class Test extends Command {
   
@@ -10,7 +11,7 @@ module.exports = class Test extends Command {
       description: `Testing command`,
       category: client.categories.ADMINISTRATIVE,
       clientPermissions: [],
-      userPermissions: ['ADMINISTRATOR'],
+      userPermissions: [PermissionFlagsBits.Administrator],
       examples: ['test test test test'],
       master: true
     });
@@ -18,6 +19,16 @@ module.exports = class Test extends Command {
   
   async execute(message, args) {
       message.channel.send("Success")
+  }
+
+  async backslash(interaction) {
+    interaction.reply({content: "Test"});
+  }
+
+  createDefinition() {
+    return new SlashCommandBuilder()
+                  .setName(this.name)
+                  .setDescription(this.description);
   }
 
 }
